@@ -9,5 +9,8 @@ desktop.ini
 *.swp
 *.swo
 
+# Trae IDE 工作区配置
+.trae/
+
 # 日志
 *.log
