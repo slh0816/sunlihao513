@@ -15,6 +15,8 @@ const PRE_COUNTDOWN_SECONDS = 3;          // 预备倒计时起始数字
 const PRE_COUNTDOWN_INTERVAL_MS = 1000;   // 预备倒计时每个数字停留时长
 const TICK_INTERVAL_MS = 100;             // 顶部剩余时间的刷新间隔
 const MS_PER_SECOND = 1000;
+const SECONDS_PER_MINUTE = 60;            // 每分钟秒数（mm:ss 时间换算用）
+const TIME_FIELD_WIDTH = 2;               // mm:ss 中「分」「秒」各自的补零宽度
 
 const BALL_SIZE = 64;                     // 小球直径兜底值（px，与 --ball-size 同步，实际以样式表为准）
 const SAFE_GAP = 24;                      // 安全边距兜底值（px，与 --safe-gap 同步，实际以样式表为准）
@@ -57,9 +59,9 @@ const timers = {
  * @returns {string} 形如 "02:00" 的字符串
  */
 function formatTime(totalSeconds) {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  const minutes = Math.floor(totalSeconds / SECONDS_PER_MINUTE);
+  const seconds = totalSeconds % SECONDS_PER_MINUTE;
+  return `${String(minutes).padStart(TIME_FIELD_WIDTH, '0')}:${String(seconds).padStart(TIME_FIELD_WIDTH, '0')}`;
 }
 
 /**

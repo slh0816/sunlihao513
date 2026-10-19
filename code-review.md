@@ -250,4 +250,65 @@ T6 补齐了状态机闭环（`over → restart → countdown`），复位与重
 
 ---
 
-<!-- 后续任务（T7）的评审报告在进入该任务时追加到本文件 -->
+## T7 · 总体验收与全量代码评审（收尾） — 评审报告
+
+**评审文件**：`index.html`、`css/style.css`、`js/game.js`（三份源文件**全量**评审，非增量）
+**评审结论**：**通过（1 个必修项已修复；5 条观察项记录留痕）**
+
+### 1. 全量逐维度评审
+
+| 维度 | 检查内容 | 结果 |
+|---|---|---|
+| 变量命名 | JS 常量全大写 + 下划线且语义完整（`GAME_DURATION_MS`、`SCORE_ON_HIT`、`SECONDS_PER_MINUTE`……），函数为动词短语且形成语义阶梯（`startGame` / `endGame` / `resetGame` / `restartGame`、`getSafeBounds` / `getSafePosition` / `spawnBall` / `constrainBallToSafeArea`）；CSS 类名统一 BEM（`.hud__value`、`.result-panel__score-value`）；`dom` 键名与元素 id 一一对应。**全项目无 `a1`/`tmp`/`data2` 类无意义命名** | 通过 |
+| 代码可读性 | `game.js` 分「常量 → 元素引用 → 状态 → 工具函数 → 计时器管理 → 流程控制 → 事件处理 → 事件绑定」八段，段间分隔注释齐整；`style.css` 分「变量 → 重置 → 游戏区 → HUD → 按钮 → 小球 → 遮罩 → 结算 → 工具类」九段；每个函数均有中文 JSDoc，非直觉写法（强制回流、时间戳差值、就地约束）均有行内注释 | 通过 |
+| JS 事件机制 | 全项目**共 4 处**绑定，全部使用具名函数引用（`startGame` / `handleGameAreaClick` / `restartGame` / `onWindowResize`），无匿名函数、无 `onclick` 内联；游戏区采用**事件委托**（一次绑定 + `closest('.ball')` 判定），球元素不单独绑 `click` | 通过 |
+| 事件冒泡 | 「点顶部不扣分」「点面板不扣分」均由**结构保证**（`.hud` / `.result-panel` 是 `.game` 的兄弟节点，事件不进入游戏区委托范围），未使用任何 `stopPropagation()` 补丁；`.countdown-overlay` 的 `pointer-events: none` 使预备期间点击穿透，由状态守卫兜住不计分 | 通过 |
+| 绑定合理性 | 4 处绑定均在**初始化阶段一次性**完成，不在开局/重开时重复绑定（无监听器堆积）；`handleGameAreaClick` / `onWindowResize` 入口即做 `PLAYING` 状态守卫；按钮 `disabled` 由流程函数统一控制 | 通过 |
+| CSS 冗余 | 逐一核对 **14 个类选择器 + 3 组 `@keyframes`**，全部被 HTML 类名或 JS 动态类名引用，**无未使用选择器**；无 `float`、无 `!important`；按钮样式收敛到共用 `.btn` 类；`.is-hidden` 位于文件末尾，顺序敏感约束保持成立 | 通过 |
+| Flex/Grid 布局规范性 | `.hud`（`space-between` + `gap` + `align-items`）、`.hud__item`（`baseline`）、`.result-panel`（纵向 Flex + `gap`）、`.countdown-overlay`（居中 Flex）四处布局全部用 Flexbox 表达，无 `float`、无手写 margin 微调排版；**唯一使用 `position: absolute` 的是小球**（随机坐标属必要用法，符合 spec §7.1） | 通过 |
+| 可维护性 | 全部时间/计分/计时参数均为具名常量（见下方「常量清单核对」）；尺寸以样式表变量为唯一来源（`getCssPixel` 统一读取）；副作用入口收敛（`clearAllTimers` 单一清理点、`updateScore`/`updateTimerDisplay` 对称渲染工具） | 见必修项 R3 |
+
+### 2. 必修问题清单（已修复）
+
+**R3：`formatTime()` 中的 `60` 与 `padStart(2)` 补零宽度未具名（已修复）**
+
+- **问题**：`formatTime()` 里 `Math.floor(totalSeconds / 60)`、`totalSeconds % 60` 的 `60`（每分钟秒数）与 `padStart(2, '0')` 的 `2`（mm:ss 字段补零宽度）为散落字面量，与 spec NFR-5「所有魔法数字以具名常量定义」不符。（T3 评审曾笼统表述为「无散落字面量」，此处在 T7 全量复核时修正该表述。）
+- **修复**：新增常量 `SECONDS_PER_MINUTE = 60` 与 `TIME_FIELD_WIDTH = 2`，`formatTime()` 改用二者；函数行为与输出字符串完全不变。
+- **复验**：`formatTime(120)` → `"02:00"`、`formatTime(59)` → `"00:59"`、`formatTime(0)` → `"00:00"`，与修复前逐值一致。
+
+### 3. 常量清单核对（spec NFR-5）
+
+| JS 常量 | 值 | 对应 CSS 变量 / 说明 |
+|---|---|---|
+| `GAME_DURATION_MS` | `120000` | spec §5 FR-2 固定 120 秒 |
+| `PRE_COUNTDOWN_SECONDS` | `3` | spec §7.3 文案 `3`/`2`/`1` |
+| `PRE_COUNTDOWN_INTERVAL_MS` | `1000` | 每数字停留 1 秒 |
+| `TICK_INTERVAL_MS` | `100` | spec §5 FR-2 刷新频率 |
+| `MS_PER_SECOND` / `SECONDS_PER_MINUTE` / `TIME_FIELD_WIDTH` | `1000` / `60` / `2` | 时间换算与格式化 |
+| `BALL_SIZE` / `SAFE_GAP` / `HUD_HEIGHT` | `64` / `24` / `64` | `--ball-size` / `--safe-gap` / `--hud-height`（**仅作变量缺失时的兜底值**，尺寸唯一来源是样式表，见记录 2） |
+| `INITIAL_SCORE` / `SCORE_ON_HIT` / `SCORE_ON_MISS` | `0` / `2` / `-1` | spec §5 FR-5 计分规则 |
+
+CSS `:root` 变量核对：spec §7.2 的 8 个变量**全部落地且被实际引用**（`--color-bg` / `--color-ball` / `--color-ball-hover` / `--color-text` / `--color-panel` / `--ball-size` / `--hud-height` / `--safe-gap`），另有 T2 已说明并保留的 2 个扩展 token（`--color-on-primary` / `--shadow-panel`）。**无重复定义、无未使用变量。**
+
+### 4. 工程规范核对
+
+- **无内联**：`index.html` 全文无 `style="..."`、无 `onclick="..."`，样式与行为完全分离（spec §3）。
+- **无第三方**：`index.html` 仅引用本地 `css/style.css` 与 `js/game.js`，无 CDN / 字体 / 图片 / 框架（spec §2）。
+- **脚本位置**：`<script>` 保持在 `</body>` 前，DOM 就绪后执行，无需 `defer`（T1 约定 1 持续成立）。
+- **事件绑定总数**：4 处（开始按钮、游戏区委托、重新开始按钮、window resize），无冗余绑定。
+
+### 5. 观察项（记录留痕，非缺陷）
+
+- **记录 1（CSS 组件级字号/间距保持字面量）**：`:root` 变量覆盖了「设计系统层」的颜色与三个核心尺寸，而按钮圆角（`999px`）、面板字号（`28px`）等**组件级一次性数值**未抽成变量。理由：spec §7.2 定义的就是这套变量集，这些值各自只出现一次，抽成变量只会增加一层间接跳转而无复用收益（YAGNI）。此处对 T2 评审中「尺寸全部收敛到变量」的表述作更精确的界定：**收敛的是复用型 token，不是全部尺寸字面量**。
+- **记录 2（JS 常量与 CSS 变量的「兜底」关系）**：`BALL_SIZE` / `SAFE_GAP` / `HUD_HEIGHT` 与同名 CSS 变量数值相同，看似重复硬编码；实为 T4-R2 后的设计——`getCssPixel(name, fallback)` 优先读**样式表**，JS 常量仅在变量缺失/不可解析时兜底。因此「改 CSS 即生效」的单一来源性质成立，不构成 T7 需清理的重复硬编码。
+- **记录 3（`endTime` 初值 `0` 与 `|| 0` 兜底）**：属结构化中性字面量（初始值 / 解析失败兜底），非业务魔法数字，不常量化。
+- **记录 4（`<h2>` 无 `<h1>`、`<meta name="viewport">`）**：单页游戏界面无文档大纲与 SEO 需求，viewport 元信息对桌面目标无害；按 YAGNI 保留现状（沿用 T2 观察项）。
+- **记录 5（状态守卫即最小权限）**：四类点击/尺寸事件全部以「先判 `PLAYING`」收敛副作用，`idle`/`countdown`/`over` 三态天然免疫，是 NFR-2/NFR-3 的结构性保证，无需额外分支。
+
+### 6. 结论
+
+全量复核下，代码分区清晰、命名规范、事件机制（委托 + 结构隔离 + 状态守卫）无可挑剔，CSS 无冗余、布局规范统一；仅修正一处常量命名疏漏（R3）。T1–T6 已建立的八条约定在收尾阶段全部成立且互不冲突，**通过评审**，可进入阶段 5 人工验证（G1–G15）。
+
+---
+
+<!-- T1–T7 全部评审报告至此完成 -->
