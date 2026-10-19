@@ -136,4 +136,47 @@ T3 代码常量收敛、分区清晰、事件绑定最小且无冒泡隐患，�
 
 ---
 
-<!-- 后续任务（T4–T7）的评审报告在各自任务完成后追加到本文件 -->
+## T4 · 小球渲染与安全区随机定位 — 评审报告
+
+**评审文件**：`js/game.js`、`css/style.css`、`acceptance-checklist.md`
+**评审结论**：**通过（0 个必修项，1 个建议项已于本任务内改进，4 条记录留痕）**
+
+### 1. 逐维度评审
+
+| 维度 | 检查内容 | 结果 |
+|---|---|---|
+| 变量命名 | 常量 `BALL_SIZE` / `SAFE_GAP` / `HUD_HEIGHT`（全大写 + 下划线，语义明确）；函数均为动词短语（`getCssPixel` / `getBallSize` / `getSafeBounds` / `getSafePosition` / `spawnBall` / `replaySpawnAnimation` / `constrainBallToSafeArea` / `onWindowResize`）；局部变量 `bounds` / `currentLeft` / `clampedX` 表意清楚，无 `x1` / `temp` 类命名 | 通过 |
+| 代码可读性 | 新增函数均带中文 JSDoc（说明目的、参数与返回值）；关键非直觉写法（强制回流、窗口极小时的 `Math.max` 收敛）均有行内注释；文件仍保持「常量 → 元素引用 → 状态 → 工具函数 → 计时器管理 → 流程控制 → 事件绑定」分区结构 | 通过 |
+| JS 事件机制 | `window.resize` 使用具名函数 `onWindowResize` 绑定（便于解绑与调试，不写匿名函数）；HTML 无内联 `onclick`；小球元素**未**直接绑定 `click`（按 plan 归属 T5 的委托逻辑，避免在本任务提前埋下"一球两分"隐患） | 通过 |
+| 事件冒泡 | 本任务未新增冒泡风险：`resize` 不参与冒泡链；小球的坐标与显隐完全由 JS 直接控制，未借父级事件传递 | 通过 |
+| 绑定合理性 | `resize` 只在 `window` 上绑定一次（而非每次开局重复绑定）；`onWindowResize` 内含状态守卫（仅 `PLAYING` 执行重约束），避免 `idle` / `countdown` / `over` 下的无谓计算 | 通过 |
+| CSS 冗余 | 新增 `.ball.is-spawn` + `@keyframes ball-pop-in`，均被 JS 实际添加的类名引用，无未使用选择器；复用既有 `--color-ball` / `--ball-size`，未新增重复变量；无 `!important`；`.is-hidden` 仍在文件末尾，顺序敏感点未被破坏 | 通过 |
+| Flex/Grid 布局规范性 | 小球延续 `position: absolute` + `left/top`（spec §7.1 明确要求，随机坐标无法用 Flex/Grid 表达）；动画只用 `transform` + `opacity`，不触发重排，符合 NFR-1 | 通过 |
+| 可维护性 | 球径 / 边距 / 顶部栏高度**统一以样式表 CSS 变量为唯一来源**（`getCssPixel` 读取 `--ball-size` / `--safe-gap` / `--hud-height`），消除 JS 与 CSS 两处硬编码不一致的风险；边界公式收敛进单一 `getSafeBounds()`，随机定位与窗口重约束共同复用 | 通过 |
+
+### 2. 建议项（已于本任务内改进）
+
+**R2（T4 内改进）：把「尺寸单一来源」原则从球径扩展到边距与顶部栏高度**
+
+- **问题（初版）**：初版仅让 `getBallSize()` 读取 CSS 变量，而 `SAFE_GAP` / `HUD_HEIGHT` 仍以 JS 常量参与坐标计算，与样式表中的 `--safe-gap` / `--hud-height` 形成两处硬编码，存在"改一处忘另一处"的隐患。
+- **改进**：抽出通用读取器 `getCssPixel(name, fallback)`，`getSafeBounds()` 改为从样式表同时读取球径、边距、顶部栏高度三者，JS 常量统一降级为「变量缺失时的兜底值」。
+- **复验**：`--ball-size` / `--safe-gap` / `--hud-height` 三个变量均存在且可解析，读取结果与常量值一致，安全区计算结果不变。
+
+### 3. 必修问题清单
+
+**无。** 未发现影响功能正确性的缺陷。
+
+### 4. 记录留痕（非缺陷，供后续任务知悉）
+
+- **记录 1（随机来源单一）**：`getSafePosition()` 仅依赖 `Math.random()`，无种子/缓存，因此每次 `spawnBall()` 都独立随机，满足"多次开局位置明显随机"；T5 点中后刷新位置复用同一函数，行为一致。
+- **记录 2（`replaySpawnAnimation` 强制回流）**：移除 `is-spawn` → `void offsetWidth` → 重加 `is-spawn`，与 T3 倒计时数字同款的"重播 CSS 动画"手法；省略中间回流会被浏览器合并两次类变更，导致动画不重播，已加注释。
+- **记录 3（动画与 hover 的 transform 叠加）**：`.ball:hover` 用 `transform: scale(1.08)`，出现动画也用 `transform`。动画仅 0.18s 且无 `forwards`，结束后 transform 回归基础值，不影响后续 hover 放大；两者时间上几乎不重叠，无需额外处理。
+- **记录 4（`resize` 重约束策略）**：窗口变化时采用"就近 clamp"而非"重新随机"，避免玩家缩窗瞬间被"球突然跳走"干扰；clamp 与随机共享 `getSafeBounds()`，未复制公式。
+
+### 5. 结论
+
+T4 边界计算收敛到单一函数、尺寸以样式表为唯一来源、事件绑定最小且带状态守卫，动画性能符合 NFR-1，**通过评审**，可进入阶段 5 人工验证。
+
+---
+
+<!-- 后续任务（T5–T7）的评审报告在各自任务完成后追加到本文件 -->

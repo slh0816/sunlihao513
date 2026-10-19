@@ -16,6 +16,10 @@ const PRE_COUNTDOWN_INTERVAL_MS = 1000;   // 预备倒计时每个数字停留�
 const TICK_INTERVAL_MS = 100;             // 顶部剩余时间的刷新间隔
 const MS_PER_SECOND = 1000;
 
+const BALL_SIZE = 64;                     // 小球直径兜底值（px，与 --ball-size 同步，实际以样式表为准）
+const SAFE_GAP = 24;                      // 安全边距兜底值（px，与 --safe-gap 同步，实际以样式表为准）
+const HUD_HEIGHT = 64;                    // 顶部栏高度兜底值（px，与 --hud-height 同步，实际以样式表为准）
+
 /* ==================== 2. 页面元素引用 ==================== */
 /** 页面元素引用集合 */
 const dom = {
@@ -61,6 +65,82 @@ function updateTimerDisplay(remainingMs) {
   // 向上取整：开局显示 02:00，归零显示 00:00
   const remainingSeconds = Math.ceil(remainingMs / MS_PER_SECOND);
   dom.timer.textContent = formatTime(Math.max(0, remainingSeconds));
+}
+
+/**
+ * 读取 :root 上某个 CSS 变量并解析为像素数值（如 "64px" → 64）
+ * 目的：尺寸只在样式表中定义一处，避免 JS 与 CSS 两处硬编码不一致
+ * @param {string} variableName CSS 变量名（含 -- 前缀）
+ * @param {number} fallback 变量缺失或不可解析时的兜底值
+ * @returns {number} 像素数值
+ */
+function getCssPixel(variableName, fallback) {
+  const rawValue = getComputedStyle(document.documentElement).getPropertyValue(variableName);
+  return parseFloat(rawValue) || fallback;
+}
+
+/** 小球直径（px），以样式表变量 --ball-size 为唯一来源 */
+function getBallSize() {
+  return getCssPixel('--ball-size', BALL_SIZE);
+}
+
+/**
+ * 计算小球可放置的安全坐标范围（依据 spec FR-7）
+ * 规则：完整落在游戏区内、不与顶部栏重叠、四边留出安全边距
+ * @returns {{minX:number, maxX:number, minY:number, maxY:number}} 安全范围（px）
+ */
+function getSafeBounds() {
+  const ballSize = getBallSize();
+  const safeGap = getCssPixel('--safe-gap', SAFE_GAP);
+  const hudHeight = getCssPixel('--hud-height', HUD_HEIGHT);
+  // 窗口极小时可用宽/高可能为负，用 Math.max 收敛，保证 max 不小于 min
+  const maxX = Math.max(safeGap, window.innerWidth - ballSize - safeGap);
+  const maxY = Math.max(hudHeight + safeGap, window.innerHeight - ballSize - safeGap);
+  return {
+    minX: safeGap,
+    maxX,
+    minY: hudHeight + safeGap,
+    maxY,
+  };
+}
+
+/**
+ * 在安全范围内均匀随机生成小球坐标
+ * @returns {{x:number, y:number}} 随机坐标（px）
+ */
+function getSafePosition() {
+  const bounds = getSafeBounds();
+  return {
+    x: bounds.minX + Math.random() * (bounds.maxX - bounds.minX),
+    y: bounds.minY + Math.random() * (bounds.maxY - bounds.minY),
+  };
+}
+
+/** 重播小球出现动画：移除动画类 → 触发回流 → 重新添加类（否则浏览器会合并两次类变更而不重播） */
+function replaySpawnAnimation() {
+  dom.ball.classList.remove('is-spawn');
+  void dom.ball.offsetWidth;
+  dom.ball.classList.add('is-spawn');
+}
+
+/** 生成小球：设置安全区内的随机坐标、取消隐藏并播放出现动画（T5 点中后刷新位置复用此函数） */
+function spawnBall() {
+  const { x, y } = getSafePosition();
+  dom.ball.style.left = `${x}px`;
+  dom.ball.style.top = `${y}px`;
+  dom.ball.classList.remove('is-hidden');
+  replaySpawnAnimation();
+}
+
+/** 把当前小球就近约束回安全区内（不重新随机，用于窗口缩小时防止越界） */
+function constrainBallToSafeArea() {
+  const bounds = getSafeBounds();
+  const currentLeft = parseFloat(dom.ball.style.left) || 0;
+  const currentTop = parseFloat(dom.ball.style.top) || 0;
+  const clampedX = Math.min(Math.max(currentLeft, bounds.minX), bounds.maxX);
+  const clampedY = Math.min(Math.max(currentTop, bounds.minY), bounds.maxY);
+  dom.ball.style.left = `${clampedX}px`;
+  dom.ball.style.top = `${clampedY}px`;
 }
 
 /* ==================== 5. 计时器管理 ==================== */
@@ -122,6 +202,7 @@ function startPlaying() {
   gameState = GAME_STATES.PLAYING;
   endTime = Date.now() + GAME_DURATION_MS;
   updateTimerDisplay(GAME_DURATION_MS);   // 先显示 02:00，再启动刷新循环
+  spawnBall();                            // 进入游戏立即在安全区内随机生成第一个小球
   timers.tick = setInterval(onTick, TICK_INTERVAL_MS);
 }
 
@@ -143,5 +224,14 @@ function endGame() {
   updateTimerDisplay(0);   // 时间停留在 00:00
 }
 
+/** 窗口尺寸变化：游戏进行中把小球就近约束回安全区，避免窗口变小后球越界 */
+function onWindowResize() {
+  if (gameState !== GAME_STATES.PLAYING) {
+    return;
+  }
+  constrainBallToSafeArea();
+}
+
 /* ==================== 7. 事件绑定 ==================== */
 dom.startButton.addEventListener('click', startGame);
+window.addEventListener('resize', onWindowResize);
