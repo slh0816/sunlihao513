@@ -36,8 +36,8 @@ e:\wml\
 - [ ] A3：Console 面板无任何红色 error；不出现 `Failed to load resource`
 - [ ] A4：页面标签标题显示为「抓小球小游戏」
 - [ ] A5：`.gitignore` 文件存在，且内容包含系统临时文件与编辑器目录的忽略规则
-- [ ] A6：`git log --oneline` 显示 1 条首次提交记录，信息为 `chore: init project skeleton, gitignore and spec`
-- [ ] A7：`git status` 输出 `nothing to commit, working tree clean`（无未提交文件）
+- [ ] A6：`git log --oneline` 至少包含首次提交 `chore: init project skeleton, gitignore and spec`（其后另有 `chore: ignore trae workspace directory`）
+- [ ] A7：`git status` 输出 `nothing to commit, working tree clean`（`.trae/` 已被忽略，无未提交文件）
 
 ### 若未通过
 
