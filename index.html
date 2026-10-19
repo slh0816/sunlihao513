@@ -7,7 +7,40 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- T2：在此构建游戏区、顶部 HUD、小球、倒计时遮罩与结算面板 -->
+  <!-- 顶部状态栏：分数 / 剩余时间 / 开始按钮。
+       刻意放在游戏区之外，使点击此处不会触发游戏区的计分逻辑（见 spec §6） -->
+  <header class="hud">
+    <div class="hud__item">
+      <span class="hud__label">分数</span>
+      <span class="hud__value" id="score">0</span>
+    </div>
+    <div class="hud__item">
+      <span class="hud__label">剩余时间</span>
+      <span class="hud__value" id="timer">02:00</span>
+    </div>
+    <button class="btn" id="startButton" type="button">开始游戏</button>
+  </header>
+
+  <!-- 游戏区：全屏铺满，是唯一的计分点击区域 -->
+  <main class="game" id="gameArea">
+    <!-- 蓝色小球，位置由 JS 随机生成 -->
+    <div class="ball is-hidden" id="ball"></div>
+  </main>
+
+  <!-- 预备倒计时遮罩（3-2-1），不拦截鼠标事件 -->
+  <div class="countdown-overlay is-hidden" id="countdownOverlay">
+    <span class="countdown-overlay__number" id="countdownNumber">3</span>
+  </div>
+
+  <!-- 结算面板 -->
+  <div class="result-panel is-hidden" id="resultPanel">
+    <h2 class="result-panel__title">游戏结束</h2>
+    <p class="result-panel__score">
+      最终得分：<span class="result-panel__score-value" id="finalScore">0</span>
+    </p>
+    <button class="btn" id="restartButton" type="button">重新开始</button>
+  </div>
+
   <script src="js/game.js"></script>
 </body>
 </html>

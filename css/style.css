@@ -1,2 +1,176 @@
 /* 抓小球小游戏 —— 样式表 */
-/* T1：仅建立文件与引入链路，具体样式从 T2 开始实现 */
+
+/* ==================== 1. 设计变量 ==================== */
+:root {
+  /* 配色 */
+  --color-bg: #fffbe6;           /* 页面浅黄背景 */
+  --color-ball: #2f80ed;         /* 小球蓝色，同时作为页面主色 */
+  --color-ball-hover: #1c6fdc;   /* 小球与主色按钮的悬停色 */
+  --color-text: #3a3a3a;         /* 正文文字 */
+  --color-panel: #ffffff;        /* 面板背景 */
+  --color-on-primary: #ffffff;   /* 主色按钮上的文字颜色 */
+
+  /* 尺寸 */
+  --ball-size: 64px;             /* 小球直径 */
+  --hud-height: 64px;            /* 顶部状态栏高度 */
+  --safe-gap: 24px;              /* 小球与游戏区的安全边距 */
+
+  /* 阴影 */
+  --shadow-panel: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ==================== 2. 基础重置 ==================== */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  overflow: hidden;              /* 全屏游戏，禁止出现滚动条 */
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Microsoft YaHei", "PingFang SC", "Heiti SC", sans-serif;
+  user-select: none;             /* 快速连点时不会选中页面文字 */
+}
+
+/* ==================== 3. 游戏区 ==================== */
+.game {
+  position: relative;            /* 作为小球绝对定位的参照容器 */
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ==================== 4. 顶部状态栏 ==================== */
+.hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;                   /* 层级高于小球，保证分数始终可读 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  height: var(--hud-height);
+  padding: 0 var(--safe-gap);
+  background-color: var(--color-panel);
+  box-shadow: var(--shadow-panel);
+}
+
+.hud__item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.hud__label {
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.hud__value {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;  /* 等宽数字，计时变化时不抖动 */
+}
+
+/* ==================== 5. 通用按钮 ==================== */
+.btn {
+  padding: 8px 24px;
+  font-family: inherit;          /* 按钮默认不继承字体，需显式声明 */
+  font-size: 16px;
+  color: var(--color-on-primary);
+  background-color: var(--color-ball);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: var(--color-ball-hover);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==================== 6. 小球 ==================== */
+.ball {
+  position: absolute;            /* 位置由 JS 通过 left / top 设置 */
+  top: 0;
+  left: 0;
+  width: var(--ball-size);
+  height: var(--ball-size);
+  background-color: var(--color-ball);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.ball:hover {
+  background-color: var(--color-ball-hover);
+  transform: scale(1.08);
+}
+
+/* ==================== 7. 预备倒计时遮罩 ==================== */
+.countdown-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;          /* 遮罩不拦截鼠标，避免挡住开始按钮 */
+}
+
+.countdown-overlay__number {
+  font-size: 96px;
+  font-weight: 700;
+  color: var(--color-ball);
+}
+
+/* ==================== 8. 结算面板 ==================== */
+.result-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 48px;
+  background-color: var(--color-panel);
+  border-radius: 16px;
+  box-shadow: var(--shadow-panel);
+  transform: translate(-50%, -50%);
+}
+
+.result-panel__title {
+  margin: 0;
+  font-size: 28px;
+}
+
+.result-panel__score {
+  margin: 0;
+  font-size: 18px;
+}
+
+.result-panel__score-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-ball);
+}
+
+/* ==================== 9. 工具类 ==================== */
+/* 必须放在样式表最后：面板使用 display: flex，靠书写顺序才能被此处覆盖 */
+.is-hidden {
+  display: none;
+}
