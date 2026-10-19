@@ -100,4 +100,40 @@ spec §7.2 的变量表列了 8 个变量，实现中**新增 2 个**，原因�
 
 ---
 
-<!-- 后续任务（T3–T7）的评审报告在各自任务完成后追加到本文件 -->
+## T3 · 状态机与倒计时 — 评审报告
+
+**评审文件**：`js/game.js`、`css/style.css`、`acceptance-checklist.md`
+**评审结论**：**通过（0 个必修项，5 条记录留痕）**
+
+### 1. 逐维度评审
+
+| 维度 | 检查内容 | 结果 |
+|---|---|---|
+| 变量命名 | 状态枚举 `GAME_STATES`；常量全大写 + 下划线（`GAME_DURATION_MS`、`PRE_COUNTDOWN_SECONDS`、`PRE_COUNTDOWN_INTERVAL_MS`、`TICK_INTERVAL_MS`、`MS_PER_SECOND`）；函数为动词短语（`startGame`、`startPreCountdown`、`showCountdownNumber`、`startPlaying`、`onTick`、`endGame`）；局部变量语义化（`remainingMs`、`remaining`）。无 `a1`/`tmp` 类无意义命名 | 通过 |
+| 代码可读性 | 文件按「常量 → 元素引用 → 状态 → 工具函数 → 计时器管理 → 流程控制 → 事件绑定」七段分区，段间有分隔注释；`formatTime` / `updateTimerDisplay` / `showCountdownNumber` 带中文 JSDoc 参数说明；关键非直觉写法（强制回流、时间戳差值）均有行内注释 | 通过 |
+| JS 事件机制 | 事件绑定仅 1 处，使用 `addEventListener('click', startGame)` 具名函数引用（便于后续移除/调试，且避免匿名函数无法解绑）；HTML 中无内联 `onclick`；`disabled` 属性的启用/禁用由流程函数统一控制，未依赖 CSS 模拟不可点 | 通过 |
+| 事件冒泡 | 本任务未新增冒泡风险：开始按钮位于 `.hud`（在 `.game` **之外**），其点击不会冒泡进游戏区；`.countdown-overlay` 已设 `pointer-events: none`，倒计时期间整屏遮罩不会拦截任何点击，因此 T5 的游戏区委托逻辑不会被遮挡层"吃掉"事件 | 通过 |
+| 绑定合理性 | 未在 T3 提前绑定游戏区 `click`、球元素 `click`（那是 T5 的交付内容），也未给 `restartButton` 提前绑定（T6 交付），任务边界清晰，避免"半成品绑定"造成的重复计分隐患 | 通过 |
+| CSS 冗余 | 新增 1 条选择器 `.countdown-overlay__number.is-pop` + 1 组 `@keyframes countdown-pop`，均被 JS 实际添加的类名所引用，无未使用选择器；无 `float`、无 `!important`；`.is-hidden` 仍位于样式表末尾，顺序敏感点未被破坏 | 通过 |
+| Flex/Grid 布局规范性 | 遮罩延续 `display: flex` + `align-items/justify-content: center` 居中，未引入绝对定位微调；数字动画只用 `transform` + `opacity`，不触发重排，符合 NFR-1 | 通过 |
+| 可维护性 | 全部魔法数字常量化（`120000`、`3`、`1000`、`100`、`1000`），无散落字面量；计时采用时间戳差值法（`endTime - Date.now()`）避免 `setInterval` 累积漂移；计时器句柄集中登记到 `timers` 并由 `clearAllTimers()` 统一清理，为 T6「连续重新开始不产生重复计时器」幂等化预留了收口点 | 通过 |
+
+### 2. 必修问题清单
+
+**无。** 本任务未发现需要修改的缺陷。
+
+### 3. 记录留痕（非缺陷，供后续任务知悉）
+
+- **记录 1（`startGame()` 里的 `clearAllTimers()`）**：当前实现只允许从 `IDLE` 启动，而 `IDLE` 下必然没有活动计时器，因此这一句在 T3 内并非必需。保留的理由是 plan.md 中 T6 明确要求 `startGame()` 幂等（`over → countdown` 重开时需清掉上一局残留），此处提前把清理收口到入口处，T6 无需再补。
+- **记录 2（预备倒计时的毫秒级漂移）**：`3→2→1` 用 `setInterval(1000ms)` 累加切换，理论上有毫秒级漂移，但总时长仅 3 秒、误差可忽略；而**游戏内的 120 秒计时没有使用累加**，改用 `endTime - Date.now()` 差值法，不存在漂移，这是两处刻意采用不同策略的原因。
+- **记录 3（`endGame()` 的范围）**：本任务只做「停表 + 切状态 + 时间钉在 `00:00`」，结算面板与「重新开始」按 plan.md 归属 T6，属计划内的前向声明，不是缺失实现。
+- **记录 4（一局结束后按钮仍为 disabled）**：`over` 状态下没有重新开始入口（T6 才加），需 `F5` 刷新才能重测。该行为已写入 T3 验收清单的「本任务的预期行为」段落，避免被误判为失败。
+- **记录 5（`void dom.countdownNumber.offsetWidth`）**：`void` 运算符用于显式丢弃回流触发的返回值，是「强制重播 CSS 动画」的标准手法（移除类 → 触发回流 → 重新添加类），已加行内注释说明意图。
+
+### 4. 结论
+
+T3 代码常量收敛、分区清晰、事件绑定最小且无冒泡隐患，时间计算方式符合 NFR-1/NFR-5 要求，**通过评审**，可进入阶段 5 人工验证。
+
+---
+
+<!-- 后续任务（T4–T7）的评审报告在各自任务完成后追加到本文件 -->

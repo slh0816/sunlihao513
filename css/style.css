@@ -136,6 +136,28 @@ body {
   color: var(--color-ball);
 }
 
+/* 数字切换时重播的弹出动画（由 JS 反复添加 is-pop 类触发） */
+.countdown-overlay__number.is-pop {
+  animation: countdown-pop 0.4s ease-out;
+}
+
+@keyframes countdown-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  40% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* ==================== 8. 结算面板 ==================== */
 .result-panel {
   position: fixed;
