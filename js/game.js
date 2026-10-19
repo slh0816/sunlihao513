@@ -227,11 +227,31 @@ function onTick() {
   updateTimerDisplay(remainingMs);
 }
 
-/** 结束游戏：停表并切换状态（结算面板与重新开始在 T6 实现） */
+/** 结束游戏：停表、隐藏球与倒计时遮罩、切到 OVER 状态并弹出结算面板 */
 function endGame() {
   clearAllTimers();
   gameState = GAME_STATES.OVER;
-  updateTimerDisplay(0);   // 时间停留在 00:00
+  updateTimerDisplay(0);                              // 时间钉在 00:00
+  dom.ball.classList.add('is-hidden');                // 小球消失
+  dom.countdownOverlay.classList.add('is-hidden');    // 兜底隐藏遮罩（正常流程中已隐藏）
+  dom.finalScore.textContent = String(score);         // 写入最终得分（负数照实显示）
+  dom.resultPanel.classList.remove('is-hidden');      // 弹出结算面板
+}
+
+/** 重置一局：清计时器、分数归零、隐藏结算面板与小球，并把状态放回待开始 */
+function resetGame() {
+  clearAllTimers();
+  score = INITIAL_SCORE;
+  updateScore();
+  dom.resultPanel.classList.add('is-hidden');
+  dom.ball.classList.add('is-hidden');
+  gameState = GAME_STATES.IDLE;   // 回到 IDLE，使 startGame() 的状态守卫放行
+}
+
+/** 点击「重新开始」：先重置上一局，再完整走一遍新的倒计时流程 */
+function restartGame() {
+  resetGame();
+  startGame();
 }
 
 /* ==================== 7. 事件处理 ==================== */
@@ -266,4 +286,5 @@ function onWindowResize() {
 /* ==================== 8. 事件绑定 ==================== */
 dom.startButton.addEventListener('click', startGame);
 dom.gameArea.addEventListener('click', handleGameAreaClick);
+dom.restartButton.addEventListener('click', restartGame);
 window.addEventListener('resize', onWindowResize);
