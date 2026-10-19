@@ -20,6 +20,10 @@ const BALL_SIZE = 64;                     // 小球直径兜底值（px，与 --
 const SAFE_GAP = 24;                      // 安全边距兜底值（px，与 --safe-gap 同步，实际以样式表为准）
 const HUD_HEIGHT = 64;                    // 顶部栏高度兜底值（px，与 --hud-height 同步，实际以样式表为准）
 
+const INITIAL_SCORE = 0;                  // 初始分数
+const SCORE_ON_HIT = 2;                   // 点中小球的加分
+const SCORE_ON_MISS = -1;                 // 点空（未点中球）的扣分
+
 /* ==================== 2. 页面元素引用 ==================== */
 /** 页面元素引用集合 */
 const dom = {
@@ -38,6 +42,7 @@ const dom = {
 /* ==================== 3. 游戏状态 ==================== */
 let gameState = GAME_STATES.IDLE;   // 当前状态
 let endTime = 0;                    // 本局结束时刻的时间戳（时间戳差值法）
+let score = INITIAL_SCORE;          // 当前分数（可为负、无上限）
 
 /** 各计时器句柄，统一登记以便集中清理 */
 const timers = {
@@ -143,6 +148,11 @@ function constrainBallToSafeArea() {
   dom.ball.style.top = `${clampedY}px`;
 }
 
+/** 把当前分数写入顶部 HUD（负数照实显示，不做下限截断） */
+function updateScore() {
+  dom.score.textContent = String(score);
+}
+
 /* ==================== 5. 计时器管理 ==================== */
 /** 清理全部计时器，防止出现重复计时或"幽灵计时" */
 function clearAllTimers() {
@@ -224,6 +234,27 @@ function endGame() {
   updateTimerDisplay(0);   // 时间停留在 00:00
 }
 
+/* ==================== 7. 事件处理 ==================== */
+/**
+ * 游戏区点击的统一入口（事件委托：只在 .game 上绑定一次）
+ * 点中小球 → 加分并刷新球位置；点中空白 → 扣分且球不动；非 PLAYING 状态不计分
+ * @param {MouseEvent} event 点击事件对象
+ */
+function handleGameAreaClick(event) {
+  if (gameState !== GAME_STATES.PLAYING) {
+    return;
+  }
+  // 用 closest 判断点击是否落在小球上（小球是本任务唯一可得分的目标）
+  if (event.target.closest('.ball')) {
+    score += SCORE_ON_HIT;
+    updateScore();
+    spawnBall();             // 命中即换位置：加分与移动同时完成，杜绝"一球两分"
+    return;
+  }
+  score += SCORE_ON_MISS;
+  updateScore();             // 点空只扣分，小球保持原位不动
+}
+
 /** 窗口尺寸变化：游戏进行中把小球就近约束回安全区，避免窗口变小后球越界 */
 function onWindowResize() {
   if (gameState !== GAME_STATES.PLAYING) {
@@ -232,6 +263,7 @@ function onWindowResize() {
   constrainBallToSafeArea();
 }
 
-/* ==================== 7. 事件绑定 ==================== */
+/* ==================== 8. 事件绑定 ==================== */
 dom.startButton.addEventListener('click', startGame);
+dom.gameArea.addEventListener('click', handleGameAreaClick);
 window.addEventListener('resize', onWindowResize);
