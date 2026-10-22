@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Font Awesome 字体图标展示</title>
+  <title>字形标本 · Font Awesome 字体图标</title>
   <!-- 先加载图标库样式，再加载本页样式，保证自定义样式优先。
        all.embedded.css 由 all.min.css 生成：v6 的三个 woff2 字体以 base64 内嵌，
        避免 IDE 预览面板 / file:// 环境拦截字体文件导致图标变成空白方块 -->
@@ -11,280 +11,300 @@
   <link rel="stylesheet" href="css/slh_iconfont.css">
 </head>
 <body>
-  <header class="slh_page-header">
-    <div class="slh_page-header__info">
-      <h1 class="slh_page-header__title">Font Awesome 字体图标</h1>
-      <p class="slh_page-header__subtitle">字体图标方式：图标是字体字符，靠 font-size 缩放、靠 color 改色</p>
+  <header class="slh_masthead">
+    <span class="slh_masthead__glyph" aria-hidden="true"><i class="fa-solid fa-house"></i></span>
+
+    <div class="slh_masthead__inner">
+      <div class="slh_masthead__head">
+        <p class="slh_masthead__kicker">Font Awesome 6.7.2 Free</p>
+        <a class="slh_back-home" href="index.html">← 返回首页</a>
+      </div>
+
+      <h1 class="slh_masthead__title">字形标本</h1>
+      <p class="slh_masthead__lead">四十八枚记号，由字体铸造。每个图标都是一个字符，放大不会发虚，改色只需一行颜色。</p>
+
+      <dl class="slh_masthead__meta">
+        <div class="slh_masthead__meta-row">
+          <dt>形式</dt>
+          <dd>字体字形</dd>
+        </div>
+        <div class="slh_masthead__meta-row">
+          <dt>数量</dt>
+          <dd>48 枚</dd>
+        </div>
+        <div class="slh_masthead__meta-row">
+          <dt>版本</dt>
+          <dd>6.7.2</dd>
+        </div>
+      </dl>
     </div>
-    <span class="slh_page-header__meta">共 48 个图标</span>
-    <a class="slh_back-home" href="index.html">← 返回首页</a>
   </header>
 
-  <main class="slh_page-main">
-    <!-- ==================== Solid 实心图标 ==================== -->
-    <section class="slh_icon-group">
-      <h2 class="slh_icon-group__title">Solid 实心（24）</h2>
-      <ul class="slh_icon-grid">
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-house"></i></span>
-          <span class="slh_icon-card__name">house</span>
-          <code class="slh_icon-card__code">fa-solid fa-house</code>
+  <main class="slh_specimen">
+    <!-- ==================== Solid 实心 ==================== -->
+    <section class="slh_specimen__section">
+      <h2 class="slh_specimen__title">Solid 实心<span class="slh_specimen__count">24 枚</span></h2>
+      <ul class="slh_specimen__grid">
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-house"></i></span>
+          <span class="slh_item__name">house</span>
+          <code class="slh_item__code">fa-solid fa-house</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-user"></i></span>
-          <span class="slh_icon-card__name">user</span>
-          <code class="slh_icon-card__code">fa-solid fa-user</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-user"></i></span>
+          <span class="slh_item__name">user</span>
+          <code class="slh_item__code">fa-solid fa-user</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-gear"></i></span>
-          <span class="slh_icon-card__name">gear</span>
-          <code class="slh_icon-card__code">fa-solid fa-gear</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-gear"></i></span>
+          <span class="slh_item__name">gear</span>
+          <code class="slh_item__code">fa-solid fa-gear</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-magnifying-glass"></i></span>
-          <span class="slh_icon-card__name">magnifying-glass</span>
-          <code class="slh_icon-card__code">fa-solid fa-magnifying-glass</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <span class="slh_item__name">magnifying-glass</span>
+          <code class="slh_item__code">fa-solid fa-magnifying-glass</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-heart"></i></span>
-          <span class="slh_icon-card__name">heart</span>
-          <code class="slh_icon-card__code">fa-solid fa-heart</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-heart"></i></span>
+          <span class="slh_item__name">heart</span>
+          <code class="slh_item__code">fa-solid fa-heart</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-star"></i></span>
-          <span class="slh_icon-card__name">star</span>
-          <code class="slh_icon-card__code">fa-solid fa-star</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-star"></i></span>
+          <span class="slh_item__name">star</span>
+          <code class="slh_item__code">fa-solid fa-star</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-bell"></i></span>
-          <span class="slh_icon-card__name">bell</span>
-          <code class="slh_icon-card__code">fa-solid fa-bell</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-bell"></i></span>
+          <span class="slh_item__name">bell</span>
+          <code class="slh_item__code">fa-solid fa-bell</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-calendar"></i></span>
-          <span class="slh_icon-card__name">calendar</span>
-          <code class="slh_icon-card__code">fa-solid fa-calendar</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-calendar"></i></span>
+          <span class="slh_item__name">calendar</span>
+          <code class="slh_item__code">fa-solid fa-calendar</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-clock"></i></span>
-          <span class="slh_icon-card__name">clock</span>
-          <code class="slh_icon-card__code">fa-solid fa-clock</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-clock"></i></span>
+          <span class="slh_item__name">clock</span>
+          <code class="slh_item__code">fa-solid fa-clock</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-trash"></i></span>
-          <span class="slh_icon-card__name">trash</span>
-          <code class="slh_icon-card__code">fa-solid fa-trash</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-trash"></i></span>
+          <span class="slh_item__name">trash</span>
+          <code class="slh_item__code">fa-solid fa-trash</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-pen"></i></span>
-          <span class="slh_icon-card__name">pen</span>
-          <code class="slh_icon-card__code">fa-solid fa-pen</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-pen"></i></span>
+          <span class="slh_item__name">pen</span>
+          <code class="slh_item__code">fa-solid fa-pen</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-download"></i></span>
-          <span class="slh_icon-card__name">download</span>
-          <code class="slh_icon-card__code">fa-solid fa-download</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-download"></i></span>
+          <span class="slh_item__name">download</span>
+          <code class="slh_item__code">fa-solid fa-download</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-upload"></i></span>
-          <span class="slh_icon-card__name">upload</span>
-          <code class="slh_icon-card__code">fa-solid fa-upload</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-upload"></i></span>
+          <span class="slh_item__name">upload</span>
+          <code class="slh_item__code">fa-solid fa-upload</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-share"></i></span>
-          <span class="slh_icon-card__name">share</span>
-          <code class="slh_icon-card__code">fa-solid fa-share</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-share"></i></span>
+          <span class="slh_item__name">share</span>
+          <code class="slh_item__code">fa-solid fa-share</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-link"></i></span>
-          <span class="slh_icon-card__name">link</span>
-          <code class="slh_icon-card__code">fa-solid fa-link</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-link"></i></span>
+          <span class="slh_item__name">link</span>
+          <code class="slh_item__code">fa-solid fa-link</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-lock"></i></span>
-          <span class="slh_icon-card__name">lock</span>
-          <code class="slh_icon-card__code">fa-solid fa-lock</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-lock"></i></span>
+          <span class="slh_item__name">lock</span>
+          <code class="slh_item__code">fa-solid fa-lock</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-envelope"></i></span>
-          <span class="slh_icon-card__name">envelope</span>
-          <code class="slh_icon-card__code">fa-solid fa-envelope</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-envelope"></i></span>
+          <span class="slh_item__name">envelope</span>
+          <code class="slh_item__code">fa-solid fa-envelope</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-phone"></i></span>
-          <span class="slh_icon-card__name">phone</span>
-          <code class="slh_icon-card__code">fa-solid fa-phone</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-phone"></i></span>
+          <span class="slh_item__name">phone</span>
+          <code class="slh_item__code">fa-solid fa-phone</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-camera"></i></span>
-          <span class="slh_icon-card__name">camera</span>
-          <code class="slh_icon-card__code">fa-solid fa-camera</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-camera"></i></span>
+          <span class="slh_item__name">camera</span>
+          <code class="slh_item__code">fa-solid fa-camera</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-image"></i></span>
-          <span class="slh_icon-card__name">image</span>
-          <code class="slh_icon-card__code">fa-solid fa-image</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-image"></i></span>
+          <span class="slh_item__name">image</span>
+          <code class="slh_item__code">fa-solid fa-image</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-play"></i></span>
-          <span class="slh_icon-card__name">play</span>
-          <code class="slh_icon-card__code">fa-solid fa-play</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-play"></i></span>
+          <span class="slh_item__name">play</span>
+          <code class="slh_item__code">fa-solid fa-play</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-music"></i></span>
-          <span class="slh_icon-card__name">music</span>
-          <code class="slh_icon-card__code">fa-solid fa-music</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-music"></i></span>
+          <span class="slh_item__name">music</span>
+          <code class="slh_item__code">fa-solid fa-music</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-cart-shopping"></i></span>
-          <span class="slh_icon-card__name">cart-shopping</span>
-          <code class="slh_icon-card__code">fa-solid fa-cart-shopping</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-cart-shopping"></i></span>
+          <span class="slh_item__name">cart-shopping</span>
+          <code class="slh_item__code">fa-solid fa-cart-shopping</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-solid fa-check"></i></span>
-          <span class="slh_icon-card__name">check</span>
-          <code class="slh_icon-card__code">fa-solid fa-check</code>
-        </li>
-      </ul>
-    </section>
-
-    <!-- ==================== Regular 常规图标 ==================== -->
-    <section class="slh_icon-group">
-      <h2 class="slh_icon-group__title">Regular 常规（12）</h2>
-      <ul class="slh_icon-grid">
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-heart"></i></span>
-          <span class="slh_icon-card__name">heart</span>
-          <code class="slh_icon-card__code">fa-regular fa-heart</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-star"></i></span>
-          <span class="slh_icon-card__name">star</span>
-          <code class="slh_icon-card__code">fa-regular fa-star</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-bell"></i></span>
-          <span class="slh_icon-card__name">bell</span>
-          <code class="slh_icon-card__code">fa-regular fa-bell</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-calendar"></i></span>
-          <span class="slh_icon-card__name">calendar</span>
-          <code class="slh_icon-card__code">fa-regular fa-calendar</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-clock"></i></span>
-          <span class="slh_icon-card__name">clock</span>
-          <code class="slh_icon-card__code">fa-regular fa-clock</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-user"></i></span>
-          <span class="slh_icon-card__name">user</span>
-          <code class="slh_icon-card__code">fa-regular fa-user</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-envelope"></i></span>
-          <span class="slh_icon-card__name">envelope</span>
-          <code class="slh_icon-card__code">fa-regular fa-envelope</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-circle-check"></i></span>
-          <span class="slh_icon-card__name">circle-check</span>
-          <code class="slh_icon-card__code">fa-regular fa-circle-check</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-square"></i></span>
-          <span class="slh_icon-card__name">square</span>
-          <code class="slh_icon-card__code">fa-regular fa-square</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-trash-can"></i></span>
-          <span class="slh_icon-card__name">trash-can</span>
-          <code class="slh_icon-card__code">fa-regular fa-trash-can</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-bookmark"></i></span>
-          <span class="slh_icon-card__name">bookmark</span>
-          <code class="slh_icon-card__code">fa-regular fa-bookmark</code>
-        </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-regular fa-comment"></i></span>
-          <span class="slh_icon-card__name">comment</span>
-          <code class="slh_icon-card__code">fa-regular fa-comment</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-solid fa-check"></i></span>
+          <span class="slh_item__name">check</span>
+          <code class="slh_item__code">fa-solid fa-check</code>
         </li>
       </ul>
     </section>
 
-    <!-- ==================== Brands 品牌图标 ==================== -->
-    <section class="slh_icon-group">
-      <h2 class="slh_icon-group__title">Brands 品牌（12）</h2>
-      <ul class="slh_icon-grid">
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-github"></i></span>
-          <span class="slh_icon-card__name">github</span>
-          <code class="slh_icon-card__code">fa-brands fa-github</code>
+    <!-- ==================== Regular 常规 ==================== -->
+    <section class="slh_specimen__section">
+      <h2 class="slh_specimen__title">Regular 常规<span class="slh_specimen__count">12 枚</span></h2>
+      <ul class="slh_specimen__grid">
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-heart"></i></span>
+          <span class="slh_item__name">heart</span>
+          <code class="slh_item__code">fa-regular fa-heart</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-weixin"></i></span>
-          <span class="slh_icon-card__name">weixin</span>
-          <code class="slh_icon-card__code">fa-brands fa-weixin</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-star"></i></span>
+          <span class="slh_item__name">star</span>
+          <code class="slh_item__code">fa-regular fa-star</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-qq"></i></span>
-          <span class="slh_icon-card__name">qq</span>
-          <code class="slh_icon-card__code">fa-brands fa-qq</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-bell"></i></span>
+          <span class="slh_item__name">bell</span>
+          <code class="slh_item__code">fa-regular fa-bell</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-bilibili"></i></span>
-          <span class="slh_icon-card__name">bilibili</span>
-          <code class="slh_icon-card__code">fa-brands fa-bilibili</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-calendar"></i></span>
+          <span class="slh_item__name">calendar</span>
+          <code class="slh_item__code">fa-regular fa-calendar</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-weibo"></i></span>
-          <span class="slh_icon-card__name">weibo</span>
-          <code class="slh_icon-card__code">fa-brands fa-weibo</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-clock"></i></span>
+          <span class="slh_item__name">clock</span>
+          <code class="slh_item__code">fa-regular fa-clock</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-zhihu"></i></span>
-          <span class="slh_icon-card__name">zhihu</span>
-          <code class="slh_icon-card__code">fa-brands fa-zhihu</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-user"></i></span>
+          <span class="slh_item__name">user</span>
+          <code class="slh_item__code">fa-regular fa-user</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-apple"></i></span>
-          <span class="slh_icon-card__name">apple</span>
-          <code class="slh_icon-card__code">fa-brands fa-apple</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-envelope"></i></span>
+          <span class="slh_item__name">envelope</span>
+          <code class="slh_item__code">fa-regular fa-envelope</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-android"></i></span>
-          <span class="slh_icon-card__name">android</span>
-          <code class="slh_icon-card__code">fa-brands fa-android</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-circle-check"></i></span>
+          <span class="slh_item__name">circle-check</span>
+          <code class="slh_item__code">fa-regular fa-circle-check</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-windows"></i></span>
-          <span class="slh_icon-card__name">windows</span>
-          <code class="slh_icon-card__code">fa-brands fa-windows</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-square"></i></span>
+          <span class="slh_item__name">square</span>
+          <code class="slh_item__code">fa-regular fa-square</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-html5"></i></span>
-          <span class="slh_icon-card__name">html5</span>
-          <code class="slh_icon-card__code">fa-brands fa-html5</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-trash-can"></i></span>
+          <span class="slh_item__name">trash-can</span>
+          <code class="slh_item__code">fa-regular fa-trash-can</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-css3"></i></span>
-          <span class="slh_icon-card__name">css3</span>
-          <code class="slh_icon-card__code">fa-brands fa-css3</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-bookmark"></i></span>
+          <span class="slh_item__name">bookmark</span>
+          <code class="slh_item__code">fa-regular fa-bookmark</code>
         </li>
-        <li class="slh_icon-card">
-          <span class="slh_icon-card__glyph"><i class="fa-brands fa-js"></i></span>
-          <span class="slh_icon-card__name">js</span>
-          <code class="slh_icon-card__code">fa-brands fa-js</code>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-regular fa-comment"></i></span>
+          <span class="slh_item__name">comment</span>
+          <code class="slh_item__code">fa-regular fa-comment</code>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ==================== Brands 品牌 ==================== -->
+    <section class="slh_specimen__section">
+      <h2 class="slh_specimen__title">Brands 品牌<span class="slh_specimen__count">12 枚</span></h2>
+      <ul class="slh_specimen__grid">
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-github"></i></span>
+          <span class="slh_item__name">github</span>
+          <code class="slh_item__code">fa-brands fa-github</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-weixin"></i></span>
+          <span class="slh_item__name">weixin</span>
+          <code class="slh_item__code">fa-brands fa-weixin</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-qq"></i></span>
+          <span class="slh_item__name">qq</span>
+          <code class="slh_item__code">fa-brands fa-qq</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-bilibili"></i></span>
+          <span class="slh_item__name">bilibili</span>
+          <code class="slh_item__code">fa-brands fa-bilibili</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-weibo"></i></span>
+          <span class="slh_item__name">weibo</span>
+          <code class="slh_item__code">fa-brands fa-weibo</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-zhihu"></i></span>
+          <span class="slh_item__name">zhihu</span>
+          <code class="slh_item__code">fa-brands fa-zhihu</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-apple"></i></span>
+          <span class="slh_item__name">apple</span>
+          <code class="slh_item__code">fa-brands fa-apple</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-android"></i></span>
+          <span class="slh_item__name">android</span>
+          <code class="slh_item__code">fa-brands fa-android</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-windows"></i></span>
+          <span class="slh_item__name">windows</span>
+          <code class="slh_item__code">fa-brands fa-windows</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-html5"></i></span>
+          <span class="slh_item__name">html5</span>
+          <code class="slh_item__code">fa-brands fa-html5</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-css3"></i></span>
+          <span class="slh_item__name">css3</span>
+          <code class="slh_item__code">fa-brands fa-css3</code>
+        </li>
+        <li class="slh_item">
+          <span class="slh_item__glyph"><i class="fa-brands fa-js"></i></span>
+          <span class="slh_item__name">js</span>
+          <code class="slh_item__code">fa-brands fa-js</code>
         </li>
       </ul>
     </section>
   </main>
 
   <footer class="slh_page-footer">
-    Font Awesome 6.7.2（Free）· 字体图标方式 · 资源已本地化到 cdn/ 目录，断网可正常显示
+    Font Awesome 6.7.2（Free），字形文件已本地化，断网也能打开。
   </footer>
 </body>
 </html>
