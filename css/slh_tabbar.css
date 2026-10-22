@@ -1,0 +1,253 @@
+/* 底部标签导航共享样式（iconfont-3.html / iconfont-4.html 共用）
+   视觉方向：延续图标展示页的「字体标本室」语言 —— 暖纸、墨色、单色钴蓝。
+   注意：本文件必须在 font/iconfont.embedded.css 之后引入，
+   以便 .slh_tab__icon 的字号覆盖 .iconfont 基类的 16px 默认值。 */
+
+/* ==================== 1. 设计令牌 ==================== */
+:root {
+  --slh-paper: #fbf6e8;                  /* 纸色，手机柱主体 */
+  --slh-paper-deep: #f3ead4;             /* 纸色暗部，宽屏时的衬底 */
+  --slh-ink: #23262d;                    /* 墨色正文 */
+  --slh-ink-soft: #6f6a5d;               /* 次要文字 / 未选中导航 */
+  --slh-cobalt: #2f6feb;                 /* 钴蓝，选中态主色 */
+  --slh-red: #e5484d;                    /* 徽章与红点的红 */
+  --slh-rule: rgba(35, 38, 45, 0.14);    /* 细线 */
+
+  --slh-serif: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+  --slh-sans: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  --slh-mono: Consolas, "Courier New", monospace;
+
+  --slh-app-max: 480px;                  /* 移动端限宽 */
+  --slh-tabbar-h: 56px;                  /* 底部导航主体高度 */
+  --slh-tab-icon: 22px;                  /* 导航图标尺寸 */
+  --slh-gutter: 20px;                    /* 页面左右内边距 */
+}
+
+/* ==================== 2. 基础 ==================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--slh-paper-deep); /* 宽屏衬底略深，衬托居中的手机柱 */
+  color: var(--slh-ink);
+  font-family: var(--slh-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==================== 3. 手机式居中柱 ==================== */
+.slh_app {
+  width: 100%;
+  max-width: var(--slh-app-max);
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: var(--slh-paper);
+  box-shadow: 0 0 0 1px var(--slh-rule);   /* 宽屏下的细线框，标出手机柱边界 */
+}
+
+/* ==================== 4. 顶栏 ==================== */
+.slh_topbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px var(--slh-gutter) 14px;
+  border-bottom: 1px solid var(--slh-rule);
+}
+
+.slh_topbar__title {
+  margin: 0;
+  font-family: var(--slh-serif);
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.slh_back-home {
+  font-size: 13px;
+  color: var(--slh-ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.slh_back-home:hover {
+  color: var(--slh-cobalt);
+  border-bottom-color: currentColor;
+}
+
+.slh_back-home:focus-visible {
+  outline: 2px solid var(--slh-cobalt);
+  outline-offset: 3px;
+}
+
+/* ==================== 5. 内容区 ==================== */
+.slh_content {
+  padding: 26px var(--slh-gutter) 96px;    /* 96px 为降级值 */
+  padding-bottom: calc(var(--slh-tabbar-h) + 40px + env(safe-area-inset-bottom));
+}
+
+.slh_content__title {
+  margin: 0;
+  font-family: var(--slh-serif);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.slh_content__lead {
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--slh-ink-soft);
+}
+
+.slh_content__section {
+  margin: 28px 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--slh-ink-soft);
+}
+
+/* 占位长列表：承担超一屏的可滚动内容 */
+.slh_feed {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--slh-rule);
+}
+
+.slh_feed__item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--slh-rule);
+  font-size: 14px;
+}
+
+.slh_feed__index {
+  font-family: var(--slh-mono);
+  font-size: 11px;
+  color: var(--slh-ink-soft);
+}
+
+.slh_feed__text {
+  flex: 1;
+  line-height: 1.6;
+}
+
+.slh_feed__meta {
+  font-size: 12px;
+  color: var(--slh-ink-soft);
+  white-space: nowrap;
+}
+
+/* ==================== 6. 固定底部导航 ==================== */
+.slh_tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);             /* 宽屏下与手机柱左右对齐 */
+  z-index: 10;
+  display: flex;
+  width: 100%;
+  max-width: var(--slh-app-max);
+  min-height: var(--slh-tabbar-h);
+  padding-bottom: env(safe-area-inset-bottom); /* iPhone 主屏指示条留白 */
+  background-color: var(--slh-paper);
+  border-top: 1px solid var(--slh-rule);
+}
+
+.slh_tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 0 9px;
+  border: 0;
+  background: none;
+  color: var(--slh-ink-soft);              /* 未选中：次要墨色 */
+  font-family: var(--slh-sans);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.18s ease;
+}
+
+.slh_tab:hover {
+  color: var(--slh-ink);
+}
+
+.slh_tab:focus-visible {
+  outline: 2px solid var(--slh-cobalt);
+  outline-offset: -2px;
+}
+
+/* 选中态：钴蓝（源序在 :hover 之后，同特异性下可覆盖悬停色） */
+.slh_tab.slh_active {
+  color: var(--slh-cobalt);
+}
+
+/* 图标锚点：徽章与红点相对它定位 */
+.slh_tab__icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--slh-tab-icon);
+}
+
+/* 字体图标：覆盖 .iconfont 基类的 16px 默认字号（依赖本文件后引入） */
+.slh_tab__icon {
+  font-size: var(--slh-tab-icon);
+}
+
+/* SVG 图标：宽高控制尺寸，fill 跟随 currentColor 以支持选中态变色 */
+svg.slh_tab__icon {
+  width: var(--slh-tab-icon);
+  height: var(--slh-tab-icon);
+  fill: currentColor;
+}
+
+.slh_tab__label {
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* 数字徽章：红底白字胶囊，悬于图标右上角 */
+.slh_badge {
+  position: absolute;
+  top: -7px;
+  right: -14px;
+  padding: 2px 5px;
+  border: 1px solid var(--slh-paper);      /* 纸色描边，与图标分离 */
+  border-radius: 999px;
+  background-color: var(--slh-red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+/* 红点：无数字的小圆点 */
+.slh_dot {
+  position: absolute;
+  top: -2px;
+  right: -5px;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--slh-paper);
+  border-radius: 50%;
+  background-color: var(--slh-red);
+}
+
+/* ==================== 7. 减弱动效 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .slh_tab,
+  .slh_back-home {
+    transition: none;
+  }
+}
