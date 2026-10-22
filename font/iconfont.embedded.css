@@ -1,0 +1,32 @@
+/* iconfont 内嵌版：将 iconfont.woff2 以 base64 内联，
+   保证在 file:// 与 IDE 预览环境下字体图标均可正常加载。
+   依据 font/iconfont.css 生成（iconfont.cn Project id 5238921），原始文件保持不变。 */
+
+@font-face {
+  font-family: "iconfont"; /* Project id 5238921 */
+  src: url(data:font/woff2;charset=utf-8;base64,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) format('woff2');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shengyinjingyin:before {
+  content: "\eca9";
+}
+
+.icon-qunzutouxiang:before {
+  content: "\e600";
+}
+
+.icon-camera:before {
+  content: "\e607";
+}
+
+.icon-boxben:before {
+  content: "\e609";
+}
