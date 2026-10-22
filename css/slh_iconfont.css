@@ -1,22 +1,25 @@
-/* 图标展示页公共样式（iconfont-1.html / iconfont-2.html 共用） */
+/* 图标展示页公共样式（iconfont-1.html / iconfont-2.html 共用）
+   视觉方向：字体标本室 —— 暖纸、墨色、单色钴蓝，首屏用巨型字形做标本，正文改为细线标本表 */
 
 /* ==================== 1. 设计变量 ==================== */
 :root {
-  --slh-color-bg: #fffbe6;               /* 与首页一致的浅黄背景 */
-  --slh-color-surface: #ffffff;          /* 卡片与顶栏背景 */
-  --slh-color-primary: #2f80ed;          /* 蓝色主色，与首页小球同色 */
-  --slh-color-primary-hover: #1c6fdc;    /* 悬停色 */
-  --slh-color-text: #3a3a3a;             /* 正文文字 */
-  --slh-color-text-muted: #8a8a8a;       /* 次要文字（图标英文名、页脚） */
+  --slh-paper: #fbf6e8;                  /* 纸色，延续首页的暖黄基调 */
+  --slh-paper-deep: #f3ead4;             /* 纸色暗部，用于页脚分隔 */
+  --slh-ink: #23262d;                    /* 墨色正文 */
+  --slh-ink-soft: #6f6a5d;               /* 次要文字 */
+  --slh-cobalt: #2f6feb;                 /* 钴蓝主色，视为标本上的标注墨水 */
+  --slh-cobalt-deep: #1e56c8;            /* 悬停时的深钴蓝 */
+  --slh-rule: rgba(35, 38, 45, 0.14);    /* 细线 */
+  --slh-glyph-ghost: rgba(47, 111, 235, 0.1); /* 首屏巨型字形的淡墨 */
 
-  --slh-radius-card: 12px;
-  --slh-shadow-card: 0 2px 12px rgba(0, 0, 0, 0.08);
-  --slh-shadow-card-hover: 0 6px 18px rgba(0, 0, 0, 0.12);
+  --slh-serif: Georgia, "Times New Roman", "Songti SC", "SimSun", serif;
+  --slh-sans: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  --slh-mono: Consolas, "Courier New", monospace;
 
-  --slh-page-max-width: 1120px;
-  --slh-page-padding: 24px;
-  --slh-grid-min-width: 140px;
-  --slh-glyph-size: 32px;
+  --slh-max: 1180px;
+  --slh-gutter: clamp(20px, 5vw, 72px);
+  --slh-grid-min: 150px;
+  --slh-glyph-size: 30px;
 }
 
 /* ==================== 2. 基础重置 ==================== */
@@ -26,156 +29,262 @@
 
 body {
   margin: 0;
-  background-color: var(--slh-color-bg);
-  color: var(--slh-color-text);
-  font-family: "Microsoft YaHei", "PingFang SC", "Heiti SC", sans-serif;
+  background-color: var(--slh-paper);
+  color: var(--slh-ink);
+  font-family: var(--slh-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ==================== 3. 顶部栏 ==================== */
-.slh_page-header {
-  position: sticky;                      /* 滚动时标题与返回首页始终可见 */
-  top: 0;
-  z-index: 10;
+/* ==================== 3. 首屏masthead ==================== */
+.slh_masthead {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px, 4vw, 44px) var(--slh-gutter) clamp(52px, 7vw, 88px);
+  border-bottom: 1px solid var(--slh-rule);
+}
+
+/* 巨型字形：本页最具辨识度的元素，作为首屏唯一的“装饰”，其余保持安静 */
+.slh_masthead__glyph {
+  position: absolute;
+  top: 46%;
+  right: clamp(-40px, 2vw, 40px);
+  font-size: clamp(190px, 30vw, 430px);
+  line-height: 1;
+  color: var(--slh-glyph-ghost);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+/* Lucide 的字形由脚本渲染成 svg，用 em 尺寸跟随上面的 font-size */
+.slh_masthead__glyph svg {
+  width: 1em;
+  height: 1em;
+  stroke-width: 0.6;
+}
+
+.slh_masthead__inner {
+  position: relative;
+  z-index: 1;
+  max-width: var(--slh-max);
+  margin: 0 auto;
+}
+
+.slh_masthead__head {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 12px 24px;
-  padding: 16px var(--slh-page-padding);
-  background-color: var(--slh-color-surface);
-  box-shadow: var(--slh-shadow-card);
 }
 
-/* 标题区独占剩余宽度，窄屏时整行换行，避免与计数、返回链接挤在一起 */
-.slh_page-header__info {
-  flex: 1 1 240px;
-  min-width: 0;
-}
-
-.slh_page-header__title {
+.slh_masthead__kicker {
   margin: 0;
-  font-size: 22px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--slh-cobalt-deep);          /* 小字号用深钴蓝，保证对比度 */
 }
 
-.slh_page-header__subtitle {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: var(--slh-color-text-muted);
-}
-
-.slh_page-header__meta {
-  font-size: 14px;
-  color: var(--slh-color-text-muted);
-}
-
-/* 返回首页链接：两页都必须有，满足「新建页面回链首页」的项目规则 */
 .slh_back-home {
-  padding: 6px 16px;
-  font-size: 14px;
-  color: var(--slh-color-primary);
+  font-size: 13px;
+  color: var(--slh-ink-soft);
   text-decoration: none;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  transition: color 0.15s, background-color 0.15s;
+  border-bottom: 1px solid transparent;
+  transition: color 0.18s ease, border-color 0.18s ease;
 }
 
 .slh_back-home:hover {
-  color: var(--slh-color-surface);
-  background-color: var(--slh-color-primary);
+  color: var(--slh-cobalt);
+  border-bottom-color: currentColor;
 }
 
-/* ==================== 4. 页面主体 ==================== */
-.slh_page-main {
-  max-width: var(--slh-page-max-width);
+.slh_back-home:focus-visible {
+  outline: 2px solid var(--slh-cobalt);
+  outline-offset: 4px;
+}
+
+.slh_masthead__title {
+  margin: 30px 0 20px;
+  font-family: var(--slh-serif);
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+
+.slh_masthead__lead {
+  max-width: 34em;                       /* 让中文句子在一行内读完，避免从词中间断行 */
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.95;
+  color: var(--slh-ink-soft);
+}
+
+/* 三行标本信息，用定义列表承担“这是什么”的信息，而不是装饰性标签 */
+.slh_masthead__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 40px;
+  margin: 34px 0 0;
+}
+
+.slh_masthead__meta-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.slh_masthead__meta-row dt {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--slh-ink-soft);
+}
+
+.slh_masthead__meta-row dd {
+  margin: 0;
+  font-family: var(--slh-serif);
+  font-size: 15px;
+}
+
+/* ==================== 4. 标本表 ==================== */
+.slh_specimen {
+  max-width: var(--slh-max);
   margin: 0 auto;
-  padding: var(--slh-page-padding);
+  padding: clamp(40px, 5vw, 64px) var(--slh-gutter) clamp(56px, 7vw, 88px);
 }
 
-.slh_icon-group {
-  margin-bottom: 40px;
+.slh_specimen__section + .slh_specimen__section {
+  margin-top: clamp(44px, 5vw, 64px);
 }
 
-.slh_icon-group__title {
-  margin: 0 0 16px;
-  padding-left: 12px;
-  font-size: 18px;
-  border-left: 4px solid var(--slh-color-primary);
-}
-
-/* 网格：按卡片最小宽度自动换列，无需媒体查询 */
-.slh_icon-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--slh-grid-min-width), 1fr));
+.slh_specimen__title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   gap: 16px;
+  margin: 0 0 18px;
+  font-family: var(--slh-serif);
+  font-size: clamp(21px, 2.3vw, 29px);
+  font-weight: 400;
+}
+
+.slh_specimen__count {
+  font-family: var(--slh-sans);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--slh-ink-soft);
+}
+
+/* 细线表格：外框靠容器的上/左边线，单元格各自补右/下边线，形成连续刻度 */
+.slh_specimen__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--slh-grid-min), 1fr));
   margin: 0;
   padding: 0;
   list-style: none;
+  border-top: 1px solid var(--slh-rule);
+  border-left: 1px solid var(--slh-rule);
 }
 
-/* ==================== 5. 图标卡片 ==================== */
-.slh_icon-card {
-  /* 网格项默认 min-width:auto 会被内部不换行的代码标签撑宽，导致窄屏横向溢出 */
+/* ==================== 5. 标本单元格 ==================== */
+.slh_item {
+  /* 网格项默认 min-width:auto，会被内部不换行的代码文字撑宽，窄屏时必须归零 */
   min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 20px 12px 16px;
-  background-color: var(--slh-color-surface);
-  border-radius: var(--slh-radius-card);
-  box-shadow: var(--slh-shadow-card);
-  transition: box-shadow 0.15s, transform 0.15s;
+  gap: 10px;
+  padding: 28px 12px 22px;
+  border-right: 1px solid var(--slh-rule);
+  border-bottom: 1px solid var(--slh-rule);
+  transition: background-color 0.18s ease;
 }
 
-.slh_icon-card:hover {
-  box-shadow: var(--slh-shadow-card-hover);
-  transform: translateY(-2px);
+.slh_item:hover {
+  background-color: rgba(47, 111, 235, 0.05);
 }
 
-.slh_icon-card__glyph {
+.slh_item__glyph {
   display: flex;
   align-items: center;
   justify-content: center;
   height: var(--slh-glyph-size);
   font-size: var(--slh-glyph-size);      /* 字体图标靠 font-size 控制大小 */
-  color: var(--slh-color-primary);
-  transition: color 0.15s, transform 0.15s;
+  color: var(--slh-cobalt);
+  transition: color 0.18s ease, transform 0.18s ease;
 }
 
-/* SVG 图标（Lucide）用宽高控制大小，与字体图标视觉尺寸保持一致 */
-.slh_icon-card__glyph svg {
+/* SVG 图标（Lucide）用宽高控制大小，并收细描边，贴近制图线的质感 */
+.slh_item__glyph svg {
   width: var(--slh-glyph-size);
   height: var(--slh-glyph-size);
+  stroke-width: 1.5;
 }
 
-.slh_icon-card:hover .slh_icon-card__glyph {
-  color: var(--slh-color-primary-hover);
-  transform: scale(1.1);
+.slh_item:hover .slh_item__glyph {
+  color: var(--slh-cobalt-deep);
+  transform: translateY(-1px) scale(1.06);
 }
 
-.slh_icon-card__name {
-  font-size: 13px;
+.slh_item__name {
+  font-family: var(--slh-serif);
+  font-size: 13.5px;
   text-align: center;
-  word-break: break-all;
+  word-break: break-word;
 }
 
-.slh_icon-card__code {
+/* 用法代码可能较长，允许折行到两行，比截断省略号更易读，也不会撑宽单元格 */
+.slh_item__code {
   max-width: 100%;
-  padding: 2px 6px;
-  overflow: hidden;
-  font-family: Consolas, Monaco, monospace;
-  font-size: 11px;
-  color: var(--slh-color-text-muted);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  background-color: #f5f5f5;
-  border-radius: 4px;
+  font-family: var(--slh-mono);
+  font-size: 10px;
+  line-height: 1.65;
+  color: var(--slh-ink-soft);
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 /* ==================== 6. 页脚 ==================== */
 .slh_page-footer {
-  padding: 24px var(--slh-page-padding) 40px;
-  font-size: 13px;
-  color: var(--slh-color-text-muted);
+  padding: 26px var(--slh-gutter) 44px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--slh-ink-soft);
   text-align: center;
+  border-top: 1px solid var(--slh-rule);
+  background-color: var(--slh-paper-deep);
+}
+
+/* ==================== 7. 窄屏 ==================== */
+@media (max-width: 760px) {
+  .slh_masthead {
+    padding-top: 30px;
+  }
+
+  /* 窄屏时把巨字形再往右推并压淡，避免与正文抢读 */
+  .slh_masthead__glyph {
+    font-size: clamp(150px, 44vw, 240px);
+    right: -10vw;
+    opacity: 0.5;
+  }
+
+  .slh_masthead__title {
+    margin-top: 24px;
+  }
+
+  .slh_specimen__grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+/* ==================== 8. 减弱动效 ==================== */
+@media (prefers-reduced-motion: reduce) {
+  .slh_item,
+  .slh_item__glyph,
+  .slh_back-home {
+    transition: none;
+  }
+
+  .slh_item:hover .slh_item__glyph {
+    transform: none;
+  }
 }
