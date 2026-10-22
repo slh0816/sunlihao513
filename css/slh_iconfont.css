@@ -1,0 +1,181 @@
+/* 图标展示页公共样式（iconfont-1.html / iconfont-2.html 共用） */
+
+/* ==================== 1. 设计变量 ==================== */
+:root {
+  --slh-color-bg: #fffbe6;               /* 与首页一致的浅黄背景 */
+  --slh-color-surface: #ffffff;          /* 卡片与顶栏背景 */
+  --slh-color-primary: #2f80ed;          /* 蓝色主色，与首页小球同色 */
+  --slh-color-primary-hover: #1c6fdc;    /* 悬停色 */
+  --slh-color-text: #3a3a3a;             /* 正文文字 */
+  --slh-color-text-muted: #8a8a8a;       /* 次要文字（图标英文名、页脚） */
+
+  --slh-radius-card: 12px;
+  --slh-shadow-card: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --slh-shadow-card-hover: 0 6px 18px rgba(0, 0, 0, 0.12);
+
+  --slh-page-max-width: 1120px;
+  --slh-page-padding: 24px;
+  --slh-grid-min-width: 140px;
+  --slh-glyph-size: 32px;
+}
+
+/* ==================== 2. 基础重置 ==================== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--slh-color-bg);
+  color: var(--slh-color-text);
+  font-family: "Microsoft YaHei", "PingFang SC", "Heiti SC", sans-serif;
+}
+
+/* ==================== 3. 顶部栏 ==================== */
+.slh_page-header {
+  position: sticky;                      /* 滚动时标题与返回首页始终可见 */
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 16px var(--slh-page-padding);
+  background-color: var(--slh-color-surface);
+  box-shadow: var(--slh-shadow-card);
+}
+
+/* 标题区独占剩余宽度，窄屏时整行换行，避免与计数、返回链接挤在一起 */
+.slh_page-header__info {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.slh_page-header__title {
+  margin: 0;
+  font-size: 22px;
+}
+
+.slh_page-header__subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--slh-color-text-muted);
+}
+
+.slh_page-header__meta {
+  font-size: 14px;
+  color: var(--slh-color-text-muted);
+}
+
+/* 返回首页链接：两页都必须有，满足「新建页面回链首页」的项目规则 */
+.slh_back-home {
+  padding: 6px 16px;
+  font-size: 14px;
+  color: var(--slh-color-primary);
+  text-decoration: none;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.slh_back-home:hover {
+  color: var(--slh-color-surface);
+  background-color: var(--slh-color-primary);
+}
+
+/* ==================== 4. 页面主体 ==================== */
+.slh_page-main {
+  max-width: var(--slh-page-max-width);
+  margin: 0 auto;
+  padding: var(--slh-page-padding);
+}
+
+.slh_icon-group {
+  margin-bottom: 40px;
+}
+
+.slh_icon-group__title {
+  margin: 0 0 16px;
+  padding-left: 12px;
+  font-size: 18px;
+  border-left: 4px solid var(--slh-color-primary);
+}
+
+/* 网格：按卡片最小宽度自动换列，无需媒体查询 */
+.slh_icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--slh-grid-min-width), 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ==================== 5. 图标卡片 ==================== */
+.slh_icon-card {
+  /* 网格项默认 min-width:auto 会被内部不换行的代码标签撑宽，导致窄屏横向溢出 */
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px 16px;
+  background-color: var(--slh-color-surface);
+  border-radius: var(--slh-radius-card);
+  box-shadow: var(--slh-shadow-card);
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.slh_icon-card:hover {
+  box-shadow: var(--slh-shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.slh_icon-card__glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--slh-glyph-size);
+  font-size: var(--slh-glyph-size);      /* 字体图标靠 font-size 控制大小 */
+  color: var(--slh-color-primary);
+  transition: color 0.15s, transform 0.15s;
+}
+
+/* SVG 图标（Lucide）用宽高控制大小，与字体图标视觉尺寸保持一致 */
+.slh_icon-card__glyph svg {
+  width: var(--slh-glyph-size);
+  height: var(--slh-glyph-size);
+}
+
+.slh_icon-card:hover .slh_icon-card__glyph {
+  color: var(--slh-color-primary-hover);
+  transform: scale(1.1);
+}
+
+.slh_icon-card__name {
+  font-size: 13px;
+  text-align: center;
+  word-break: break-all;
+}
+
+.slh_icon-card__code {
+  max-width: 100%;
+  padding: 2px 6px;
+  overflow: hidden;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 11px;
+  color: var(--slh-color-text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+/* ==================== 6. 页脚 ==================== */
+.slh_page-footer {
+  padding: 24px var(--slh-page-padding) 40px;
+  font-size: 13px;
+  color: var(--slh-color-text-muted);
+  text-align: center;
+}
