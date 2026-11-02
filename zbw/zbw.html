@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汽车导购 - 按价位看车</title>
+<link rel="stylesheet" href="zbw.css">
+</head>
+<body>
+<div class="zbw-wrap">
+
+  <!-- 选项卡导航 -->
+  <div class="zbw-tabs" id="zbwTabs">
+    <ul class="zbw-tabs__nav">
+      <li class="zbw-tab zbw-tab--active" data-zbw-target="zbwPanelGuide">导购</li>
+      <li class="zbw-tab" data-zbw-target="zbwPanelLow">3-9万</li>
+      <li class="zbw-tab" data-zbw-target="zbwPanelMid">9-17万</li>
+      <li class="zbw-tab" data-zbw-target="zbwPanelHigh">17-42万</li>
+      <li class="zbw-tab" data-zbw-target="zbwPanelSuv">SUV</li>
+    </ul>
+
+    <!-- 面板 1：导购（默认选中） -->
+    <div class="zbw-panel zbw-panel--active" id="zbwPanelGuide">
+      <div class="zbw-featured">B级品质满足A级需求 路盛E70亮点详细解析</div>
+      <ul class="zbw-list">
+        <li><a href="#">购车必看 凯迪拉克XTS领先型28T深度体验</a><span class="zbw-date">12/20</span></li>
+        <li><a href="#">爸爸去哪？亲子出游适合车型和注意事项</a><span class="zbw-date">12/20</span></li>
+        <li><a href="#">推荐：X1等城市四驱style+经济省油的SUV</a><span class="zbw-date">12/19</span></li>
+        <li><a href="#">全景天窗/保养便利 30万办齐四驱SUV推荐</a><span class="zbw-date">12/19</span></li>
+        <li><a href="#">全民摇号时代？六款低价占号必看车型推荐</a><span class="zbw-date">12/18</span></li>
+      </ul>
+    </div>
+
+    <!-- 面板 2：3-9万 -->
+    <div class="zbw-panel" id="zbwPanelLow">
+      <div class="zbw-featured">最低仅4.6万元起 超低价SUV购买价值点评</div>
+      <ul class="zbw-list">
+        <li><a href="#">全民摇号时代？六款低价占号必看车型推荐</a><span class="zbw-date">12/19</span></li>
+        <li><a href="#">凌派/观致3等 2013全新家用车盘点</a><span class="zbw-date">12/19</span></li>
+        <li><a href="#">坚持高配路线！静态评测华泰路盛E70</a><span class="zbw-date">12/12</span></li>
+        <li><a href="#">买车先销量 10月份销量前十名轿车盘点</a><span class="zbw-date">11/29</span></li>
+        <li><a href="#">抄底正当时 车展后清仓优惠老款车型推荐</a><span class="zbw-date">11/28</span></li>
+        <li><a href="#">土家气质 细数车展那些低价车上的"神器"</a><span class="zbw-date">11/27</span></li>
+      </ul>
+    </div>
+
+    <!-- 面板 3：9-17万 -->
+    <div class="zbw-panel" id="zbwPanelMid">
+      <div class="zbw-featured">15万级降价谁更值 预算/油耗/空间较量</div>
+      <ul class="zbw-list">
+        <li><a href="#">爸爸去哪？亲子出游适合车型和注意事项</a><span class="zbw-date">12/20</span></li>
+        <li><a href="#">最高暴涨20万！奥迪Q5等年底特惠SUV盘点</a><span class="zbw-date">12/18</span></li>
+        <li><a href="#">配置配值肯定得！传祺GA3S碰撞试验图解</a><span class="zbw-date">12/18</span></li>
+        <li><a href="#">高尔夫7≠两厢版速腾 配置/动力差异解读</a><span class="zbw-date">12/17</span></li>
+        <li><a href="#">花小钱也能养SUV 翼搏等入门SUV使用手册</a><span class="zbw-date">12/17</span></li>
+        <li><a href="#">最高优惠4.3万 十款15万SUV年末购买推荐</a><span class="zbw-date">12/16</span></li>
+      </ul>
+    </div>
+
+    <!-- 面板 4：17-42万 -->
+    <div class="zbw-panel" id="zbwPanelHigh">
+      <div class="zbw-featured">改变品牌的未来 认识豪华品牌最便宜车型</div>
+      <ul class="zbw-list">
+        <li><a href="#">爸爸去哪？亲子出游适合车型和注意事项</a><span class="zbw-date">12/20</span></li>
+        <li><a href="#">推荐：X1等城市四驱style+经济省油的SUV</a><span class="zbw-date">12/19</span></li>
+        <li><a href="#">全景天窗/保养便利 30万办齐四驱SUV推荐</a><span class="zbw-date">12/19</span></li>
+        <li><a href="#">最高暴涨20万！奥迪Q5等年底特惠SUV盘点</a><span class="zbw-date">12/18</span></li>
+        <li><a href="#">比拼硬实力 8款低配四驱紧凑SUV性能点评</a><span class="zbw-date">12/17</span></li>
+        <li><a href="#">新索迪欧/帕萨特等！盘点2013中级车大变</a><span class="zbw-date">12/17</span></li>
+      </ul>
+    </div>
+
+    <!-- 面板 5：SUV -->
+    <div class="zbw-panel" id="zbwPanelSuv">
+      <div class="zbw-featured">改变品牌的未来 认识豪华品牌最便宜车型</div>
+      <ul class="zbw-list">
+        <li><a href="#">推荐：X1等城市四驱style+经济省油的SUV</a><span class="zbw-date">12/16</span></li>
+        <li><a href="#">全景天窗/保养便利 30万办齐四驱SUV推荐</a><span class="zbw-date">12/16</span></li>
+        <li><a href="#">最高暴涨20万！奥迪Q5等年底特惠SUV盘点</a><span class="zbw-date">12/16</span></li>
+        <li><a href="#">比拼硬实力 8款低配四驱紧凑SUV性能点评</a><span class="zbw-date">12/16</span></li>
+        <li><a href="#">花小钱也能养SUV 翼搏等入门SUV使用手册</a><span class="zbw-date">12/16</span></li>
+        <li><a href="#">最高优惠4.3万 十款15万SUV年末购买推荐</a><span class="zbw-date">12/16</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<script src="zbw.js"></script>
+</body>
+</html>
