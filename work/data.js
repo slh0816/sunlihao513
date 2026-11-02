@@ -4,7 +4,7 @@
  * 高级网页设计课堂实践任务
  * ------------------------------------------------------------
  * 说明：
- *   - 该文件提供原始数据 STUDENTS 与科目配置 SUBJECTS
+ *   - 该文件提供原始数据 slhStudents 与科目配置 slhSubjects
  *   - 学生需在 starter.html 中通过 DOM 查找 + 数组方法 + 函数
  *     将这些数据渲染到页面上，达到与 target.html 一比一还原
  * ============================================================
@@ -17,7 +17,7 @@
  * @property {string} abbr - 科目缩写（用于卡片上的成绩标签）
  * @property {number} full  - 满分值
  */
-const SUBJECTS = [
+const slhSubjects = [
   { key: "chinese", name: "语文",     abbr: "语", full: 100 },
   { key: "math",    name: "数学",     abbr: "数", full: 100 },
   { key: "english", name: "英语",     abbr: "英", full: 100 },
@@ -34,7 +34,7 @@ const SUBJECTS = [
  *   - 优秀学生（平均≥85）：陈雨桐、赵欣怡、周诗涵、林晓彤、罗子睿、唐梓涵、许若曦
  *   - 各科状元互有差异，便于 sort/reduce/find 展示
  */
-const STUDENTS = [
+const slhStudents = [
   { id: "2024001", name: "张明轩", gender: "男", chinese: 88, math: 95, english: 82, web: 96, database: 90 },
   { id: "2024002", name: "李思琪", gender: "女", chinese: 92, math: 78, english: 90, web: 88, database: 85 },
   { id: "2024003", name: "王浩然", gender: "男", chinese: 75, math: 88, english: 79, web: 92, database: 86 },
@@ -56,5 +56,5 @@ const STUDENTS = [
 ];
 
 // 暴露到全局，供页面使用
-window.SUBJECTS = SUBJECTS;
-window.STUDENTS = STUDENTS;
+window.slhSubjects = slhSubjects;
+window.slhStudents = slhStudents;
