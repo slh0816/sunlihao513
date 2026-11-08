@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iconfont-3 · 字体图标底部导航</title>
+  <!-- 内嵌版字体样式（woff2 base64），须先于共享样式引入 -->
+  <link rel="stylesheet" href="font/iconfont.embedded.css">
+  <link rel="stylesheet" href="css/slh_tabbar.css">
+</head>
+<body>
+  <div class="slh_app">
+
+    <header class="slh_topbar">
+      <h1 class="slh_topbar__title">底部导航 · 字体图标版</h1>
+      <a class="slh_back-home" href="index.html">返回首页</a>
+    </header>
+
+    <main class="slh_content">
+      <h2 class="slh_content__title">font-class，<br>把图标排成铅字</h2>
+      <p class="slh_content__lead">
+        本页使用 iconfont.cn 的字体图标方案：图标是字体里的字形，
+        由 <code>&lt;i class="iconfont icon-*"&gt;</code> 排入版面，
+        颜色与字号随 CSS 而行。底部导航固定在视口下方，滚动正文试试。
+      </p>
+
+      <p class="slh_content__section">样张列表 · 滚动验证固定导航</p>
+      <ul class="slh_feed">
+        <li class="slh_feed__item"><span class="slh_feed__index">01</span><span class="slh_feed__text">暖纸底色取自标本室色板，作为整页的基底</span><span class="slh_feed__meta">刚刚</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">02</span><span class="slh_feed__text">钴蓝是唯一的高亮墨水，留给选中态</span><span class="slh_feed__meta">2 分钟前</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">03</span><span class="slh_feed__text">数字徽章像加盖的邮戳，悬在图标右上角</span><span class="slh_feed__meta">9 分钟前</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">04</span><span class="slh_feed__text">红点更克制，只提示有事，不说多少</span><span class="slh_feed__meta">15 分钟前</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">05</span><span class="slh_feed__text">字体图标随 font-size 缩放，任意分辨率不糊边</span><span class="slh_feed__meta">半小时前</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">06</span><span class="slh_feed__text">woff2 以 base64 内嵌，离线打开也能加载字形</span><span class="slh_feed__meta">1 小时前</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">07</span><span class="slh_feed__text">导航条固定在视口底部，不随内容走</span><span class="slh_feed__meta">2 小时前</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">08</span><span class="slh_feed__text">宽屏限宽 480px 居中，像把手机平放在桌面</span><span class="slh_feed__meta">3 小时前</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">09</span><span class="slh_feed__text">四个导航项由 Flex 均分，窄屏也不拥挤</span><span class="slh_feed__meta">昨天</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">10</span><span class="slh_feed__text">选中态由事件委托驱动，只绑定一个监听器</span><span class="slh_feed__meta">昨天</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">11</span><span class="slh_feed__text">衬线做标题，无衬线做正文，各司其职</span><span class="slh_feed__meta">前天</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">12</span><span class="slh_feed__text">细线分隔取自标本表的刻度感</span><span class="slh_feed__meta">前天</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">13</span><span class="slh_feed__text">动效克制，尊重系统的减弱动态偏好</span><span class="slh_feed__meta">上周</span></li>
+        <li class="slh_feed__item"><span class="slh_feed__index">14</span><span class="slh_feed__text">滚到这里，导航仍然停在视口底部</span><span class="slh_feed__meta">上周</span></li>
+      </ul>
+    </main>
+
+    <nav class="slh_tabbar" id="slh_tabbar" aria-label="底部导航">
+      <button class="slh_tab slh_active" type="button">
+        <span class="slh_tab__icon-wrap">
+          <i class="iconfont icon-qunzutouxiang slh_tab__icon" aria-hidden="true"></i>
+          <span class="slh_badge">99+</span>
+        </span>
+        <span class="slh_tab__label">消息</span>
+      </button>
+      <button class="slh_tab" type="button">
+        <span class="slh_tab__icon-wrap">
+          <i class="iconfont icon-camera slh_tab__icon" aria-hidden="true"></i>
+        </span>
+        <span class="slh_tab__label">相机</span>
+      </button>
+      <button class="slh_tab" type="button">
+        <span class="slh_tab__icon-wrap">
+          <i class="iconfont icon-shengyinjingyin slh_tab__icon" aria-hidden="true"></i>
+        </span>
+        <span class="slh_tab__label">静音</span>
+      </button>
+      <button class="slh_tab" type="button">
+        <span class="slh_tab__icon-wrap">
+          <i class="iconfont icon-boxben slh_tab__icon" aria-hidden="true"></i>
+          <span class="slh_dot"></span>
+        </span>
+        <span class="slh_tab__label">盒子</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script src="js/slh_tabbar.js"></script>
+</body>
+</html>

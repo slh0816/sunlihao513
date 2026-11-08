@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>留言表单｜高级网页设计</title>
+    <style>
+        :root {
+            --green: #164f4b;
+            --orange: #db7653;
+            --yellow: #f1c85b;
+            --ink: #1d2b30;
+            --muted: #68777a;
+            --paper: #f7f4ed;
+        }
+        * { box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 32px 18px;
+            color: var(--ink);
+            background: radial-gradient(circle at 90% 5%, #f9df9a 0, transparent 24rem), var(--paper);
+            font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+            line-height: 1.7;
+        }
+        .page { width: min(760px, 100%); margin: auto; }
+        .hero { padding: 40px clamp(24px, 6vw, 58px); color: white; background: var(--green); box-shadow: 0 18px 42px #1d2b3020; }
+        .eyebrow { margin: 0; color: var(--yellow); font: bold 13px "Trebuchet MS", sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 13px 0 7px; font-size: clamp(2.3rem, 6vw, 4rem); font-weight: normal; line-height: 1.1; }
+        .hero p:last-child { margin: 0; color: #dcebe5; }
+        form { margin-top: 22px; padding: clamp(24px, 5vw, 42px); background: #fffdf9; box-shadow: 0 14px 35px #1d2b3012; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field.full, .choice, .actions { grid-column: 1 / -1; }
+        label, .field-title { color: var(--green); font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 11px 13px; border: 1px solid #cbd9d3; border-radius: 3px; color: var(--ink); background: #fff; font: 15px Georgia, "Times New Roman", "Noto Serif SC", serif; }
+        input[type="file"] { padding: 8px 10px; font-family: "Trebuchet MS", sans-serif; font-size: 13px; }
+        textarea { min-height: 145px; resize: vertical; }
+        input:focus, textarea:focus, select:focus { outline: 3px solid #f1c85b55; border-color: var(--orange); }
+        .choice { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; padding: 16px 0; border-top: 1px solid #e0e8e2; }
+        .choice label { color: var(--muted); font-weight: normal; }
+        .choice input { width: auto; margin-right: 5px; accent-color: var(--orange); }
+        .actions { display: flex; gap: 12px; margin-top: 8px; padding-top: 22px; border-top: 1px solid #e0e8e2; }
+        button { padding: 11px 24px; border: 0; border-radius: 3px; color: white; background: var(--green); cursor: pointer; font: bold 14px "Trebuchet MS", sans-serif; }
+        button:hover { background: var(--orange); }
+        button[type="reset"] { color: var(--green); background: #e8f0eb; }
+        button[type="button"] { color: var(--muted); background: transparent; border: 1px solid #cbd9d3; }
+        .back { display: inline-block; margin-top: 22px; color: var(--green); font: bold 14px "Trebuchet MS", sans-serif; text-decoration: none; }
+        .back:hover { color: var(--orange); }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .field.full, .choice, .actions { grid-column: auto; } .actions { flex-wrap: wrap; } }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="hero">
+            <p class="eyebrow">03 / Form Practice</p>
+            <h1>留言表单</h1>
+            <p>留下你的想法，练习网页中的输入、选择与提交交互。</p>
+        </header>
+
+        <form action="http://baidu.com" name="fm" method="post">
+            <div class="form-grid">
+                <div class="field">
+                    <label for="username">用户名</label>
+                    <input type="text" name="username" id="username" placeholder="请输入用户名" required>
+                </div>
+                <div class="field">
+                    <label for="pwd">密码</label>
+                    <input type="password" name="pwd" id="pwd" placeholder="请输入密码">
+                </div>
+                <div class="field">
+                    <label for="email">邮箱</label>
+                    <input type="email" name="email" id="email" placeholder="name@example.com">
+                </div>
+                <div class="field">
+                    <label for="file">上传文件</label>
+                    <input type="file" name="file" id="file" multiple>
+                </div>
+                <div class="choice">
+                    <span class="field-title">性别</span>
+                    <label><input type="radio" name="gender" value="f">女</label>
+                    <label><input type="radio" name="gender" value="m">男</label>
+                </div>
+                <div class="choice">
+                    <span class="field-title">兴趣爱好</span>
+                    <label><input type="checkbox" name="hobby" value="c">编程</label>
+                    <label><input type="checkbox" name="hobby" value="s">运动</label>
+                    <label><input type="checkbox" name="hobby" value="r">阅读</label>
+                </div>
+                <div class="field full">
+                    <label for="intro">留言内容</label>
+                    <textarea name="intro" id="intro" placeholder="请输入你对网页设计的想法或建议"></textarea>
+                </div>
+                <div class="field">
+                    <label for="city">籍贯选择</label>
+                    <select name="city" id="city">
+                <option value="beijing">北京</option>
+                <option value="shanghai">上海</option>
+                <option value="xinjiang">新疆</option>
+                    </select>
+                </div>
+                <div class="actions">
+                    <button type="submit">提交留言 →</button>
+                    <button type="reset">重置</button>
+                    <button type="button" onclick="history.back()">返回</button>
+                </div>
+            </div>
+        </form>
+
+        <a class="back" href="index.html">← 返回课程目录</a>
+    </main>
+
+</body>
+</html>

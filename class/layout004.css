@@ -1,0 +1,97 @@
+/* 重置默认样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 顶部头部 - 蓝色背景 */
+header {
+    background-color: #3333ff;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    font-size: 24px;
+}
+
+header .logo {
+    font-size: 28px;
+}
+
+header .login {
+    font-size: 24px;
+}
+
+/* 导航栏 - 绿色背景 */
+nav {
+    background-color: #00ff00;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 22px;
+}
+
+/* 主体内容容器 - Flex布局 */
+.wrap {
+    display: flex;
+    width: 80%;
+    margin: 20px auto 0;
+    flex: 1;
+}
+
+.content-row {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    flex: 1;
+}
+
+/* 主要内容区 - 红色背景 */
+main {
+    flex: 3;
+    background-color: #ff0000;
+    color: #fff;
+    padding: 20px;
+    font-size: 50px;
+}
+
+/* 侧栏 - 青色背景 */
+aside {
+    flex: 1;
+    background-color: #00ffff;
+    color: #fff;
+    padding: 20px;
+    font-size: 28px;
+}
+
+/* 固定定位广告 - 品红色背景 */
+.fixed-ad {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff00ff;
+    color: #fff;
+    padding: 15px 20px;
+    font-size: 22px;
+    border: 2px solid #333;
+    z-index: 1000;
+}
+
+/* 页脚 - 黄色背景 */
+footer {
+    background-color: #ffff00;
+    color: #fff;
+    text-align: center;
+    padding: 15px 20px;
+    font-size: 20px;
+    margin-top: 20px;
+}

@@ -1,0 +1,85 @@
+/* CSS部分 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+img{
+    display: block;
+    width: 100%;
+    border: none;
+}
+.container{
+    width: 1200px;
+    margin: 0 auto;
+}
+.list1,.list2{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    gap: 10px;
+    margin-top: 20px;
+}
+.list2{
+    position: relative;
+}
+.list2 li{
+    position: relative;
+    overflow: hidden;
+}
+.list2 p{
+    position: absolute;
+    bottom: 8%;
+    left: 0;
+    width: 100%;
+    padding: 10px 12px;
+    background-color: rgba(22, 63, 61, 0.78);
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+.list1 li,.list2 li{
+    flex: 0 0 calc(33.33% - 10px);
+    /* 溢出隐藏*/
+    overflow: hidden;
+}
+
+.list1 li a,.list2 li a{
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+.list1 li a p{
+    text-align: center;
+    height: 36px;
+    line-height: 36px;
+    font-size: 16PX;
+    font-weight: bold;
+    letter-spacing: 2px;
+    /* 过度时间哦0.5s 线性*/
+
+    transition: all .5s linear;
+}
+
+.list1 img{
+    transition: all .6s ease-in-out;
+}
+.list1 li:hover img{
+    /* 变化：放大*/
+    transform: scale(1.5);
+}
+.list2 li:hover a p{
+    /* 变化：高度增加*/
+    height: 96px;
+    
+}
+/* nth-child(odd)  奇数的孩子*/
+.list2 li:nth-child(odd):hover p {
+    height: 100%;
+    font-weight: normal;
+    color: yellow;
+}
