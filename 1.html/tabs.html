@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新闻选项卡</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;background:#f2f4f9;color:#1f2733;line-height:1.6;padding:24px}
+  .slh-wrap{max-width:860px;margin:0 auto}
+  .slh-title{font-size:22px;font-weight:800;margin-bottom:16px}
+  /* ===== 选项卡组件（slh-tabs）===== */
+  .slh-tabs{background:#fff;border-radius:14px;box-shadow:0 6px 20px rgba(20,28,48,.10);overflow:hidden;margin-bottom:20px}
+  .slh-tabs__nav{display:flex;flex-wrap:wrap;border-bottom:1px solid #e7eaf0;background:#fafbfe}
+  .slh-tab{border:none;background:transparent;padding:14px 22px;font-size:15px;font-weight:600;color:#5b6472;cursor:pointer;position:relative;transition:color .18s}
+  .slh-tab:hover{color:#5b7cfa}
+  .slh-tab.slh-active{color:#5b7cfa}
+  .slh-tab.slh-active::after{content:"";position:absolute;left:14px;right:14px;bottom:-1px;height:3px;border-radius:2px;background:#5b7cfa}
+  .slh-tab-panel{display:none;padding:18px 22px}
+  .slh-tab-panel.slh-active{display:block}
+  .slh-news-list{list-style:none}
+  .slh-news-list li{padding:10px 0;border-bottom:1px dashed #e7eaf0;display:flex;justify-content:space-between;gap:14px;font-size:14px}
+  .slh-news-list li:last-child{border-bottom:none}
+  .slh-news-list .slh-news-title{font-weight:600}
+  .slh-news-list .slh-news-title:hover{color:#5b7cfa;cursor:pointer}
+  .slh-news-list .slh-news-meta{color:#98a1b3;font-size:12px;flex:none}
+  .slh-back{display:inline-block;margin-top:4px;color:#5b7cfa;text-decoration:none;font-size:14px}
+  .slh-back:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="slh-wrap">
+  <h1 class="slh-title">📰 新闻中心</h1>
+
+  <!-- 选项卡组 1：新闻分类（国内新闻为默认选中项） -->
+  <div class="slh-tabs" id="slhNewsTabs">
+    <div class="slh-tabs__nav">
+      <button type="button" class="slh-tab slh-active" data-slh-target="slhPanelDomestic">国内新闻</button>
+      <button type="button" class="slh-tab" data-slh-target="slhPanelProvince">省内新闻</button>
+      <button type="button" class="slh-tab" data-slh-target="slhPanelWorld">国际新闻</button>
+      <button type="button" class="slh-tab" data-slh-target="slhPanelHot">最热新闻</button>
+    </div>
+
+    <div class="slh-tab-panel slh-active" id="slhPanelDomestic">
+      <ul class="slh-news-list">
+        <li><span class="slh-news-title">全国粮食产量再创新高，丰收基础稳固</span><span class="slh-news-meta">新华网 · 10:12</span></li>
+        <li><span class="slh-news-title">多地启动新一轮消费券发放，覆盖餐饮文旅</span><span class="slh-news-meta">人民网 · 09:40</span></li>
+        <li><span class="slh-news-title">高铁新线开通运营，沿线城市通勤再提速</span><span class="slh-news-meta">央视新闻 · 08:55</span></li>
+      </ul>
+    </div>
+    <div class="slh-tab-panel" id="slhPanelProvince">
+      <ul class="slh-news-list">
+        <li><span class="slh-news-title">省内重点水利工程主体完工，进入调试阶段</span><span class="slh-news-meta">省日报 · 11:05</span></li>
+        <li><span class="slh-news-title">秋季校园招聘会启动，提供岗位超两万个</span><span class="slh-news-meta">省电视台 · 09:18</span></li>
+        <li><span class="slh-news-title">省内新增三条旅游直通车线路，周末可直达景区</span><span class="slh-news-meta">省文旅网 · 08:30</span></li>
+      </ul>
+    </div>
+    <div class="slh-tab-panel" id="slhPanelWorld">
+      <ul class="slh-news-list">
+        <li><span class="slh-news-title">多国航天机构签署深空探测合作备忘录</span><span class="slh-news-meta">环球时报 · 10:47</span></li>
+        <li><span class="slh-news-title">欧洲多国宣布扩大可再生能源装机目标</span><span class="slh-news-meta">参考消息 · 09:26</span></li>
+        <li><span class="slh-news-title">国际航运价格回落，全球供应链压力缓解</span><span class="slh-news-meta">中新社 · 08:02</span></li>
+      </ul>
+    </div>
+    <div class="slh-tab-panel" id="slhPanelHot">
+      <ul class="slh-news-list">
+        <li><span class="slh-news-title">🔥 全网热议：新一代智能终端发布会定档</span><span class="slh-news-meta">热搜 · 12:00</span></li>
+        <li><span class="slh-news-title">🔥 全国多地迎来今冬首场大范围降雪</span><span class="slh-news-meta">热搜 · 11:20</span></li>
+        <li><span class="slh-news-title">🔥 国产大飞机新增国际航线，客座率超预期</span><span class="slh-news-meta">热搜 · 10:36</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 选项卡组 2：演示同一组件可复用（互不影响） -->
+  <h1 class="slh-title">🏷️ 频道（复用同一 tabs.js）</h1>
+  <div class="slh-tabs" id="slhChannelTabs">
+    <div class="slh-tabs__nav">
+      <button type="button" class="slh-tab slh-active" data-slh-target="slhPanelTech">科技</button>
+      <button type="button" class="slh-tab" data-slh-target="slhPanelSports">体育</button>
+      <button type="button" class="slh-tab" data-slh-target="slhPanelFinance">财经</button>
+    </div>
+    <div class="slh-tab-panel slh-active" id="slhPanelTech">
+      <ul class="slh-news-list">
+        <li><span class="slh-news-title">国产开源大模型发布新版本，推理能力提升</span><span class="slh-news-meta">科技频道 · 10:15</span></li>
+      </ul>
+    </div>
+    <div class="slh-tab-panel" id="slhPanelSports">
+      <ul class="slh-news-list">
+        <li><span class="slh-news-title">联赛焦点战落幕，主队补时绝杀取胜</span><span class="slh-news-meta">体育频道 · 09:50</span></li>
+      </ul>
+    </div>
+    <div class="slh-tab-panel" id="slhPanelFinance">
+      <ul class="slh-news-list">
+        <li><span class="slh-news-title">两市高开高走，新能源板块领涨</span><span class="slh-news-meta">财经频道 · 09:32</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <a class="slh-back" href="index.html">← 返回首页</a>
+</div>
+
+<script src="tabs.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="孙立豪的个人介绍与网页设计学习记录">
+    <title>孙立豪｜个人介绍</title>
+    <style>
+        :root {
+            --green: #164f4b;
+            --orange: #db7653;
+            --yellow: #f1c85b;
+            --ink: #1d2b30;
+            --paper: #f7f4ed;
+            --muted: #68777a;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            color: var(--ink);
+            background: radial-gradient(circle at 90% 8%, #f9df9a 0, transparent 22rem), var(--paper);
+            font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+            line-height: 1.7;
+        }
+        .page { width: min(1000px, calc(100% - 36px)); margin: 34px auto; }
+        .hero { padding: clamp(42px, 8vw, 82px) clamp(25px, 7vw, 72px); color: white; background: var(--green); box-shadow: 0 18px 45px #1d2b3020; }
+        .eyebrow { margin: 0; color: var(--yellow); font: bold 13px "Trebuchet MS", sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 15px 0 8px; font-size: clamp(2.6rem, 7vw, 5rem); font-weight: normal; line-height: 1.08; }
+        .hero p:last-child { max-width: 600px; margin: 0; color: #dcebe5; font-size: 1.1rem; }
+        .intro { display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; margin-top: 34px; }
+        .card { padding: 28px; border: 1px solid #d7e0dc; background: #ffffffd9; }
+        .card h2 { margin: 0 0 14px; color: var(--green); font-size: 1.8rem; font-weight: normal; }
+        .card p { margin: 0 0 12px; color: var(--muted); }
+        .info { list-style: none; margin: 0; padding: 0; }
+        .info li { padding: 10px 0; border-bottom: 1px solid #dfe8e2; }
+        .info li:last-child { border-bottom: 0; }
+        .label { display: inline-block; min-width: 68px; color: var(--orange); font-weight: bold; }
+        .focus { margin-top: 18px; padding: 24px 28px; border-left: 4px solid var(--yellow); background: #fffdf8; color: var(--muted); }
+        .section-title { margin: 46px 0 18px; color: var(--green); font-size: 2rem; font-weight: normal; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 18px; }
+        .stat { padding: 22px; background: var(--orange); color: white; }
+        .stat strong { display: block; font-size: 2.2rem; font-weight: normal; line-height: 1; }
+        .stat span { display: block; margin-top: 9px; color: #ffebe2; font: 13px "Trebuchet MS", sans-serif; }
+        .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .skill { padding: 23px; border-top: 4px solid var(--yellow); background: #ffffffd9; }
+        .skill h3 { margin: 0 0 8px; color: var(--green); font-size: 1.35rem; font-weight: normal; }
+        .skill p { margin: 0; color: var(--muted); font-size: .96rem; }
+        .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .step { padding: 22px; border: 1px solid #d7e0dc; background: #fff; }
+        .step b { color: var(--orange); font: bold 13px "Trebuchet MS", sans-serif; letter-spacing: .08em; }
+        .step h3 { margin: 11px 0 6px; color: var(--green); font-size: 1.25rem; font-weight: normal; }
+        .step p { margin: 0; color: var(--muted); font-size: .94rem; }
+        .quote { margin: 42px 0 0; padding: 26px 30px; color: white; background: var(--green); font-size: 1.2rem; }
+        .quote cite { display: block; margin-top: 8px; color: #dcebe5; font: 13px "Trebuchet MS", sans-serif; font-style: normal; }
+        .back { display: inline-block; margin-top: 26px; color: var(--green); font: bold 14px "Trebuchet MS", sans-serif; text-decoration: none; }
+        .back:hover { color: var(--orange); }
+        @media (max-width: 680px) { .page { width: calc(100% - 28px); } .intro, .stats, .skills, .roadmap { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <header class="hero">
+            <p class="eyebrow">02 / About Me</p>
+            <h1>孙立豪</h1>
+            <p>计算机专业学生，正在通过 HTML、CSS 和网页设计实践，把创意一步步变成真实的页面作品。</p>
+        </header>
+
+        <section class="intro">
+            <article class="card">
+                <h2>关于我</h2>
+                <p>我喜欢编码与动手实践，愿意把学习到的知识应用到具体的网页作品中。</p>
+                <p>在学习过程中，我会先理解基础，再通过练习发现问题、持续调试，并不断提升页面的结构和视觉效果。</p>
+                <p>我尤其关注响应式布局、交互体验和网页内容的清晰表达。</p>
+            </article>
+            <aside class="card">
+                <h2>个人信息</h2>
+                <ul class="info">
+                    <li><span class="label">专业</span>计算机科学与技术</li>
+                    <li><span class="label">方向</span>Web 前端 / 嵌入式</li>
+                    <li><span class="label">兴趣</span>编程、阅读、学习新技术</li>
+                    <li><span class="label">目标</span>持续提升网页设计能力</li>
+                </ul>
+            </aside>
+        </section>
+
+        <section class="focus"><strong>学习重点：</strong>掌握 HTML 语义化结构、CSS 布局与视觉设计，并通过表单、图文布局等练习积累网页开发经验。</section>
+
+        <section class="stats" aria-label="学习概况">
+            <div class="stat"><strong>03</strong><span>当前学习方向</span></div>
+            <div class="stat"><strong>05+</strong><span>网页练习作品</span></div>
+            <div class="stat"><strong>持续</strong><span>实践与优化</span></div>
+        </section>
+
+        <h2 class="section-title">我的技能方向</h2>
+        <section class="skills">
+            <article class="skill">
+                <h3>HTML 结构</h3>
+                <p>使用语义化标签组织页面，让内容层级清晰，也让网页更容易维护。</p>
+            </article>
+            <article class="skill">
+                <h3>CSS 视觉</h3>
+                <p>练习盒模型、弹性布局、配色和响应式设计，提升页面的视觉表现。</p>
+            </article>
+            <article class="skill">
+                <h3>交互体验</h3>
+                <p>通过链接、表单和反馈状态，让页面更加易用，帮助用户顺利完成操作。</p>
+            </article>
+        </section>
+
+        <h2 class="section-title">学习路径</h2>
+        <section class="roadmap">
+            <article class="step"><b>01 / FOUNDATION</b><h3>打好基础</h3><p>掌握 HTML 标签、页面结构和网页内容组织方式。</p></article>
+            <article class="step"><b>02 / PRACTICE</b><h3>动手实践</h3><p>完成图文布局、表单和盒模型练习，把知识变成作品。</p></article>
+            <article class="step"><b>03 / IMPROVEMENT</b><h3>持续优化</h3><p>关注响应式布局、可读性和用户体验，让页面更完整。</p></article>
+        </section>
+
+        <blockquote class="quote">把每一次练习都当作一次设计，让代码不仅能够运行，也能够清晰地表达想法。<cite>孙立豪 · 高级网页设计学习记录</cite></blockquote>
+        <a class="back" href="index.html">← 返回课程目录</a>
+    </main>
+</body>
+</html>

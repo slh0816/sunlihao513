@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 图文布局练习</title>
+    <link rel="stylesheet" href="./pic_above_test.css">
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(180deg, #f6f3ea 0%, #eef7f5 100%);
+            color: #1d2b30;
+            margin: 0;
+        }
+        .container {
+            width: min(1200px, calc(100% - 32px));
+            margin: 40px auto;
+        }
+        .top-banner {
+            padding: 28px 30px;
+            background: #163f3d;
+            border-radius: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            box-shadow: 0 18px 35px rgba(22, 63, 61, 0.15);
+        }
+        .top-banner h1 {
+            margin: 0 0 10px;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+        }
+        .top-banner p {
+            margin: 0;
+            color: #d8efe8;
+            line-height: 1.8;
+        }
+        .section-title {
+            margin: 30px 0 18px;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            color: #214a47;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-banner">
+            <h1>CSS 图文布局练习</h1>
+            <p>通过图片与文字的组合，练习网页中的视觉层次、图片展示方式与信息结构设计。</p>
+        </div>
+
+        <h2 class="section-title">一、上图下文布局</h2>
+        <ul class="list1">
+            <li><a href="./stack.html"><img src="./img/1.jpg" alt="图片1"><p>校园风景</p></a></li>
+            <li><a href="./stack.html"><img src="./img/2.jpg" alt="图片2"><p>晨间光影</p></a></li>
+            <li><a href="./stack.html"><img src="./img/3.jpg" alt="图片3"><p>城市建筑</p></a></li>
+            <li><a href="./stack.html"><img src="./img/4.jpg" alt="图片4"><p>自然山水</p></a></li>
+            <li><a href="./stack.html"><img src="./img/5.jpg" alt="图片5"><p>静谧角落</p></a></li>
+            <li><a href="./stack.html"><img src="./img/6.jpg" alt="图片6"><p>生活瞬间</p></a></li>
+        </ul>
+
+        <h2 class="section-title">二、图上文字布局</h2>
+        <ul class="list2">
+            <li><a href="./stack.html"><img src="./img/1.jpg" alt="图片1"><p>湖边漫步</p></a></li>
+            <li><a href="./stack.html"><img src="./img/2.jpg" alt="图片2"><p>云端启航</p></a></li>
+            <li><a href="./stack.html"><img src="./img/3.jpg" alt="图片3"><p>山水夜色</p></a></li>
+            <li><a href="./stack.html"><img src="./img/4.jpg" alt="图片4"><p>红叶秋色</p></a></li>
+            <li><a href="./stack.html"><img src="./img/5.jpg" alt="图片5"><p>港湾暮色</p></a></li>
+            <li><a href="./stack.html"><img src="./img/6.jpg" alt="图片6"><p>海岸风光</p></a></li>
+        </ul>
+    </div>
+</body>
+</html>
+

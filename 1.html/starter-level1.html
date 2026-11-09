@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学生成绩分析面板 · 等级一（起始模板）</title>
+<style>
+  /* 样式与 target.html 保持一致，方便一比一对照还原 */
+  :root{
+    --bg-1:#1a1c2c; --bg-2:#243b55;
+    --card:#ffffff; --card-soft:rgba(255,255,255,.92);
+    --ink:#1f2733; --ink-soft:#5b6472; --line:#e7eaf0;
+    --primary:#5b7cfa; --primary-d:#3f5fd9;
+    --accent:#21d4b4; --warn:#ff7a59; --gold:#f5b945; --rose:#ff5d8f;
+    --radius:14px; --shadow:0 10px 30px rgba(20,28,48,.18);
+    --shadow-sm:0 4px 14px rgba(20,28,48,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+    background:linear-gradient(135deg,var(--bg-1),var(--bg-2));min-height:100vh;color:var(--ink);line-height:1.6;padding:24px}
+  .slh-wrap{max-width:1180px;margin:0 auto}
+  header.slh-head{background:var(--card-soft);border-radius:var(--radius);padding:22px 26px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+  .slh-head h1{font-size:22px;display:flex;align-items:center;gap:10px}
+  .slh-head h1 .slh-logo{width:38px;height:38px;border-radius:11px;flex:none;background:linear-gradient(135deg,var(--primary),var(--accent));display:grid;place-items:center;color:#fff;font-weight:700}
+  .slh-head .slh-sub{color:var(--ink-soft);font-size:13px}
+  .slh-tag-level{font-size:12px;font-weight:700;color:#fff;background:var(--primary);padding:4px 10px;border-radius:20px}
+  section.slh-block{background:var(--card);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);margin-bottom:18px}
+  .slh-block-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:16px;color:var(--ink)}
+  .slh-block-title::before{content:"";width:4px;height:16px;border-radius:3px;background:var(--primary)}
+  .slh-block-title .slh-hint{font-weight:400;color:var(--ink-soft);font-size:12px}
+  .slh-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .slh-stat-card{background:linear-gradient(135deg,#f6f8ff,#fff);border:1px solid var(--line);border-radius:12px;padding:16px 18px;position:relative;overflow:hidden}
+  .slh-stat-card .slh-stat-value{font-size:30px;font-weight:800;color:var(--primary);line-height:1.2}
+  .slh-stat-card .slh-stat-label{font-size:13px;color:var(--ink-soft);margin-top:4px}
+  .slh-stat-card .slh-stat-unit{font-size:14px;color:var(--ink-soft);font-weight:600;margin-left:3px}
+  .slh-stat-card.slh-accent .slh-stat-value{color:var(--accent)}
+  .slh-stat-card.slh-warn .slh-stat-value{color:var(--warn)}
+  .slh-stat-card.slh-gold .slh-stat-value{color:var(--gold)}
+  .slh-controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+  .slh-search-box{position:relative;flex:1;min-width:220px}
+  .slh-search-box input{width:100%;padding:11px 14px 11px 38px;border:1px solid var(--line);border-radius:10px;font-size:14px;outline:none;transition:border-color .2s}
+  .slh-search-box input:focus{border-color:var(--primary)}
+  .slh-search-box .slh-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-soft)}
+  .slh-btn-group{display:flex;gap:6px;background:#eef1f7;padding:4px;border-radius:10px}
+  .slh-btn-group button{border:none;background:transparent;padding:8px 14px;border-radius:7px;font-size:13px;color:var(--ink-soft);cursor:pointer;transition:all .18s}
+  .slh-btn-group button.slh-active{background:#fff;color:var(--primary);font-weight:700;box-shadow:var(--shadow-sm)}
+  .slh-rank-grid{display:grid;grid-template-columns:1fr;gap:14px}
+  .slh-rank-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
+  .slh-rank-card h4{font-size:13px;color:var(--ink-soft);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .slh-rank-card h4 .slh-dot{width:8px;height:8px;border-radius:50%;background:var(--primary)}
+  .slh-rank-card.slh-fail h4 .slh-dot{background:var(--warn)}
+  .slh-rank-list{display:flex;flex-direction:column;gap:8px}
+  .slh-rank-row{display:flex;align-items:center;justify-content:space-between;font-size:13px}
+  .slh-rank-row .slh-rk{width:22px;height:22px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:12px}
+  .slh-rank-row .slh-rk{background:#fde9dd;color:#c0602a}
+  .slh-rank-row .slh-nm{flex:1;margin:0 8px;font-weight:600}
+  .slh-rank-row .slh-vl{font-weight:700;color:var(--warn)}
+  .slh-empty{color:var(--ink-soft);font-size:13px;font-style:italic;text-align:center;padding:10px 0}
+  .slh-student-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+  .slh-student-card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff;transition:transform .18s,box-shadow .18s;cursor:pointer}
+  .slh-student-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .slh-student-card .slh-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .slh-avatar{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;color:#fff;font-size:15px}
+  .slh-avatar.slh-boy{background:linear-gradient(135deg,#5b7cfa,#7a5bfa)}
+  .slh-avatar.slh-girl{background:linear-gradient(135deg,#ff5d8f,#ff8fb1)}
+  .slh-student-card .slh-name{font-weight:700;font-size:15px}
+  .slh-student-card .slh-meta{font-size:12px;color:var(--ink-soft)}
+  .slh-student-card .slh-rank-badge{margin-left:auto;font-size:12px;font-weight:700;color:#fff;background:var(--primary);padding:3px 9px;border-radius:20px}
+  .slh-student-card .slh-rank-badge.slh-gold{background:var(--gold)}
+  .slh-score-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
+  .slh-score-item{text-align:center;background:#f6f8ff;border-radius:8px;padding:6px 2px}
+  .slh-score-item .slh-sbj{font-size:11px;color:var(--ink-soft)}
+  .slh-score-item .slh-val{font-size:14px;font-weight:700}
+  .slh-score-item .slh-val.slh-fail{color:var(--warn)}
+  .slh-score-item .slh-val.slh-full{color:var(--accent)}
+  .slh-student-card .slh-ft{display:flex;align-items:center;justify-content:space-between;border-top:1px dashed var(--line);padding-top:8px;font-size:13px}
+  .slh-student-card .slh-ft .slh-total{font-weight:800;color:var(--primary)}
+  .slh-student-card .slh-ft .slh-avg{color:var(--ink-soft)}
+  footer.slh-foot{text-align:center;color:rgba(255,255,255,.7);font-size:12px;padding:14px 0}
+  /* 等级一提示框 */
+  .slh-task-note{background:#fff8e6;border:1px solid #f3e0a8;color:#7a5d10;border-radius:10px;padding:12px 16px;font-size:13px;margin-bottom:18px}
+  .slh-task-note b{color:#5a4700}
+</style>
+</head>
+<body>
+<div class="slh-wrap">
+
+  <header class="slh-head">
+    <h1><span class="slh-logo">分</span>学生成绩分析面板</h1>
+    <div>
+      <span class="slh-tag-level">等级一 · 基础</span>
+      <div class="slh-sub">DOM 查找 × 数组方法 × 函数 综合实战</div>
+    </div>
+  </header>
+
+  <!-- 区域1：统计卡片 -->
+  <section class="slh-block">
+    <div class="slh-block-title">班级概览 <span class="slh-hint">getElementById / reduce / filter</span></div>
+    <div class="slh-stat-grid">
+      <div class="slh-stat-card"><div class="slh-stat-value" id="slhStatCount">0</div><div class="slh-stat-label">班级人数（人）</div></div>
+      <div class="slh-stat-card slh-accent"><div class="slh-stat-value" id="slhStatTotalScore">0</div><div class="slh-stat-label">班级总分</div></div>
+      <div class="slh-stat-card slh-gold"><div class="slh-stat-value" id="slhStatAvgScore">0</div><div class="slh-stat-label">班级平均分</div></div>
+      <div class="slh-stat-card slh-warn"><div class="slh-stat-value" id="slhStatPassRate">0<span class="slh-stat-unit">%</span></div><div class="slh-stat-label">及格率（无不及格科目）</div></div>
+    </div>
+  </section>
+
+  <!-- 区域2：控制区（搜索 + 排序）-->
+  <section class="slh-block">
+    <div class="slh-block-title">数据操作 <span class="slh-hint">filter / sort / querySelectorAll / classList / 事件委托</span></div>
+    <div class="slh-controls">
+      <div class="slh-search-box">
+        <span class="slh-ico">🔍</span>
+        <input type="text" id="slhSearchInput" placeholder="按姓名或学号搜索…">
+      </div>
+      <div class="slh-btn-group" id="slhSortBtns">
+        <button class="slh-active" data-slh-sort="total">按总分↓</button>
+        <button data-slh-sort="id">按学号↑</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区域3：不及格预警（榜单区简化）-->
+  <section class="slh-block">
+    <div class="slh-block-title">不及格预警 <span class="slh-hint">filter / sort / forEach</span></div>
+    <div class="slh-rank-grid">
+      <div class="slh-rank-card slh-fail">
+        <h4><span class="slh-dot"></span>不及格学生名单</h4>
+        <div class="slh-rank-list" id="slhFailWarningList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区域4：学生卡片列表 -->
+  <section class="slh-block">
+    <div class="slh-block-title">学生成绩卡片 <span class="slh-hint">forEach / createElement / classList</span></div>
+    <div class="slh-student-grid" id="slhStudentList"></div>
+  </section>
+
+  <footer class="slh-foot">高级网页设计课堂实践任务 · 等级一（基础）· 起始模板</footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+/* ============================================================
+ * 等级一（基础）· 起始模板
+ * 在下方补全函数实现，运行后与 target.html 一比一还原
+ * 数据来源：window.slhStudents / window.slhSubjects（见 data.js）
+ * ============================================================ */
+(function () {
+  "use strict";
+  const slhStudents = window.slhStudents;
+  const slhSubjects = window.slhSubjects;
+
+  const SLH_PASS_LINE = 60;          // 及格线
+  const SLH_EXCELLENT_AVG = 85;      // 优秀线（等级一暂不使用）
+
+  /* ---------- 工具函数（纯计算层） ---------- */
+  // 计算单科分数的样式类：不及格返回 "fail"，满分返回 "full"
+  function slhScoreClass(v) {
+    if (v < SLH_PASS_LINE) return "fail";
+    if (v >= 100) return "full";
+    return "";
+  }
+
+  // 计算一个学生的总分：用 reduce 把 slhSubjects 对应的分数累加
+  function slhGetTotal(s) {
+    return slhSubjects.reduce(function (slh_sum, slh_sub) {
+      return slh_sum + s[slh_sub.key];
+    }, 0);
+  }
+
+  // 计算一个学生的平均分：总分 / 科目数，保留一位小数
+  function slhGetAvg(s) {
+    return Math.round(slhGetTotal(s) / slhSubjects.length * 10) / 10;
+  }
+
+  // 取一个学生不及格的科目数组：用 filter 筛选分数 < SLH_PASS_LINE
+  function slhGetFails(s) {
+    return slhSubjects.filter(function (slh_sub) {
+      return s[slh_sub.key] < SLH_PASS_LINE;
+    });
+  }
+
+  // 姓名首字（头像用）
+  function slhFirstName(s) {
+    // TODO: s.slh-name.charAt(0)
+    return s.slh-name.charAt(0);
+  }
+
+
+  /* ============ 以下 5 个为本等级必做函数 ============ */
+
+  /* ① 渲染统计卡片 —— 考察 getElementById + reduce + filter
+   * 把 list 的人数/总分/平均分/及格率写入 4 个统计卡片
+   * 及格率 = 没有不及格科目的学生人数 ÷ 总人数 × 100（取整）
+   */
+  function slhRenderStats(list) {
+    var slh_count = list.length;
+    // 总分：把每个学生的五科总分累加
+    var slh_totalScore = list.reduce(function (slh_sum, slh_s) {
+      return slh_sum + slhGetTotal(slh_s);
+    }, 0);
+    // 平均分 = 总分 ÷（人数 × 科目数），保留 1 位小数；空列表防除零
+    var slh_avgScore = slh_count
+      ? Math.round(slh_totalScore / (slh_count * slhSubjects.length) * 10) / 10
+      : 0;
+    // 及格人数：没有任何不及格科目的学生数
+    var slh_passCount = list.filter(function (slh_s) {
+      return slhGetFails(slh_s).length === 0;
+    }).length;
+    var slh_passRate = slh_count
+      ? Math.round(slh_passCount / slh_count * 100)
+      : 0;
+
+    document.getElementById("slhStatCount").textContent = slh_count;
+    document.getElementById("slhStatTotalScore").textContent = slh_totalScore;
+    document.getElementById("slhStatAvgScore").textContent = slh_avgScore;
+    // statPassRate 内部已有 % 的 span，用 firstChild 只改数字文本节点
+    document.getElementById("slhStatPassRate").firstChild.textContent = slh_passRate;
+  }
+
+
+  /* ② 渲染学生卡片列表 —— 考察 forEach + createElement + classList
+   * 遍历 list 生成卡片 DOM，结构参考 target.html
+   * 每张卡片含：头像+姓名+学号+排名徽章 / 五科分数网格 / 总分+均分
+   * 排名 = 在当前 list 中的序号+1
+   */
+  function slhRenderStudentCards(list) {
+    var slh_box = document.getElementById("slhStudentList");
+    slh_box.innerHTML = "";
+
+    list.forEach(function (slh_s, slh_i) {
+      var slh_card = document.createElement("div");
+      slh_card.className = "slh-student-card";
+      slh_card.setAttribute("data-id", slh_s.id);
+
+      /* 头部 .slh-hd：头像 + 姓名/学号·性别 + 排名徽章 */
+      var slh_hd = document.createElement("div");
+      slh_hd.className = "slh-hd";
+
+      var slh_avatar = document.createElement("div");
+      slh_avatar.className = "slh-avatar";
+      slh_avatar.classList.add(slh_s.gender === "男" ? "boy" : "girl");
+      slh_avatar.textContent = slhFirstName(slh_s);
+      slh_hd.appendChild(slh_avatar);
+
+      var slh_info = document.createElement("div");
+      var slh_name = document.createElement("div");
+      slh_name.className = "slh-name";
+      slh_name.textContent = slh_s.slh-name;
+      var slh_meta = document.createElement("div");
+      slh_meta.className = "slh-meta";
+      slh_meta.textContent = slh_s.id + " · " + slh_s.gender;
+      slh_info.appendChild(slh_name);
+      slh_info.appendChild(slh_meta);
+      slh_hd.appendChild(slh_info);
+
+      var slh_rank = slh_i + 1;
+      var slh_badge = document.createElement("span");
+      slh_badge.className = "slh-rank-badge";
+      if (slh_rank <= 3) slh_badge.classList.add("slh-gold");
+      slh_badge.textContent = "第" + slh_rank + "名";
+      slh_hd.appendChild(slh_badge);
+
+      slh_card.appendChild(slh_hd);
+
+      /* 分数网格 .slh-score-grid：slhSubjects forEach 建各科 .slh-score-item */
+      var slh_grid = document.createElement("div");
+      slh_grid.className = "slh-score-grid";
+      slhSubjects.forEach(function (slh_sub) {
+        var slh_v = slh_s[slh_sub.key];
+        var slh_item = document.createElement("div");
+        slh_item.className = "slh-score-item";
+        var slh_sbj = document.createElement("div");
+        slh_sbj.className = "slh-sbj";
+        slh_sbj.textContent = slh_sub.abbr;
+        var slh_val = document.createElement("div");
+        slh_val.className = "slh-val";
+        var slh_cls = slhScoreClass(slh_v);
+        if (slh_cls) slh_val.classList.add(slh_cls);
+        slh_val.textContent = slh_v;
+        slh_item.appendChild(slh_sbj);
+        slh_item.appendChild(slh_val);
+        slh_grid.appendChild(slh_item);
+      });
+      slh_card.appendChild(slh_grid);
+
+      /* 底部 .slh-ft：总分 + 均分 */
+      var slh_ft = document.createElement("div");
+      slh_ft.className = "slh-ft";
+      var slh_total = document.createElement("span");
+      slh_total.className = "slh-total";
+      slh_total.textContent = "总分 " + slhGetTotal(slh_s);
+      var slh_avg = document.createElement("span");
+      slh_avg.className = "slh-avg";
+      slh_avg.textContent = "均分 " + slhGetAvg(slh_s);
+      slh_ft.appendChild(slh_total);
+      slh_ft.appendChild(slh_avg);
+      slh_card.appendChild(slh_ft);
+
+      slh_box.appendChild(slh_card);
+    });
+  }
+
+
+  /* ③ 渲染不及格预警 —— 考察 filter + sort + forEach
+   * 筛出有不及格科目的学生，按不及格科目数降序，写入 #failWarningList
+   */
+  function slhRenderFailWarning(list) {
+    var slh_box = document.getElementById("slhFailWarningList");
+    slh_box.innerHTML = "";
+
+    // 筛出有不及格科目的学生，按不及格科目数降序（并列保持传入顺序）
+    var slh_warnList = list.filter(function (slh_s) {
+      return slhGetFails(slh_s).length > 0;
+    }).sort(function (slh_a, slh_b) {
+      return slhGetFails(slh_b).length - slhGetFails(slh_a).length;
+    });
+
+    if (slh_warnList.length === 0) {
+      var slh_empty = document.createElement("div");
+      slh_empty.className = "slh-empty";
+      slh_empty.textContent = "全员通过，无预警";
+      slh_box.appendChild(slh_empty);
+      return;
+    }
+
+    slh_warnList.forEach(function (slh_s) {
+      var slh_fails = slhGetFails(slh_s);
+
+      var slh_row = document.createElement("div");
+      slh_row.className = "slh-rank-row";
+
+      var slh_rk = document.createElement("span");
+      slh_rk.className = "slh-rk";
+      slh_rk.textContent = slh_fails.length;
+
+      var slh_nm = document.createElement("span");
+      slh_nm.className = "slh-nm";
+      slh_nm.textContent = slh_s.slh-name + "（" + slh_fails.map(function (slh_sub) {
+        return slh_sub.slh-name;
+      }).join("、") + "）";
+
+      var slh_vl = document.createElement("span");
+      slh_vl.className = "slh-vl";
+      slh_vl.textContent = slhGetTotal(slh_s) + "分";
+
+      slh_row.appendChild(slh_rk);
+      slh_row.appendChild(slh_nm);
+      slh_row.appendChild(slh_vl);
+      slh_box.appendChild(slh_row);
+    });
+  }
+
+
+  /* ④ 搜索 —— 考察 filter + input 事件
+   * 按姓名或学号过滤 slhStudents（忽略大小写、去空格）
+   * 无关键字时返回全部学生
+   */
+  function slhSearch(keyword) {
+    var slh_kw = String(keyword).trim().toLowerCase();
+    if (!slh_kw) return slhStudents.slice();
+    return slhStudents.filter(function (slh_s) {
+      return slh_s.slh-name.toLowerCase().indexOf(slh_kw) > -1 ||
+        String(slh_s.id).toLowerCase().indexOf(slh_kw) > -1;
+    });
+  }
+
+
+  /* ⑤ 排序 —— 考察 sort + slice + querySelectorAll + classList
+   * by="total" 按总分降序；by="id" 按学号升序
+   * 返回新数组（不修改原数组）
+   */
+  var slhCurrentSort = "total";
+  function slhSortList(list, by) {
+    var slh_arr = list.slice();
+    if (by === "id") {
+      slh_arr.sort(function (slh_a, slh_b) {
+        return slh_a.id > slh_b.id ? 1 : -1;
+      });
+    } else {
+      slh_arr.sort(function (slh_a, slh_b) {
+        return slhGetTotal(slh_b) - slhGetTotal(slh_a);
+      });
+    }
+    return slh_arr;
+  }
+
+
+  /* ---------- 主刷新流程：依次调用上述函数 ---------- */
+  function slhRefresh() {
+    var kw = document.getElementById("slhSearchInput").value;
+    var data = slhSortList(slhSearch(kw), slhCurrentSort);
+    slhRenderStats(data);
+    slhRenderStudentCards(data);
+    slhRenderFailWarning(data);
+  }
+
+
+  /* ---------- 事件绑定（已给出，无需修改） ---------- */
+  var slhTimer = null;
+  document.getElementById("slhSearchInput").addEventListener("input", function () {
+    clearTimeout(slhTimer);
+    slhTimer = setTimeout(slhRefresh, 200);
+  });
+
+  // 排序按钮：事件委托 + querySelectorAll 切换高亮
+  document.getElementById("slhSortBtns").addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn) return;
+    slhCurrentSort = btn.getAttribute("data-slh-sort");
+    this.querySelectorAll("button").forEach(function (b) { b.classList.remove("slh-active"); });
+    btn.classList.add("slh-active");
+    slhRefresh();
+  });
+
+  /* ---------- 初始化 ---------- */
+  slhRefresh();
+})();
+</script>
+</body>
+</html>

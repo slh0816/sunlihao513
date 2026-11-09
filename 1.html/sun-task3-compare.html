@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务三 · 综合创作｜五件变六件，多一种交互</title>
+<link rel="stylesheet" href="swiper/swiper-bundle.min.css">
+<script src="swiper/swiper-bundle.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#fbf9f6;color:#16181d;
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1080px;margin:0 auto;padding:64px 28px 90px}
+
+/* ── 页头 ── */
+.kicker{font-size:11px;letter-spacing:2.5px;color:#2563eb;font-weight:600;text-transform:uppercase}
+h1{
+  font-family:"Songti SC","Noto Serif SC","Source Han Serif SC","SimSun",serif;
+  font-size:54px;line-height:1.2;letter-spacing:1.5px;font-weight:700;
+  margin:16px 0 10px;color:#12141a;
+}
+.h-sub{
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+  font-size:19px;color:#5b6069;letter-spacing:1.5px;margin-bottom:24px;
+}
+.lead{font-size:14.5px;line-height:2.05;color:#575c66;max-width:770px}
+.meta{display:flex;border-top:1px solid #e6e2da;border-bottom:1px solid #e6e2da;margin-top:36px}
+.meta div{flex:1;padding:15px 0;display:flex;align-items:baseline;gap:9px;border-right:1px solid #eeeae3}
+.meta div:last-child{border-right:0}
+.meta span{font-size:12.5px;color:#8b8f97}
+.meta b{font-size:15px;font-weight:600;color:#16181d}
+
+/* ── 区块 ── */
+.sec{margin-top:58px}
+.sec-t{display:flex;align-items:baseline;gap:13px}
+.sec-t .num{
+  font-size:11.5px;color:#2563eb;font-weight:700;letter-spacing:1.5px;
+  background:#eef4ff;border:1px solid #dbe7ff;border-radius:5px;padding:2px 7px;align-self:center;
+}
+.sec-t h2{font-family:"Songti SC","Noto Serif SC","SimSun",serif;font-size:26px;font-weight:700;letter-spacing:.6px;color:#12141a}
+.sec-d{margin-top:10px;font-size:13.5px;color:#6b7078;line-height:1.95}
+
+/* ── 双列 ── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
+.card{
+  background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:22px 22px 18px;
+  position:relative;overflow:hidden;box-shadow:0 1px 2px rgba(18,20,26,.03);
+}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px}
+.card.gray::before{background:#9aa0a8}
+.card.blue::before{background:#2563eb}
+.card.green::before{background:#16a34a}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.round{font-size:12px;color:#8b8f97;letter-spacing:.5px}
+.chip{font-size:11.5px;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.chip.gray{background:#f4f3f0;color:#6b7078;border:1px solid #e2ded7}
+.chip.blue{background:#eef4ff;color:#1d4ed8;border:1px solid #dbe7ff}
+.chip.green{background:#f0fdf4;color:#15803d;border:1px solid #dcfce7}
+.card h3{font-size:17px;font-weight:700;margin-bottom:9px;letter-spacing:.3px}
+.card p{font-size:13px;line-height:1.9;color:#5b6069}
+code{font-family:"SFMono-Regular",Consolas,"Courier New",monospace;font-size:12px;background:#f1f4f9;color:#2563eb;padding:1px 5px;border-radius:4px}
+
+/* 旧五件缩略图条 */
+.strip{display:flex;gap:6px;margin:14px 0 4px}
+.strip figure{flex:1;min-width:0}
+.strip img{width:100%;height:66px;object-fit:cover;border-radius:5px;display:block;filter:grayscale(.55) contrast(.95)}
+.strip figcaption{font-size:10px;color:#9aa0a8;text-align:center;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.strip .plus{
+  flex:none;width:26px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:#c3c7cd;
+}
+
+/* 大图 */
+.hero{margin-top:14px;border-radius:8px;overflow:hidden;position:relative;background:#eceae5}
+.hero img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+
+/* 领域清单 */
+.fieldmap{margin-top:14px;border:1px solid #eceae5;border-radius:8px;overflow:hidden}
+.fieldmap div{display:flex;gap:10px;padding:6.5px 12px;font-size:12.5px;color:#5b6069;border-bottom:1px solid #f1efea}
+.fieldmap div:last-child{border-bottom:0}
+.fieldmap span{flex:none;width:38px;color:#9aa0a8;font-size:11.5px}
+.fieldmap .gap{background:#f0fdf4;color:#15803d;font-weight:600}
+.fieldmap .gap span{color:#16a34a}
+
+/* ── 轮播 ── */
+.shot{margin-top:16px;border-radius:8px;background:#f4f2ee;padding:14px 12px 30px;overflow:hidden;position:relative}
+.shot .swiper{height:200px;overflow:visible}
+.shot .swiper-slide{height:200px;position:relative;border-radius:6px;overflow:hidden}
+.shot .swiper-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.shot .sw-cap{
+  position:absolute;left:0;right:0;bottom:0;padding:24px 14px 9px;color:#fff;
+  background:linear-gradient(transparent,rgba(8,12,20,.78));pointer-events:none;
+}
+.shot .sw-cap h4{font-size:13.5px;letter-spacing:.6px}
+.shot .swiper-pagination{bottom:-22px}
+.shot .swiper-pagination-bullet{background:#b9b4ac;opacity:.75;width:6px;height:6px;margin:0 3px!important;transition:all .2s}
+.shot .swiper-pagination-bullet-active{background:#2563eb;opacity:1;width:16px;border-radius:4px}
+.shot .swiper-zoom-container{width:100%;height:100%}
+.shot .swiper-zoom-container img{width:100%;height:100%;object-fit:cover}
+
+/* 通栏轮播 */
+.wide{margin-top:24px;border-radius:10px;background:#f4f2ee;padding:18px 18px 16px;overflow:hidden;position:relative}
+.wide .swiper{height:420px;overflow:hidden}
+.wide .swiper-slide{height:420px;position:relative;border-radius:8px;overflow:hidden}
+.wide .swiper-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.wide .sw-cap{position:absolute;left:0;right:0;bottom:0;padding:40px 22px 16px;color:#fff;background:linear-gradient(transparent,rgba(8,12,20,.8));pointer-events:none}
+.wide .sw-cap h4{font-size:19px;letter-spacing:1px}
+.wide .sw-cap p{font-size:12.5px;color:#d7dee8;margin-top:4px}
+.wide .swiper-pagination{position:static;margin-top:14px;bottom:auto}
+.wide .swiper-pagination-bullet{background:#b9b4ac;opacity:.75;width:7px;height:7px;margin:0 4px!important;transition:all .2s}
+.wide .swiper-pagination-bullet-active{background:#2563eb;opacity:1;width:20px;border-radius:4px}
+.wide .swiper-button-next,.wide .swiper-button-prev{
+  width:40px;height:40px;border-radius:50%;background:rgba(18,20,26,.45);color:#fff;
+  --swiper-navigation-size:15px;backdrop-filter:blur(4px);
+}
+
+.nav{display:flex;gap:8px;margin-top:10px;justify-content:center}
+.nav button{
+  border:1px solid #e2ded7;background:#fff;color:#5b6069;font-size:12px;
+  padding:5px 16px;border-radius:999px;cursor:pointer;font-family:inherit;transition:all .2s;
+}
+.nav button:hover{border-color:#2563eb;color:#2563eb}
+
+/* ── 代码 ── */
+.code{
+  margin-top:14px;background:#0f172a;border-radius:8px;padding:13px 16px;
+  font-family:"SFMono-Regular",Consolas,"Courier New",monospace;
+  font-size:11.6px;line-height:1.85;color:#cbd5e1;white-space:pre;overflow:auto;
+}
+.code .k{color:#93c5fd}
+.code .v{color:#fcd34d}
+.code .add{color:#86efac}
+.code .c{color:#64748b}
+
+.readout{margin-top:13px;padding-top:12px;border-top:1px dashed #ece8e1;font-size:12px;color:#6b7078;line-height:1.8}
+.readout b{font-size:13.5px;font-weight:700;color:#16181d}
+.readout .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace}
+
+/* ── 表格 ── */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:13px;table-layout:fixed}
+.tbl col.c1{width:25%}
+.tbl col.c2{width:27%}
+.tbl col.c3{width:48%}
+.tbl th{text-align:left;font-weight:600;color:#8b8f97;font-size:12px;padding:11px 16px;background:#f5f3ef;border-bottom:1px solid #e8e4dd}
+.tbl th:first-child{border-radius:8px 0 0 0}
+.tbl th:last-child{border-radius:0 8px 0 0}
+.tbl td{padding:14px 16px;border-bottom:1px solid #eeeae4;vertical-align:top;line-height:1.8;color:#3f444c}
+.tbl td:first-child{font-weight:700;color:#16181d}
+.tbl .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px}
+.tbl .lit{color:#15803d;font-weight:600}
+
+/* ── 问答 ── */
+.qa{margin-top:20px;border-top:1px solid #e8e4dd}
+.qa-item{padding:18px 0;border-bottom:1px solid #eeeae4}
+.qa-q{display:flex;gap:10px;font-size:14px;font-weight:700;color:#16181d;line-height:1.7}
+.qa-q i{font-style:normal;color:#2563eb;flex:none;font-family:"SFMono-Regular",Consolas,monospace}
+.qa-a{margin-top:8px;padding-left:26px;font-size:13px;line-height:1.95;color:#5b6069}
+.qa-a b{color:#16181d}
+.qa-a .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px}
+
+.note{
+  margin-top:24px;background:#fff;border:1px solid #e8e4dd;border-left:3px solid #2563eb;
+  border-radius:0 10px 10px 0;padding:18px 22px;font-size:13px;line-height:1.95;color:#3f444c;
+}
+.note b{font-weight:700}
+.note .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px}
+
+footer{margin-top:64px;text-align:center;font-size:12px;color:#a3a7ae;line-height:2}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="kicker">高级网页设计 · 课堂作业</div>
+    <h1>任务三</h1>
+    <div class="h-sub">综合创作 · 五件变六件，多一种交互</div>
+    <p class="lead">
+      前两个任务都在改配置，这个任务要往页子里加东西：<b>加一件展品</b>，再<b>加一项课堂没讲过的手感</b>。<br>
+      往四个轮播里各插一张图不难，难的是插完之后 3.2 秒自动播、无缝循环、圆点数量、双击缩放全都要跟着对。下面每一处改动都能在本页点出来。
+    </p>
+    <div class="meta">
+      <div><span>展品</span><b>5 → 6 件</b></div>
+      <div><span>新增交互</span><b>2 项</b></div>
+      <div><span>新增代码</span><b>约 15 行</b></div>
+      <div><span>课堂未讲模块</span><b>2 个</b></div>
+    </div>
+  </header>
+
+  <!-- 01 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">01</span><h2>第六件展品，凭什么挤进来</h2></div>
+    <p class="sec-d">原来五件都是"上天入海"的重器，缺一件海面上的。爱达·魔都号是首艘国产大型邮轮，和航母、LNG 船并称造船业三颗明珠，放在收尾正合适。</p>
+
+    <div class="duo">
+
+      <article class="card gray">
+        <div class="card-head">
+          <span class="round">原有阵容</span>
+          <span class="chip gray">5 件</span>
+        </div>
+        <h3>天上、地上、海底，就是没有海上</h3>
+        <p>天宫、复兴号、C919、奋斗者号、天眼——五个展位分别对应太空、陆地、天空、深海、宇宙深处，唯独漏了最传统的造船。</p>
+
+        <div class="strip">
+          <figure><img src="swiper-imgs/tiangong_1.jpg" alt="天宫"><figcaption>天宫</figcaption></figure>
+          <figure><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号"><figcaption>复兴号</figcaption></figure>
+          <figure><img src="swiper-imgs/c919_1.jpg" alt="C919"><figcaption>C919</figcaption></figure>
+          <figure><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者"><figcaption>奋斗者</figcaption></figure>
+          <figure><img src="swiper-imgs/fast_1.jpg" alt="天眼"><figcaption>天眼</figcaption></figure>
+          <div class="plus">→</div>
+        </div>
+
+        <div class="fieldmap">
+          <div><span>太空</span>天宫空间站</div>
+          <div><span>陆地</span>复兴号动车组</div>
+          <div><span>天空</span>C919 大飞机</div>
+          <div><span>深海</span>奋斗者号</div>
+          <div><span>深空</span>中国天眼 FAST</div>
+          <div class="gap"><span>海上</span>空缺 · 这次补上</div>
+        </div>
+
+        <div class="readout">
+          五张图的尺寸都在 <span class="mono">1000×667</span> 左右，<b>比例得对上</b>，不然轮播里会出现拉伸或黑边。
+        </div>
+      </article>
+
+      <article class="card green">
+        <div class="card-head">
+          <span class="round">新增第 6 件</span>
+          <span class="chip green">AI 生成 · 16:9</span>
+        </div>
+        <h3>爱达·魔都号：海面平稳航行</h3>
+        <p>网上的实拍图要么有版权，要么构图不适合做轮播底图。这张是按 16:9、写实摄影、干净海面、无文字水印这四个条件生成的。</p>
+
+        <div class="hero">
+          <img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号">
+        </div>
+
+        <div class="readout">
+          13.55 万吨 · 2024 年 1 月首航 · <b>首艘国产大型邮轮</b>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="wide">
+      <div class="swiper" id="swFull">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="sw-cap"><h4>天宫空间站</h4><p>2022 年全面建成 · 中国人的太空家园</p></div></div>
+          <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="sw-cap"><h4>复兴号动车组</h4><p>350 km/h · 世界商业运营最高时速</p></div></div>
+          <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919 大飞机"><div class="sw-cap"><h4>C919 大飞机</h4><p>2023 年商业首航 · 国产干线客机翱翔蓝天</p></div></div>
+          <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="sw-cap"><h4>奋斗者号</h4><p>10909 米 · 触碰地球第四极马里亚纳海沟</p></div></div>
+          <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="sw-cap"><h4>中国天眼 FAST</h4><p>500 米口径 · 世界最大单口径射电望远镜</p></div></div>
+          <div class="swiper-slide"><img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号"><div class="sw-cap"><h4>爱达·魔都号</h4><p>13.55 万吨 · 2024 年 1 月首航 · 首艘国产大型邮轮</p></div></div>
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+      <div class="swiper-pagination" id="pagFull"></div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">02</span><h2>两项课堂没讲过的能力</h2></div>
+    <p class="sec-d">课堂上只点了 effect、loop、autoplay、pagination、navigation 这五个。下面两个模块是 Swiper 自带但没讲的，都能直接叠在上面的配置里。</p>
+
+    <div class="duo">
+
+      <article class="card blue">
+        <div class="card-head">
+          <span class="round">新增能力一</span>
+          <span class="chip blue">mousewheel</span>
+        </div>
+        <h3>滚轮只翻轮播，页面照常滚</h3>
+        <p>默认情况下鼠标悬在轮播上滚一下，整页就被带着跑。加 <code>forceToAxis: true</code> 之后，竖向滚轮会被当成横向翻页，页面不再跟着动。</p>
+
+        <div class="shot">
+          <div class="swiper" id="swWheel">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="sw-cap"><h4>天宫空间站</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="sw-cap"><h4>复兴号动车组</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919 大飞机"><div class="sw-cap"><h4>C919 大飞机</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="sw-cap"><h4>奋斗者号</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号"><div class="sw-cap"><h4>爱达·魔都号</h4></div></div>
+            </div>
+            <div class="swiper-pagination" id="pagWheel"></div>
+          </div>
+        </div>
+
+        <div class="readout">
+          把鼠标放到图上，<b>滚一下轮</b>：图会换，页面不动
+        </div>
+
+        <div class="code">mousewheel: {
+  <span class="k add">forceToAxis</span>: <span class="v add">true</span>,
+  <span class="k">sensitivity</span>: <span class="v">1</span>,
+  <span class="k">thresholdDelta</span>: <span class="v">8</span>
+}</div>
+      </article>
+
+      <article class="card blue">
+        <div class="card-head">
+          <span class="round">新增能力二</span>
+          <span class="chip blue">zoom</span>
+        </div>
+        <h3>双击放大，切页自动复位</h3>
+        <p>放大用起来简单，麻烦的是"翻到下一张还停在放大状态"。所以在 <code>slideChangeTransitionStart</code> 里补一句 <code>zoom.out()</code>。</p>
+
+        <div class="shot">
+          <div class="swiper" id="swZoom">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><div class="swiper-zoom-container"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"></div><div class="sw-cap"><h4>天宫空间站</h4></div></div>
+              <div class="swiper-slide"><div class="swiper-zoom-container"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"></div><div class="sw-cap"><h4>复兴号动车组</h4></div></div>
+              <div class="swiper-slide"><div class="swiper-zoom-container"><img src="swiper-imgs/c919_1.jpg" alt="C919 大飞机"></div><div class="sw-cap"><h4>C919 大飞机</h4></div></div>
+              <div class="swiper-slide"><div class="swiper-zoom-container"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"></div><div class="sw-cap"><h4>奋斗者号</h4></div></div>
+              <div class="swiper-slide"><div class="swiper-zoom-container"><img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号"></div><div class="sw-cap"><h4>爱达·魔都号</h4></div></div>
+            </div>
+            <div class="swiper-pagination" id="pagZoom"></div>
+          </div>
+        </div>
+
+        <div class="readout">
+          在图上<b>双击</b>放大到 3 倍，再操作一次复原；翻页也会自动复位
+        </div>
+
+        <div class="code">zoom: { <span class="k">maxRatio</span>: <span class="v">3</span>, <span class="k">minRatio</span>: <span class="v">1</span>, <span class="k">toggle</span>: <span class="v">true</span> },
+<span class="c">// 切页复位</span>
+sw.on(<span class="v">'slideChangeTransitionStart'</span>, <span class="k add">zoom.out</span>);</div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">03</span><h2>加的时候踩到的四个坑</h2></div>
+    <p class="sec-d">这些都是加完页面才发现不对的地方，写在这里比事后忘干净有用。</p>
+
+    <table class="tbl">
+      <colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup>
+      <thead><tr><th>现象</th><th>原因</th><th>怎么改的</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>图片被拉伸变形</td>
+          <td>新图比例和其他五张不一致，直接撑满容器</td>
+          <td>统一按 16:9 生成，容器上配 <span class="mono">object-fit: cover</span></td>
+        </tr>
+        <tr>
+          <td>双击放大没反应</td>
+          <td>img 没包在 <span class="mono">.swiper-zoom-container</span> 里</td>
+          <td>每张图外面加一层该容器，宽高撑满 slide</td>
+        </tr>
+        <tr>
+          <td>底部标题条挡住双击</td>
+          <td>标题条盖在图上，点击被它吃掉了</td>
+          <td>给标题条加 <span class="mono">pointer-events: none</span></td>
+        </tr>
+        <tr>
+          <td>滚轮把整页带着滚</td>
+          <td>mousewheel 没约束方向</td>
+          <td>加 <span class="mono">forceToAxis: true</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 04 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">04</span><h2>技术答辩：四个会被问到的问题</h2></div>
+
+    <div class="qa">
+      <div class="qa-item">
+        <div class="qa-q"><i>Q1</i>为什么新增一张图之后，圆点数量会自动变成 6 个？</div>
+        <div class="qa-a">
+          因为 <span class="mono">pagination</span> 不是按配置里写死的数字渲染的，而是读 DOM 里 <span class="mono">.swiper-slide</span> 的真实数量。
+          只要在 <span class="mono">.swiper-wrapper</span> 里多写一个 slide，圆点、导航、循环范围都会自动跟着变——<b>JS 一行都不用动</b>。
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><i>Q2</i>loop 模式下，为什么偶尔感觉"第 2 张闪了一下"？</div>
+        <div class="qa-a">
+          循环是靠复制首尾幻灯片实现的，复制不够时，快速连翻会露出未准备好的那一份。
+          加 <span class="mono">loopAdditionalSlides: 1</span> 让它多准备一份，配合 <span class="mono">speed</span> 调小，闪动就没了。
+          这也是第一轮配置里唯一真正漏掉的参数。
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><i>Q3</i>为什么 zoom 要额外包一层容器，直接给 img 加不行？</div>
+        <div class="qa-a">
+          zoom 模块是把<b>容器</b>整体做位移和缩放，图片只是它的内容。没有那层容器，Swiper 找不到可变换的节点，
+          双击事件也不会绑定成功。它属于"结构要求"，不是"参数要求"，光调配置永远调不出来。
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><i>Q4</i>切换 effect 为什么必须销毁重建，不能直接改属性？</div>
+        <div class="qa-a">
+          <span class="mono">effect</span> 是初始化参数，实例创建时就把对应的变换逻辑挂上去了。运行中改它不会重新挂载，
+          所以要用 <span class="mono">destroy(true, true)</span> 连 DOM 一起还原，再用新配置 <span class="mono">new Swiper()</span> 建一次。
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>一句总结：</b>这个任务真正考的不是"会不会加图"，而是<b>加完之后有没有回头验一遍</b>。
+      圆点数量、自动播放、循环、双击复位这四件事，只要有一条没看，页面就会在答辩现场出问题。
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">05</span><h2>验收记录</h2></div>
+    <p class="sec-d">以下每一条都在本页和 <code>swiper-task.html</code> 的四个轮播里点过。</p>
+
+    <table class="tbl">
+      <colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup>
+      <thead><tr><th>检查项</th><th>动作</th><th>结论</th></tr></thead>
+      <tbody>
+        <tr><td>六个展品都能显示</td><td class="mono">逐个点圆点</td><td class="lit">6 张无缺失，通过</td></tr>
+        <tr><td>圆点数量同步</td><td class="mono">数圆点个数</td><td class="lit">6 个，通过</td></tr>
+        <tr><td>自动播放仍然 3.2 秒</td><td class="mono">静置观察两轮</td><td class="lit">对得上，通过</td></tr>
+        <tr><td>循环回到第一张</td><td class="mono">从第 6 张再往后翻</td><td class="lit">无缝回到第 1 张，通过</td></tr>
+        <tr><td>滚轮只翻轮播</td><td class="mono">悬停在图上滚动</td><td class="lit">翻页且页面不动，通过</td></tr>
+        <tr><td>双击放大与复位</td><td class="mono">双击后翻页</td><td class="lit">放大 3 倍，切页回原大小，通过</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    高级网页设计 · 课堂作业　|　任务三 · 综合创作　|　24001010513 孙立豪
+  </footer>
+</div>
+
+<script>
+// 01 六件展品 · 通栏
+var swFull = new Swiper('#swFull', {
+  loop: true,
+  loopAdditionalSlides: 1,
+  speed: 700,
+  autoplay: { delay: 3200, disableOnInteraction: false },
+  pagination: { el: '#pagFull', clickable: true },
+  navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
+});
+
+// 02-左 滚轮
+var swWheel = new Swiper('#swWheel', {
+  loop: true,
+  speed: 500,
+  mousewheel: { forceToAxis: true, sensitivity: 1, thresholdDelta: 8 },
+  pagination: { el: '#pagWheel', clickable: true }
+});
+
+// 02-右 双击缩放
+var swZoom = new Swiper('#swZoom', {
+  loop: true,
+  speed: 600,
+  zoom: { maxRatio: 3, minRatio: 1, toggle: true },
+  pagination: { el: '#pagZoom', clickable: true }
+});
+swZoom.on('slideChangeTransitionStart', function(){ swZoom.zoom.out(); });
+</script>
+</body>
+</html>

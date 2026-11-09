@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务一 · 提示词工程师｜一句需求，两版配置</title>
+<link rel="stylesheet" href="swiper/swiper-bundle.min.css">
+<script src="swiper/swiper-bundle.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#fbf9f6;color:#16181d;
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1080px;margin:0 auto;padding:64px 28px 90px}
+
+/* ── 页头 ── */
+.kicker{font-size:11px;letter-spacing:2.5px;color:#2563eb;font-weight:600;text-transform:uppercase}
+h1{
+  font-family:"Songti SC","Noto Serif SC","Source Han Serif SC","SimSun",serif;
+  font-size:54px;line-height:1.2;letter-spacing:1.5px;font-weight:700;
+  margin:16px 0 10px;color:#12141a;
+}
+.h-sub{
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+  font-size:19px;color:#5b6069;letter-spacing:1.5px;margin-bottom:24px;
+}
+.lead{font-size:14.5px;line-height:2.05;color:#575c66;max-width:740px}
+.meta{display:flex;border-top:1px solid #e6e2da;border-bottom:1px solid #e6e2da;margin-top:36px}
+.meta div{flex:1;padding:15px 0;display:flex;align-items:baseline;gap:9px;border-right:1px solid #eeeae3}
+.meta div:last-child{border-right:0}
+.meta span{font-size:12.5px;color:#8b8f97}
+.meta b{font-size:15px;font-weight:600;color:#16181d}
+
+/* ── 区块标题 ── */
+.sec{margin-top:58px}
+.sec-t{display:flex;align-items:baseline;gap:13px}
+.sec-t .num{
+  font-size:11.5px;color:#2563eb;font-weight:700;letter-spacing:1.5px;
+  background:#eef4ff;border:1px solid #dbe7ff;border-radius:5px;padding:2px 7px;
+  align-self:center;
+}
+.sec-t h2{
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+  font-size:26px;font-weight:700;letter-spacing:.6px;color:#12141a;
+}
+.sec-d{margin-top:10px;font-size:13.5px;color:#6b7078;line-height:1.95}
+
+/* ── 双列卡片 ── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
+.card{
+  background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:22px 22px 18px;
+  position:relative;overflow:hidden;box-shadow:0 1px 2px rgba(18,20,26,.03);
+}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px}
+.card.bad::before{background:#d92d20}
+.card.good::before{background:#15803d}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.round{font-size:12px;color:#8b8f97;letter-spacing:.5px}
+.chip{font-size:11.5px;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.chip.red{background:#fef3f2;color:#b42318;border:1px solid #fecdca}
+.chip.green{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+.card h3{font-size:17px;font-weight:700;margin-bottom:9px;letter-spacing:.3px}
+.card p{font-size:13px;line-height:1.9;color:#5b6069}
+code{
+  font-family:"SFMono-Regular",Consolas,"Courier New",monospace;
+  font-size:12px;background:#f1f4f9;color:#2563eb;padding:1px 5px;border-radius:4px;
+}
+
+/* ── 轮播 ── */
+.shot{margin-top:16px;border-radius:8px;overflow:hidden;background:#f4f2ee}
+.shot .swiper{height:246px}
+.shot .swiper-slide{height:214px;position:relative}
+.shot .swiper-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.shot .sw-cap{
+  position:absolute;left:0;right:0;bottom:0;padding:26px 16px 10px;color:#fff;
+  background:linear-gradient(transparent,rgba(8,12,20,.78));pointer-events:none;
+}
+.shot .sw-cap h4{font-size:14px;letter-spacing:.6px}
+.shot .swiper-pagination{bottom:7px}
+.shot .swiper-pagination-bullet{
+  background:#b9b4ac;opacity:.75;width:6px;height:6px;margin:0 3px!important;transition:all .2s;
+}
+.shot .swiper-pagination-bullet-active{background:#2563eb;opacity:1;width:18px;border-radius:4px}
+
+/* ── 代码块 ── */
+.code{
+  margin-top:14px;background:#0f172a;border-radius:8px;padding:13px 16px;
+  font-family:"SFMono-Regular",Consolas,"Courier New",monospace;
+  font-size:12px;line-height:1.9;color:#cbd5e1;white-space:pre;overflow:auto;
+}
+.code .k{color:#93c5fd}
+.code .v{color:#fcd34d}
+.code .add{color:#86efac}
+
+/* ── 读数 ── */
+.readout{
+  margin-top:13px;padding-top:12px;border-top:1px dashed #ece8e1;
+  font-size:12px;color:#6b7078;line-height:1.8;
+}
+.readout b{font-size:13.5px;font-weight:700;color:#16181d}
+.bad-tip{color:#d92d20;font-weight:600}
+.good-tip{color:#15803d;font-weight:600}
+
+/* ── 表格 ── */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:13px;table-layout:fixed}
+.tbl col.c1{width:23%}
+.tbl col.c2{width:31%}
+.tbl col.c3{width:46%}
+.tbl th{
+  text-align:left;font-weight:600;color:#8b8f97;font-size:12px;
+  padding:11px 16px;background:#f5f3ef;border-bottom:1px solid #e8e4dd;
+}
+.tbl th:first-child{border-radius:8px 0 0 0}
+.tbl th:last-child{border-radius:0 8px 0 0}
+.tbl td{padding:14px 16px;border-bottom:1px solid #eeeae4;vertical-align:top;line-height:1.8;color:#3f444c}
+.tbl td:first-child{font-weight:700;color:#16181d}
+.tbl .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px}
+.tbl .pass{color:#15803d;font-weight:600}
+.tbl .fail{color:#d92d20;font-weight:600}
+
+/* ── 提示词 ── */
+.prompt{border:1px solid #e8e4dd;border-radius:12px;background:#fff;padding:20px 22px}
+.prompt .round{display:block;margin-bottom:10px}
+.prompt-box{
+  background:#f8f6f2;border-left:3px solid #d92d20;padding:12px 15px;
+  font-size:13px;line-height:1.9;color:#3f444c;
+}
+.prompt-box.green{border-left-color:#15803d}
+.prompt ul{list-style:none;margin-top:14px}
+.prompt ul li{font-size:12.5px;color:#5b6069;line-height:2;padding-left:15px;position:relative}
+.prompt ul li::before{content:"·";position:absolute;left:2px;color:#9aa0a8}
+
+.note{
+  margin-top:24px;background:#fff;border:1px solid #e8e4dd;border-left:3px solid #2563eb;
+  border-radius:0 10px 10px 0;padding:18px 22px;font-size:13px;line-height:1.95;color:#3f444c;
+}
+.note b{font-weight:700}
+
+footer{margin-top:64px;text-align:center;font-size:12px;color:#a3a7ae;line-height:2}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="kicker">高级网页设计 · 课堂作业</div>
+    <h1>任务一</h1>
+    <div class="h-sub">提示词工程师 · 一句需求，两版配置</div>
+    <p class="lead">
+      作业要的配置有四条硬指标：首尾相接不中断、3.2 秒自己走一步、被手动碰过也不能停、圆点按下去要真跳转，初始效果还得是 cube。<br>
+      下面两个轮播都是活的：左边喂的是第一版提示词，右边是改过一版。两边的 HTML 一字不差，只差一个配置键。亲手点一点圆点，读数会把结论写给你看。
+    </p>
+    <div class="meta">
+      <div><span>需求条目</span><b>4 条</b></div>
+      <div><span>提示词版本</span><b>2 版</b></div>
+      <div><span>差异键</span><b>1 个</b></div>
+      <div><span>验收方式</span><b>亲手点 + 读实例</b></div>
+    </div>
+  </header>
+
+  <!-- 01 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">01</span><h2>同一段需求，两版配置</h2></div>
+    <p class="sec-d">两个轮播的 HTML 逐字相同，配置只差一个 <code>clickable</code>。点圆点试试，下面那行读数会实时告诉你哪边真的动了。</p>
+
+    <div class="duo">
+
+      <!-- 第 1 轮 -->
+      <article class="card bad">
+        <div class="card-head">
+          <span class="round">第 1 版</span>
+          <span class="chip red">漏了半句</span>
+        </div>
+        <h3>圆点摆上去了，按下去没反应</h3>
+        <p>原话只提了“圆点分页器”这个名词，AI 就按名词办事——把圆点画出来交差，只写了 <code>el</code>，动作那半句没人提，<code>clickable</code> 自然没出现。</p>
+
+        <div class="shot">
+          <div class="swiper" id="sjsSwBad">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="sw-cap"><h4>天宫空间站</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="sw-cap"><h4>复兴号动车组</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919 大飞机"><div class="sw-cap"><h4>C919 大飞机</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="sw-cap"><h4>奋斗者号</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST"><div class="sw-cap"><h4>中国天眼 FAST</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号"><div class="sw-cap"><h4>爱达·魔都号</h4></div></div>
+            </div>
+            <div class="swiper-pagination" id="sjsPagBad"></div>
+          </div>
+        </div>
+
+        <div class="readout">
+          点第 3 个圆点 → 当前索引 <b id="badIdx">0</b> · <span class="bad-tip">没有跳转</span>
+        </div>
+
+        <div class="code">pagination: {
+  <span class="k">el</span>: <span class="v">'#sjsPagBad'</span>
+}</div>
+      </article>
+
+      <!-- 第 2 轮 -->
+      <article class="card good">
+        <div class="card-head">
+          <span class="round">第 2 版</span>
+          <span class="chip green">补上动作</span>
+        </div>
+        <h3>圆点成了开关，按哪张就跳哪张</h3>
+        <p>第二版把名词改成了动作句：“必须能点击直接跳转，不是只能看”。同一个 AI，读懂后立刻补上 <code>clickable: true</code>。</p>
+
+        <div class="shot">
+          <div class="swiper" id="sjsSwGood">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="sw-cap"><h4>天宫空间站</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="sw-cap"><h4>复兴号动车组</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919 大飞机"><div class="sw-cap"><h4>C919 大飞机</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="sw-cap"><h4>奋斗者号</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST"><div class="sw-cap"><h4>中国天眼 FAST</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号"><div class="sw-cap"><h4>爱达·魔都号</h4></div></div>
+            </div>
+            <div class="swiper-pagination" id="sjsPagGood"></div>
+          </div>
+        </div>
+
+        <div class="readout">
+          点第 3 个圆点 → 当前索引 <b id="goodIdx">0</b> · <span class="good-tip">可跳转</span>
+        </div>
+
+        <div class="code">pagination: {
+  <span class="k">el</span>: <span class="v">'#sjsPagGood'</span>,
+  <span class="k add">clickable</span>: <span class="v add">true</span>
+}</div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">02</span><h2>每条要求，落在哪个参数上</h2></div>
+    <p class="sec-d">答辩最怕被追问“你这句话对应哪个键”。下面这张对照表，是我交卷前反复默写过的部分。</p>
+
+    <table class="tbl">
+      <colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup>
+      <thead>
+        <tr><th>需求原话</th><th>落到的参数</th><th>为什么只能是它</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>整圈循环不卡头</td>
+          <td class="mono">loop: true</td>
+          <td>末张再往后翻要接回第一张；不写这条，翻到头就死在最后一张</td>
+        </tr>
+        <tr>
+          <td>3.2 秒自己走一步</td>
+          <td class="mono">autoplay: { delay: 3200 }</td>
+          <td>停顿时长挂在 delay 上，单位毫秒，3.2 秒就填 3200</td>
+        </tr>
+        <tr>
+          <td>被碰过还要接着走</td>
+          <td class="mono">autoplay.disableOnInteraction: false</td>
+          <td>这项缺省是 true，手指一碰定时器就被掐掉；整张表里最容易漏的一行</td>
+        </tr>
+        <tr>
+          <td>圆点按下要跳页</td>
+          <td class="mono">pagination: { el, clickable: true }</td>
+          <td>el 管画在哪，clickable 管能不能按，两个键各干一件事</td>
+        </tr>
+        <tr>
+          <td>一开屏就是立方体</td>
+          <td class="mono">effect: 'cube'</td>
+          <td>effect 只在 new 的时候读一次，事后再改参数不生效，必须销毁重建</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 03 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">03</span><h2>两版提示词，改在了哪</h2></div>
+    <p class="sec-d">第一版做的是“照着字面翻译”，第二版做的是“把动作补全”。真正起作用的，是那句“点了之后要发生什么”。</p>
+
+    <div class="duo">
+      <article class="prompt">
+        <span class="round">第 1 版 · 原文</span>
+        <div class="prompt-box">帮我写一个 Swiper 的初始化配置。要求：循环播放、3.2 秒自动换一张、手动操作后不要停、要有圆点分页器、效果用 cube。</div>
+        <ul>
+          <li>原话给的是名词，没说按下之后要干嘛</li>
+          <li>AI 走最省力路线：能渲染出来就当交差</li>
+          <li>四条里有一条属于“看着像对、上手就废”</li>
+        </ul>
+      </article>
+
+      <article class="prompt">
+        <span class="round">第 2 版 · 原文</span>
+        <div class="prompt-box green">上一版还差一处：那些圆点不光是摆着看，必须能直接点，点到哪个就跳到哪张。其余配置原样别动。</div>
+        <ul>
+          <li>名词改动词：按下 → 跳转</li>
+          <li>顺手堵死歧义：不是装饰，不是只显示</li>
+          <li>圈定改动范围：其余原样，防止它顺手把好的改坏</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="note">
+      <b>答辩要点：</b>如果老师问“第一版为什么漏”，别急着甩锅给模型——需求里只有名词、没有动作。<span class="mono">pagination.el</span> 决定圆点画在哪，<span class="mono">pagination.clickable</span> 决定圆点按不按得动，中文的“分页器”一个词把两件事糊在一起，AI 只能先挑一件做。问题不在它不聪明，在我翻译时少写了半句。
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">04</span><h2>四条需求，逐条验过</h2></div>
+    <p class="sec-d">验收不是把配置念一遍，而是把每条需求在页面上亲手做一次，再读实例状态去对答案。</p>
+
+    <table class="tbl">
+      <colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup>
+      <thead>
+        <tr><th>需求</th><th>验证动作</th><th>实测结论</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>整圈循环</td>
+          <td class="mono">停在末张，再往后点一下</td>
+          <td class="pass">落回第 1 张，通过</td>
+        </tr>
+        <tr>
+          <td>3.2 秒自动走</td>
+          <td class="mono">不动鼠标等三秒，看 realIndex</td>
+          <td class="pass">约 3.2 秒索引 +1，通过</td>
+        </tr>
+        <tr>
+          <td>碰过仍继续</td>
+          <td class="mono">拖动一次后读 autoplay.running</td>
+          <td class="pass">依然是 true，通过</td>
+        </tr>
+        <tr>
+          <td>圆点能按</td>
+          <td class="mono">点第 3 个圆点，看 realIndex 变不变</td>
+          <td><span class="fail">第 1 版纹丝不动（失败）</span> ／ <span class="pass">第 2 版跳到 2，通过</span></td>
+        </tr>
+        <tr>
+          <td>开屏是 cube</td>
+          <td class="mono">读实例 params.effect</td>
+          <td class="pass">输出 'cube'，通过</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    高级网页设计 · 2026-2027-1　|　任务一 · 提示词工程师　|　24001010513 孙立豪
+  </footer>
+</div>
+
+<script>
+var baseCfg = {
+  loop: true,
+  effect: 'cube',
+  speed: 800,
+  cubeEffect: { shadow: true, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 }
+};
+
+// 第 1 轮：只给了 el，没有 clickable；autoplay 也没关掉 disableOnInteraction
+var badCfg = Object.assign({}, baseCfg, {
+  autoplay: { delay: 3200 },
+  pagination: { el: '#sjsPagBad' }
+});
+
+// 第 2 轮：补上 loopAdditionalSlides / disableOnInteraction / clickable
+var goodCfg = Object.assign({}, baseCfg, {
+  loopAdditionalSlides: 1,
+  autoplay: { delay: 3200, disableOnInteraction: false },
+  pagination: { el: '#sjsPagGood', clickable: true }
+});
+
+var badSw  = new Swiper('#sjsSwBad',  badCfg);
+var goodSw = new Swiper('#sjsSwGood', goodCfg);
+
+var badIdx  = document.getElementById('badIdx');
+var goodIdx = document.getElementById('goodIdx');
+
+// 读数：实时显示当前真实索引，点击圆点后数字会变 / 不变，就是证据
+function bindReadout(sw, el){
+  var sync = function(){ el.textContent = sw.realIndex; };
+  sw.on('slideChange', sync);
+  sw.on('paginationRender', sync);
+}
+bindReadout(badSw, badIdx);
+bindReadout(goodSw, goodIdx);
+</script>
+</body>
+</html>

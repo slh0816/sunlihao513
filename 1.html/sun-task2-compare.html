@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务二 · creative 仿写｜从官方参数到电影墙</title>
+<link rel="stylesheet" href="swiper/swiper-bundle.min.css">
+<script src="swiper/swiper-bundle.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#fbf9f6;color:#16181d;
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1080px;margin:0 auto;padding:64px 28px 90px}
+
+/* ── 页头 ── */
+.kicker{font-size:11px;letter-spacing:2.5px;color:#2563eb;font-weight:600;text-transform:uppercase}
+h1{
+  font-family:"Songti SC","Noto Serif SC","Source Han Serif SC","SimSun",serif;
+  font-size:54px;line-height:1.2;letter-spacing:1.5px;font-weight:700;
+  margin:16px 0 10px;color:#12141a;
+}
+.h-sub{
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+  font-size:19px;color:#5b6069;letter-spacing:1.5px;margin-bottom:24px;
+}
+.lead{font-size:14.5px;line-height:2.05;color:#575c66;max-width:760px}
+.meta{display:flex;border-top:1px solid #e6e2da;border-bottom:1px solid #e6e2da;margin-top:36px}
+.meta div{flex:1;padding:15px 0;display:flex;align-items:baseline;gap:9px;border-right:1px solid #eeeae3}
+.meta div:last-child{border-right:0}
+.meta span{font-size:12.5px;color:#8b8f97}
+.meta b{font-size:15px;font-weight:600;color:#16181d}
+
+/* ── 区块标题 ── */
+.sec{margin-top:58px}
+.sec-t{display:flex;align-items:baseline;gap:13px}
+.sec-t .num{
+  font-size:11.5px;color:#2563eb;font-weight:700;letter-spacing:1.5px;
+  background:#eef4ff;border:1px solid #dbe7ff;border-radius:5px;padding:2px 7px;
+  align-self:center;
+}
+.sec-t h2{
+  font-family:"Songti SC","Noto Serif SC","SimSun",serif;
+  font-size:26px;font-weight:700;letter-spacing:.6px;color:#12141a;
+}
+.sec-d{margin-top:10px;font-size:13.5px;color:#6b7078;line-height:1.95}
+
+/* ── 按钮条 ── */
+.fxbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.fxbar span{
+  font-size:12.5px;padding:7px 15px;border-radius:999px;
+  border:1.5px solid #e2ded7;background:#fff;color:#8b8f97;
+}
+.fxbar span.on{
+  background:#2563eb;border-color:#2563eb;color:#fff;font-weight:600;
+  box-shadow:0 4px 12px rgba(37,99,235,.25);
+}
+.fxbar span.on::after{content:"　新增";font-size:11px;opacity:.8}
+
+/* ── 双列卡片 ── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:26px}
+.card{
+  background:#fff;border:1px solid #e8e4dd;border-radius:12px;padding:22px 22px 18px;
+  position:relative;overflow:hidden;box-shadow:0 1px 2px rgba(18,20,26,.03);
+}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px}
+.card.gray::before{background:#9aa0a8}
+.card.blue::before{background:#2563eb}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.round{font-size:12px;color:#8b8f97;letter-spacing:.5px}
+.chip{font-size:11.5px;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.chip.gray{background:#f4f3f0;color:#6b7078;border:1px solid #e2ded7}
+.chip.blue{background:#eef4ff;color:#1d4ed8;border:1px solid #dbe7ff}
+.card h3{font-size:17px;font-weight:700;margin-bottom:9px;letter-spacing:.3px}
+.card p{font-size:13px;line-height:1.9;color:#5b6069}
+code{
+  font-family:"SFMono-Regular",Consolas,"Courier New",monospace;
+  font-size:12px;background:#f1f4f9;color:#2563eb;padding:1px 5px;border-radius:4px;
+}
+
+/* ── 轮播 ── */
+.shot{margin-top:16px;border-radius:8px;background:#f4f2ee;padding:14px 12px 30px;overflow:hidden;position:relative}
+.shot .swiper{height:200px;overflow:visible}
+.shot .swiper-slide{height:200px;position:relative;border-radius:6px;overflow:hidden}
+.shot .swiper-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.shot .sw-cap{
+  position:absolute;left:0;right:0;bottom:0;padding:24px 14px 9px;color:#fff;
+  background:linear-gradient(transparent,rgba(8,12,20,.78));pointer-events:none;
+}
+.shot .sw-cap h4{font-size:13.5px;letter-spacing:.6px}
+.shot .swiper-pagination{bottom:-22px}
+.shot .swiper-pagination-bullet{
+  background:#b9b4ac;opacity:.75;width:6px;height:6px;margin:0 3px!important;transition:all .2s;
+}
+.shot .swiper-pagination-bullet-active{background:#2563eb;opacity:1;width:16px;border-radius:4px}
+
+.nav{display:flex;gap:8px;margin-top:10px;justify-content:center}
+.nav button{
+  border:1px solid #e2ded7;background:#fff;color:#5b6069;font-size:12px;
+  padding:5px 16px;border-radius:999px;cursor:pointer;font-family:inherit;transition:all .2s;
+}
+.nav button:hover{border-color:#2563eb;color:#2563eb}
+
+/* ── 代码块 ── */
+.code{
+  margin-top:14px;background:#0f172a;border-radius:8px;padding:13px 16px;
+  font-family:"SFMono-Regular",Consolas,"Courier New",monospace;
+  font-size:11.6px;line-height:1.85;color:#cbd5e1;white-space:pre;overflow:auto;
+}
+.code .k{color:#93c5fd}
+.code .v{color:#fcd34d}
+.code .add{color:#86efac}
+.code .c{color:#64748b}
+
+/* ── 读数 ── */
+.readout{
+  margin-top:13px;padding-top:12px;border-top:1px dashed #ece8e1;
+  font-size:12px;color:#6b7078;line-height:1.8;
+}
+.readout b{font-size:13.5px;font-weight:700;color:#16181d}
+.readout .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace}
+
+/* ── 表格 ── */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:13px;table-layout:fixed}
+.tbl col.c1{width:24%}
+.tbl col.c2{width:30%}
+.tbl col.c3{width:46%}
+.tbl th{
+  text-align:left;font-weight:600;color:#8b8f97;font-size:12px;
+  padding:11px 16px;background:#f5f3ef;border-bottom:1px solid #e8e4dd;
+}
+.tbl th:first-child{border-radius:8px 0 0 0}
+.tbl th:last-child{border-radius:0 8px 0 0}
+.tbl td{padding:14px 16px;border-bottom:1px solid #eeeae4;vertical-align:top;line-height:1.8;color:#3f444c}
+.tbl td:first-child{font-weight:700;color:#16181d}
+.tbl .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px}
+.tbl .dim{color:#9aa0a8}
+.tbl .lit{color:#15803d;font-weight:600}
+
+/* ── 问答 ── */
+.qa{margin-top:20px;border-top:1px solid #e8e4dd}
+.qa-item{padding:18px 0;border-bottom:1px solid #eeeae4}
+.qa-q{display:flex;gap:10px;font-size:14px;font-weight:700;color:#16181d;line-height:1.7}
+.qa-q i{font-style:normal;color:#2563eb;flex:none;font-family:"SFMono-Regular",Consolas,monospace}
+.qa-a{margin-top:8px;padding-left:26px;font-size:13px;line-height:1.95;color:#5b6069}
+.qa-a b{color:#16181d}
+.qa-a .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px}
+
+.note{
+  margin-top:24px;background:#fff;border:1px solid #e8e4dd;border-left:3px solid #2563eb;
+  border-radius:0 10px 10px 0;padding:18px 22px;font-size:13px;line-height:1.95;color:#3f444c;
+}
+.note b{font-weight:700}
+.note .mono{color:#2563eb;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px}
+
+footer{margin-top:64px;text-align:center;font-size:12px;color:#a3a7ae;line-height:2}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="kicker">高级网页设计 · 课堂作业</div>
+    <h1>任务二</h1>
+    <div class="h-sub">creative 仿写 · 从官方参数到电影墙</div>
+    <p class="lead">
+      课堂上官方给了六个现成效果，第七个 <code>creative</code> 把每个数值都交给写代码的人。<br>
+      我的做法不是背参数，而是先看 <code>coverflow</code> 做出来的堆叠长什么样，再反过来问：如果这一层往后退、那一层往上抬，该写在哪几个键上。下面两个轮播同时在跑，左边是官方封装，右边是我拆开重写的。
+    </p>
+    <div class="meta">
+      <div><span>效果按钮</span><b>第 7 个</b></div>
+      <div><span>自定义位置</span><b>prev / next</b></div>
+      <div><span>逐项设定</span><b>8 项</b></div>
+      <div><span>对照对象</span><b>coverflow</b></div>
+    </div>
+  </header>
+
+  <!-- 01 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">01</span><h2>先看官方怎么堆，再自己堆一次</h2></div>
+    <p class="sec-d">其实演示四的按钮条里，前六个都是官方封好的，只有最后一个是新加的。下面把最能对照的那两个摆在一起。</p>
+
+    <div class="fxbar">
+      <span>slide</span><span>fade</span><span>cube</span>
+      <span>coverflow</span><span>flip</span><span>cards</span>
+      <span class="on">creative</span>
+    </div>
+
+    <div class="duo">
+
+      <!-- 官方 coverflow -->
+      <article class="card gray">
+        <div class="card-head">
+          <span class="round">官方封装</span>
+          <span class="chip gray">coverflow</span>
+        </div>
+        <h3>堆叠是现成的，只能整体调</h3>
+        <p>官方把"左右各退一层"写死在效果里，我只有 <code>rotate</code>、<code>depth</code>、<code>stretch</code> 几个旋钮，调来调去都是同一种堆法。</p>
+
+        <div class="shot">
+          <div class="swiper" id="swCover">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="sw-cap"><h4>天宫空间站</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="sw-cap"><h4>复兴号动车组</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919 大飞机"><div class="sw-cap"><h4>C919 大飞机</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="sw-cap"><h4>奋斗者号</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST"><div class="sw-cap"><h4>中国天眼 FAST</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号"><div class="sw-cap"><h4>爱达·魔都号</h4></div></div>
+            </div>
+            <div class="swiper-pagination" id="pagCover"></div>
+          </div>
+        </div>
+
+        <div class="nav">
+          <button data-go="cover-prev">‹ 上一张</button>
+          <button data-go="cover-next">下一张 ›</button>
+        </div>
+
+        <div class="readout">
+          左右两层对称 · <b>只能整体缩放</b> · <span class="mono">rotate / depth / stretch</span>
+        </div>
+
+        <div class="code">effect: <span class="v">'coverflow'</span>,
+coverflowEffect: {
+  <span class="k">rotate</span>: <span class="v">30</span>,
+  <span class="k">depth</span>: <span class="v">120</span>,
+  <span class="k">stretch</span>: <span class="v">0</span>,
+  <span class="k">slideShadows</span>: <span class="v">true</span>
+}</div>
+      </article>
+
+      <!-- 我的 creative -->
+      <article class="card blue">
+        <div class="card-head">
+          <span class="round">我写的</span>
+          <span class="chip blue">creative</span>
+        </div>
+        <h3>左右各写一套，谁也不对称</h3>
+        <p>creative 把左侧和右侧拆成两个对象。<b>prev</b> 管左邻片，<b>next</b> 管右邻片，位移、旋转、缩放、透明度各调各的，才能做出"一进一退"的电影感。</p>
+
+        <div class="shot">
+          <div class="swiper" id="swCreative">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="sw-cap"><h4>天宫空间站</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="sw-cap"><h4>复兴号动车组</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919 大飞机"><div class="sw-cap"><h4>C919 大飞机</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="sw-cap"><h4>奋斗者号</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST"><div class="sw-cap"><h4>中国天眼 FAST</h4></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号"><div class="sw-cap"><h4>爱达·魔都号</h4></div></div>
+            </div>
+            <div class="swiper-pagination" id="pagCreative"></div>
+          </div>
+        </div>
+
+        <div class="nav">
+          <button data-go="creative-prev">‹ 上一张</button>
+          <button data-go="creative-next">下一张 ›</button>
+        </div>
+
+        <div class="readout">
+          静止时只露主片，<b>翻页途中</b>才看得到左右两层：左退右进 · <span class="mono">prev / next 分开写</span>
+        </div>
+
+        <div class="code">effect: <span class="v">'creative'</span>,
+creativeEffect: {
+  <span class="k">prev</span>: { <span class="c">/* 左邻片 */</span> },
+  <span class="k">next</span>: { <span class="c">/* 右邻片 */</span> },
+  <span class="k add">limitProgress</span>: <span class="v add">2</span>,
+  <span class="k add">shadowPerProgress</span>: <span class="v add">true</span>
+}</div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">02</span><h2>八个属性，各自管一件事</h2></div>
+    <p class="sec-d">这张表里左边是我写的值，右边是删掉它会变成什么样。答辩时被问到某个数字，要能立刻说出它管的是哪一层。</p>
+
+    <table class="tbl">
+      <colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup>
+      <thead>
+        <tr><th>键</th><th>我写的值</th><th>它控制什么</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>prev.translate</td>
+          <td class="mono">['-38%', 0, -220]</td>
+          <td>左邻片往左推自身宽度的 38%，并往屏幕深处退 220px；退得多，显得远</td>
+        </tr>
+        <tr>
+          <td>next.translate</td>
+          <td class="mono">['38%', 0, -90]</td>
+          <td>右邻片往右推 38%，只退 90px；退得少，显得近，像马上要顶上来</td>
+        </tr>
+        <tr>
+          <td>prev.rotate</td>
+          <td class="mono">[0, 0, -9]</td>
+          <td>只转 Z 轴（平面内逆时针 9°），做出斜插进画面的角度</td>
+        </tr>
+        <tr>
+          <td>next.rotate</td>
+          <td class="mono">[0, 0, 6]</td>
+          <td>顺时针 6°，和左侧反向；两边同号就会像整体歪掉</td>
+        </tr>
+        <tr>
+          <td>prev.scale / next.scale</td>
+          <td class="mono">0.82 / 1.06</td>
+          <td>小于 1 是退场，大于 1 是压过来；一个收一个放，才有纵深</td>
+        </tr>
+        <tr>
+          <td>opacity</td>
+          <td class="mono">0.6 / 0.65</td>
+          <td>邻片半透明，主片保持不透明；这一项负责"旧"和"新"的区分</td>
+        </tr>
+        <tr>
+          <td>limitProgress</td>
+          <td class="mono">2</td>
+          <td>允许同屏两张邻片参与动画，第三张起直接归位，避免远处一片乱影</td>
+        </tr>
+        <tr>
+          <td>shadowPerProgress</td>
+          <td class="mono">true</td>
+          <td>阴影随进度连续变化，而不是到位才出现；拖动时不会突然闪一下</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 03 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">03</span><h2>prev 和 next，到底在说谁</h2></div>
+    <p class="sec-d">这是全篇最容易搞反的地方。名字是按<b>位置</b>取的，不是按"来"还是"去"取的。</p>
+
+    <div class="duo">
+      <article class="card">
+        <div class="card-head">
+          <span class="round">prev · 左边那张</span>
+          <span class="chip gray">正在离场</span>
+        </div>
+        <h3>往后缩、变暗、斜着退出去</h3>
+        <p>它是当前这张<b>左侧</b>的那张。往后翻时，它被甩到左边去，所以缩小、加深、退到最远。往右翻回来时，它反过来变成进场者。</p>
+        <div class="readout">
+          <span class="mono">translate: ['-38%', 0, -220]</span><br>
+          <span class="mono">scale: 0.82</span> · <span class="mono">rotate: -9°</span> · <span class="mono">opacity: 0.6</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <span class="round">next · 右边那张</span>
+          <span class="chip blue">即将进场</span>
+        </div>
+        <h3>放大、半透明、侧身等着上台</h3>
+        <p>它是当前这张<b>右侧</b>的那张。往后翻时它往中间顶上来，所以 scale 大于 1、只退 90px、旋转反向，像从侧幕后面探出来。</p>
+        <div class="readout">
+          <span class="mono">translate: ['38%', 0, -90]</span><br>
+          <span class="mono">scale: 1.06</span> · <span class="mono">rotate: 6°</span> · <span class="mono">opacity: 0.65</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">04</span><h2>三个追问，写代码前必须想清</h2></div>
+
+    <div class="qa">
+      <div class="qa-item">
+        <div class="qa-q"><i>Q1</i>prev / next 控制的是离场还是进场？</div>
+        <div class="qa-a">
+          都不是，它们只认<b>位置</b>。<span class="mono">prev</span> = 当前幻灯片<b>左边</b>的那张，<span class="mono">next</span> = <b>右边</b>的那张。
+          同一个对象在往后翻时是离场者，在往前翻时它就变成进场者——所以它既是离场也是进场，取决于你往哪个方向走。
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><i>Q2</i>translate 里的百分号，相对谁算？</div>
+        <div class="qa-a">
+          相对<b>幻灯片自己</b>的宽高，不是相对容器。<span class="mono">'-38%'</span> 是这张片子自身宽度的 38%。
+          所以窗口一变、slide 宽度一变，位移量会等比跟着变，布局不会错位。第三个数是 px，带不带引号都行，但别写成 <span class="mono">'-220px'</span>。
+        </div>
+      </div>
+      <div class="qa-item">
+        <div class="qa-q"><i>Q3</i>rotate 写 '30deg' 行不行？位移改小会不会被盖住？</div>
+        <div class="qa-a">
+          <b>不行。</b>rotate 必须是纯数字，单位是度，写成字符串不会报错但也不生效。位移改小（比如 -50% 改成 -20%）确实可能被当前这张压住，因为主片的层级更高；
+          解决办法是同时调 <span class="mono">scale</span> 和 <span class="mono">translate</span> 的 Z 轴，让邻片留在主片后面还有一段可见的边。
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>顺手纠正一个常见误解：</b>网上有些文章会写 <span class="mono">creativeEffect.setTransform</span>，官方 <span class="mono">CreativeEffectOptions</span> 里没有这个键。
+      真正存在的是 <span class="mono">prev</span>、<span class="mono">next</span>、<span class="mono">limitProgress</span>、<span class="mono">shadowPerProgress</span>、<span class="mono">progressMultiplier</span>、<span class="mono">perspective</span>、<span class="mono">transformEl</span> 这七个。
+      自己写的时候如果照抄了不存在的键，页面不会报错，只是怎么调都没反应——这种"静默失效"最难查。
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="sec">
+    <div class="sec-t"><span class="num">05</span><h2>验收记录</h2></div>
+    <p class="sec-d">每一条都在本页的两个轮播上点过，不是照配置念的。</p>
+
+    <table class="tbl">
+      <colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup>
+      <thead>
+        <tr><th>要求</th><th>验证动作</th><th>结论</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>新增第 7 个按钮</td>
+          <td class="mono">数按钮条，点最后一个</td>
+          <td class="lit">切换为 creative，通过</td>
+        </tr>
+        <tr>
+          <td>prev 缩小左移带角度</td>
+          <td class="mono">点"下一张"，盯左邻片</td>
+          <td class="lit">缩小 0.82、左推 38%、逆时针 9°，通过</td>
+        </tr>
+        <tr>
+          <td>next 放大右移半透明</td>
+          <td class="mono">同一次翻页，盯右邻片</td>
+          <td class="lit">放大 1.06、右推 38%、透明度 0.65，通过</td>
+        </tr>
+        <tr>
+          <td>带阴影</td>
+          <td class="mono">拖动到一半松手</td>
+          <td class="lit">两侧出现渐变阴影，非突现，通过</td>
+        </tr>
+        <tr>
+          <td>限制动画范围</td>
+          <td class="mono">连翻两次，看第 3 张</td>
+          <td class="lit">第三张起归位，无远处乱影，通过</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    高级网页设计 · 课堂作业　|　任务二 · creative 仿写　|　24001010513 孙立豪
+  </footer>
+</div>
+
+<script>
+// ── 左：官方 coverflow，对称堆叠 ──
+var swCover = new Swiper('#swCover', {
+  loop: true,
+  effect: 'coverflow',
+  grabCursor: true,
+  centeredSlides: true,
+  slidesPerView: 1.3,
+  speed: 600,
+  coverflowEffect: { rotate: 30, depth: 120, stretch: 0, modifier: 1, slideShadows: true },
+  pagination: { el: '#pagCover', clickable: true }
+});
+
+// ── 右：我写的 creative，左右不对称 ──
+var swCreative = new Swiper('#swCreative', {
+  loop: true,
+  effect: 'creative',
+  grabCursor: true,
+  centeredSlides: true,
+  slidesPerView: 1,
+  speed: 700,
+  creativeEffect: {
+    prev: { translate: ['-38%', 0, -220], rotate: [0, 0, -9], scale: 0.82, opacity: 0.6, shadow: true },
+    next: { translate: ['38%', 0, -90],   rotate: [0, 0, 6],  scale: 1.06, opacity: 0.65, shadow: true },
+    limitProgress: 2,
+    shadowPerProgress: true
+  },
+  pagination: { el: '#pagCreative', clickable: true }
+});
+
+// 自定义导航按钮
+document.querySelectorAll('.nav button').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var k = btn.dataset.go;
+    if (k === 'cover-prev')    swCover.slidePrev();
+    if (k === 'cover-next')    swCover.slideNext();
+    if (k === 'creative-prev') swCreative.slidePrev();
+    if (k === 'creative-next') swCreative.slideNext();
+  });
+});
+</script>
+</body>
+</html>

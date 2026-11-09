@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=79d26393-62ab-444a-8959-428cbb6234de
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H5语义布局与CSS动画 课后实践作业</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "Microsoft Yahei",sans‑serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.7;
+            padding: 30px;
+        }
+        .container {
+            width: 1100px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px #00000018;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2774bd;
+            padding-bottom:12px;
+        }
+        h2 {
+            margin:24px 0 12px;
+            color:#2774bd;
+        }
+        h3{
+            margin:16px 0 8px;
+        }
+        .warn{
+            background:#fff3cd;
+            border-left:5px solid #ffc107;
+            padding:14px 18px;
+            margin:16px 0;
+        }
+        pre{
+            background:#282c34;
+            color:#abb2bf;
+            padding:18px;
+            border-radius:6px;
+            overflow-x:auto;
+            margin:12px 0;
+        }
+        table{
+            border-collapse:collapse;
+            width:100%;
+            margin:12px 0;
+        }
+        table th,table td{
+            border:1px solid #ccc;
+            padding:10px 14px;
+        }
+        table th{
+            background:#e8f4fc;
+        }
+        .score-item{
+            margin:8px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>H5语义布局 + 溢出/隐藏过渡动画 实践作业</h1>
+
+    <div class="warn">
+        <strong>⚠️重要要求：</strong>禁止直接复制AI生成完整网页代码。提交材料:①可运行HTML文件;②代码关键位置手写注释；③完成页面上的简答思考题。
+    </div>
+
+    <h2>考察知识点</h2>
+    <ul>
+        <li>H5语义化标签 header / nav / main / aside / footer</li>
+        <li>Flex布局,页面禁止使用float浮动</li>
+        <li>子绝父相定位、z-index层级控制</li>
+        <li>overflow溢出裁切、transform缩放溢出动画</li>
+        <li>transition过渡实现元素隐藏与展开动画</li>
+        <li>动画不能遮挡相邻卡片元素</li>
+    </ul>
+
+    <h2>第一部分;看代码找错（20分）</h2>
+    <p>下面的代码片段存在3处bug，会分别出现这些现象：</p>
+    <ol>
+        <li>图片放大跑出卡片，盖住旁边卡片</li>
+        <li>文字展开只有移入有动画，鼠标移出无过渡效果</li>
+        <li>卡片布局排版错乱</li>
+    </ol>
+    <p>任务：标出错误位置，写出修改后的代码行。</p>
+<pre>
+&lt;style&gt;
+  .box li{
+    width: 300px;
+  }
+  .box img{
+    width: 100%;
+  }
+  .box li:hover img{
+    transform: scale(1.2);
+    transition: all .6s;
+  }
+  .txt{
+    position: absolute;
+    bottom: 0;
+    height: 40px;
+    background: rgba(0,0,0,.6);
+  }
+  .box{
+    display: flex;
+  }
+&lt;/style&gt;
+</pre>
+
+    <h2>第二部分：补全代码（40分）</h2>
+    <h3>2.1 语义标签填空</h3>
+    <ul>
+        <li>页面顶部头部区域 → &lt;____&gt;</li>
+        <li>导航条 → &lt;____&gt;</li>
+        <li>页面唯一主要内容区 → &lt;____&gt;</li>
+        <li>侧边栏附属内容 → &lt;____&gt;</li>
+        <li>页面底部版权页脚 → &lt;____&gt;</li>
+    </ul>
+
+    <h3>2.2 卡片动画补全</h3>
+    <p>制作6张图文卡片，实现上图下文，悬浮图上文字展开效果。</p>
+    <table>
+        <tr>
+            <th>需要实现效果</th>
+            <th>填写关键CSS代码 / 答案</th>
+        </tr>
+        <tr>
+            <td>防止放大图片溢出li容器</td>
+            <td>li添加属性：________</td>
+        </tr>
+        <tr>
+            <td>子绝父相，让文字条定位在卡片底部</td>
+            <td>li添加属性：________</td>
+        </tr>
+        <tr>
+            <td>hover图片从原始大小放大到 scale(1.2)</td>
+            <td>需要写哪两个选择器：________</td>
+        </tr>
+        <tr>
+            <td>文字高度平滑展开，移入移出都有动画。transition写在默认还是hover？为什么？</td>
+            <td>________________________________</td>
+        </tr>
+        <tr>
+            <td>奇数卡片悬浮，文字铺满整张卡片</td>
+            <td>使用什么伪类选择器：________</td>
+        </tr>
+    </table>
+
+    <h3>2.3 flex两栏布局填空</h3>
+    <p>版心1200px；主内容792px，侧边栏400px；两栏间隔8px。</p>
+    <ul>
+        <li>父容器开启flex：display:________</li>
+        <li>设置两栏间隙8px的属性：________（禁止margin）</li>
+    </ul>
+
+    <h2>第三部分：手写原理简答（25分）</h2>
+    <ol>
+        <li>画图：画出父元素position:relative，子元素position:absolute的盒子位置关系。画图后截图贴入作业。</li>
+        <li>overflow:hidden本节课两个作用分别是什么？
+            <ul>
+                <li>作用1：________________</li>
+                <li>作用2：________________</li>
+            </ul>
+        </li>
+        <li>transform:scale(1.2)会不会把盒子实际占位变大，挤压旁边卡片？说明原因。</li>
+        <li>transition写在hover上，和写普通选择器上，鼠标移出动画有什么区别？</li>
+        <li>记录自己写代码遇到的1个bug：描述现象，排查过程，修复方法（不少于30字）</li>
+    </ol>
+
+    <h2>第四部分：扩展挑战（选做，15分加分）</h2>
+    <p>实现左下角回到顶部按钮，不允许JS，只用CSS：</p>
+    <ul>
+        <li>position:fixed固定在视口左下角</li>
+        <li>初始opacity:0.5半透明</li>
+        <li>hover完全不透明，同时轻微放大</li>
+        <li>设置z-index保证按钮浮于页面内容之上</li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ==================== 本次前端CSS试卷全部答案 ==================== -->
+    <h2 style="margin-top:40px; border-top:3px solid #2774bd; padding-top:20px;"> 试卷答案</h2>
+
+    <h3>第一部分：看代码找错（20分）</h3>
+    <p>共3处bug，逐一分析如下：</p>
+
+    <h3> Bug 1：图片放大跑出卡片，盖住旁边卡片</h3>
+    <p><strong>错误位置：</strong><code>.box li</code> 缺少 <code>overflow: hidden</code> 和 <code>position: relative</code></p>
+    <p><strong>原因：</strong>图片 hover 时 scale(1.2) 放大后超出 li 容器边界，没有裁切；同时文字条 .txt 使用 position:absolute 但 li 没有设置 position:relative 作为定位父级。</p>
+    <p><strong>修改后代码：</strong></p>
+<pre>
+.box li{
+  width: 300px;
+  overflow: hidden;          /* 裁切放大溢出的图片 */
+  position: relative;        /* 为 .txt 的 absolute 定位提供父级 */
+}
+</pre>
+
+    <h3> Bug 2：文字展开只有移入有动画，鼠标移出无过渡效果</h3>
+    <p><strong>错误位置：</strong><code>transition: all .6s;</code> 写在了 <code>.box li:hover img</code> 里</p>
+    <p><strong>原因：</strong>transition 写在 hover 选择器上，只有鼠标移入时才生效；鼠标移出时 hover 状态消失，transition 也随之消失，因此没有过渡动画。</p>
+    <p><strong>修改后代码：</strong></p>
+<pre>
+.box img{
+  width: 100%;
+  transition: all .6s;       /* transition 写在默认选择器上，移入移出都有动画 */
+}
+.box li:hover img{
+  transform: scale(1.2);
+  /* transition 不再写在这里 */
+}
+</pre>
+
+    <h3> Bug 3：卡片布局排版错乱</h3>
+    <p><strong>错误位置：</strong><code>.box</code> 的 <code>display: flex</code> 缺少 <code>flex-wrap: wrap</code></p>
+    <p><strong>原因：</strong>flex 默认不换行（flex-wrap: nowrap），所有 li 会被挤在一行，导致布局错乱。</p>
+    <p><strong>修改后代码：</strong></p>
+<pre>
+.box{
+  display: flex;
+  flex-wrap: wrap;           /* 允许卡片换行排列 */
+}
+</pre>
+
+    <h3>第二部分：补全代码（40分）</h3>
+
+    <h3>2.1 语义标签填空</h3>
+    <table>
+        <tr>
+            <th>区域</th>
+            <th>语义标签</th>
+        </tr>
+        <tr><td>页面顶部头部区域</td><td><code>&lt;header&gt;</code></td></tr>
+        <tr><td>导航条</td><td><code>&lt;nav&gt;</code></td></tr>
+        <tr><td>页面唯一主要内容区</td><td><code>&lt;main&gt;</code></td></tr>
+        <tr><td>侧边栏附属内容</td><td><code>&lt;aside&gt;</code></td></tr>
+        <tr><td>页面底部版权页脚</td><td><code>&lt;footer&gt;</code></td></tr>
+    </table>
+
+    <h3>2.2 卡片动画补全</h3>
+    <table>
+        <tr>
+            <th>需要实现效果</th>
+            <th>关键CSS代码 / 答案</th>
+        </tr>
+        <tr>
+            <td>防止放大图片溢出li容器</td>
+            <td><code>overflow: hidden;</code></td>
+        </tr>
+        <tr>
+            <td>子绝父相，让文字条定位在卡片底部</td>
+            <td><code>position: relative;</code></td>
+        </tr>
+        <tr>
+            <td>hover图片从原始大小放大到 scale(1.2)</td>
+            <td>需要写两个选择器：<code>.box img</code>（默认状态）和 <code>.box li:hover img</code>（hover状态）</td>
+        </tr>
+        <tr>
+            <td>文字高度平滑展开，移入移出都有动画。transition写在默认还是hover？为什么？</td>
+            <td>写在<strong>默认选择器</strong>上。因为 transition 写在 hover 上时，鼠标移出 hover 状态消失，transition 属性也随之失效，移出时没有过渡动画；写在默认选择器上则移入移出都能触发过渡。</td>
+        </tr>
+        <tr>
+            <td>奇数卡片悬浮，文字铺满整张卡片</td>
+            <td>使用伪类选择器：<code>:nth-child(odd)</code>，即 <code>.box li:nth-child(odd):hover .txt</code></td>
+        </tr>
+    </table>
+
+    <h3>2.3 flex两栏布局填空</h3>
+    <table>
+        <tr>
+            <th>题目</th>
+            <th>答案</th>
+        </tr>
+        <tr>
+            <td>父容器开启flex：display:________</td>
+            <td><code>flex</code></td>
+        </tr>
+        <tr>
+            <td>设置两栏间隙8px的属性：________（禁止margin）</td>
+            <td><code>gap: 8px;</code></td>
+        </tr>
+    </table>
+
+    <h3>第三部分：手写原理简答（25分）</h3>
+
+    <h3>1. 子绝父相盒子位置关系图</h3>
+    <p>父元素设置 <code>position: relative</code> 后，子元素设置 <code>position: absolute</code>，子元素的定位参考点是父元素的内容区域左上角（而非整个页面）。</p>
+<pre>
+─────────────────────────────┐  ← 父元素 position:relative
+│  ┌──────────┐               │
+│  │ 子元素    │               │  ← 子元素 position:absolute
+│  │absolute  │               │     相对于父元素定位
+│  ──────────┘               │
+│                             │
+└─────────────────────────────┘
+</pre>
+
+    <h3>2. overflow:hidden 本节课两个作用</h3>
+    <ul>
+        <li><strong>作用1：</strong>裁切溢出内容 —— 当子元素尺寸超出父元素时（如图片 scale 放大），隐藏超出部分，防止溢出遮挡相邻元素。</li>
+        <li><strong>作用2：</strong>创建 BFC（块级格式化上下文） —— 使父元素能够包含浮动的子元素，同时为 position:absolute 的子元素提供定位参考（配合 position:relative 使用）。</li>
+    </ul>
+
+    <h3>3. transform:scale(1.2) 会不会把盒子实际占位变大？</h3>
+    <p><strong>不会。</strong>transform: scale() 只是视觉上的缩放变换，属于 GPU 加速的渲染层变换，不会改变元素在文档流中的实际尺寸和占位。因此不会挤压或影响旁边卡片的布局位置。这也是为什么需要配合 overflow:hidden 来裁切视觉上溢出的部分。</p>
+
+    <h3>4. transition 写在 hover 上 vs 写在普通选择器上的区别</h3>
+    <p><strong>写在 hover 选择器上：</strong>鼠标移入时有过渡动画，但鼠标移出时 hover 状态立即消失，transition 属性也随之失效，因此移出时<strong>没有过渡动画</strong>，元素瞬间恢复原状。</p>
+    <p><strong>写在普通（默认）选择器上：</strong>无论鼠标移入还是移出，transition 属性始终存在，因此移入和移出<strong>都有平滑的过渡动画</strong>。</p>
+
+    <h3>5. 代码bug记录</h3>
+    <p><strong>现象：</strong>卡片中图片 hover 放大后，图片超出了卡片边界，覆盖到了旁边相邻的卡片内容。</p>
+    <p><strong>排查过程：</strong>首先检查了图片的 transform: scale(1.2) 是否正确，确认放大效果本身没问题。然后检查父元素 li 的样式，发现没有设置 overflow 属性。再检查 .txt 文字条的定位，发现 li 也没有设置 position:relative。</p>
+    <p><strong>修复方法：</strong>在 .box li 中添加 overflow:hidden 裁切溢出图片，同时添加 position:relative 为文字条的绝对定位提供父级参考。</p>
+
+    <h3>第四部分：扩展挑战 —— 回到顶部CSS代码（15分加分）</h3>
+    <p>纯CSS实现左下角回到顶部按钮，利用 <code>:target</code> 伪类和锚点跳转：</p>
+<pre>
+/* 回到顶部按钮样式 */
+.back-to-top {
+  position: fixed;          /* 固定在视口左下角 */
+  left: 20px;
+  bottom: 20px;
+  opacity: 0.5;             /* 初始半透明 */
+  z-index: 999;             /* 保证浮于页面内容之上 */
+  transition: all 0.3s;     /* 平滑过渡动画 */
+  text-decoration: none;
+  color: #fff;
+  background: #2774bd;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 50px;
+  font-size: 20px;
+}
+.back-to-top:hover {
+  opacity: 1;               /* hover完全不透明 */
+  transform: scale(1.15);   /* 同时轻微放大 */
+}
+
+/* 页面顶部锚点 */
+#top {
+  scroll-behavior: smooth;  /* 平滑滚动（写在html上更佳） */
+}
+html {
+  scroll-behavior: smooth;
+}
+</pre>
+    <p><strong>HTML用法：</strong>在页面顶部添加 <code>&lt;div id="top"&gt;&lt;/div&gt;</code>，在页面任意位置放置 <code>&lt;a href="#top" class="back-to-top"&gt;↑&lt;/a&gt;</code>，点击即可回到顶部。</p>
+
+    <!-- ==================== 答案结束 ==================== -->
+
+</div>
+</body>
+</html>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="79d26393-62ab-444a-8959-428cbb6234de" data-app-host="app.netlify.com"></script>
+
+
+
+
