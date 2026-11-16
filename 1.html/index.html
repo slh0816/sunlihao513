@@ -68,6 +68,8 @@
         .subdir-list span { color: var(--ink); font-size: 1.05rem; }
         .subdir-list a:hover span { color: var(--blue); }
         .subdir-list em { grid-column: 2; color: var(--muted); font: normal 12.5px "Trebuchet MS", sans-serif; }
+        .subdir-list.slh_five a:nth-child(4) { border-bottom: 1px solid #d9d4c8; }
+        .subdir-list.slh_five a:nth-child(5) { grid-column: 1 / -1; border-right: 0; border-bottom: 0; padding-left: 0; }
         footer { display: flex; justify-content: space-between; padding: 0 0 38px; color: var(--muted); font: 13px "Trebuchet MS", sans-serif; }
         @media (max-width: 650px) { .wrap { width: calc(100% - 28px); } nav { display: none; } .grid { grid-template-columns: 1fr; } .section-title { display: block; } .section-title p { margin-top: 8px; } .subdir-list { grid-template-columns: 1fr; } .subdir-list a:nth-child(odd) { border-right: 0; } .subdir-list a:nth-child(even) { padding-left: 0; } .subdir-list a:nth-last-child(2) { border-bottom: 1px solid #d9d4c8; } footer { display: block; } footer span { display: block; margin-top: 5px; } }
     </style>
@@ -179,12 +181,13 @@
                     <div>
                         <span class="number">18 / MOBILE GESTURE</span>
                         <h3>移动端手势实验</h3>
-                        <p>围绕触摸事件与设备传感器的一组手机页面，从记录事件顺序到手势切换、双指缩放与摇一摇，按四个任务依次进入。</p>
-                        <div class="subdir-list">
+                        <p>围绕触摸事件与设备传感器的一组手机页面，从记录事件顺序到手势切换、双指缩放与摇一摇，按五个任务依次进入。</p>
+                        <div class="subdir-list slh_five">
                             <a href="mobile-probe.html"><b>01</b><span>事件侦探</span><em>记录一次拖动里的事件顺序</em></a>
                             <a href="mobile-gesture.html"><b>02</b><span>手势卡片</span><em>左右滑动切换中华美食卡片</em></a>
                             <a href="mobile-zoom.html"><b>03</b><span>图片查看器</span><em>双指缩放、双击放大与拖动</em></a>
                             <a href="mobile-sensor.html"><b>04</b><span>摇一摇 + 倾斜视差</span><em>加速度摇动抽菜谱，倾斜驱动画面视差</em></a>
+                            <a href="mobile-video.html"><b>05</b><span>操作实录</span><em>四个页面的真机操作录像</em></a>
                         </div>
                     </div>
                 </article>
