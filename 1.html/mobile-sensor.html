@@ -167,7 +167,7 @@
   <header class="slh_head">
     <span class="slh_kicker">任务四 · 摇一摇 + 倾斜视差</span>
     <h1>摇一摇，抽今日菜谱</h1>
-    <p>左右倾斜手机，背景光斑与卡片会分层移动；摇一下，换一道菜。电脑没有加速度计，画面保持静止并走降级按钮。</p>
+    <p>左右倾斜手机，背景光斑与卡片会分层移动；摇一下，换一道菜。电脑没有加速度计，会自动切换为鼠标模拟倾斜。</p>
   </header>
 
   <div class="slh_stage">
@@ -195,8 +195,8 @@
 
   <!-- iOS 13+ 需要用户手势里申请权限 -->
   <div class="slh_perm" id="slh_perm">
-    <button id="slh_permBtn">开启摇一摇</button>
-    <p>iOS 13 起，传感器权限必须由用户点击触发，无法自动申请。</p>
+    <button id="slh_permBtn">开启摇一摇与倾斜视差</button>
+    <p>iOS 13 起，传感器权限必须由用户点击触发。点上面的按钮并在弹窗里选择“允许”。</p>
   </div>
 
   <!-- 降级方案 -->
@@ -210,7 +210,8 @@
     <h3>倾斜视差怎么算</h3>
     <p>取 <code>accelerationIncludingGravity</code> 的 x、y 分量，各除以 9.8，得到 −1～1 的倾斜比例；
     再用 <code>requestAnimationFrame</code> 每帧向目标值插值（系数 0.1），避免读数抖动直接传到画面上。
-    两层元素用不同系数：背景光斑位移大，卡片位移小并带 <code>rotateX / rotateY</code>，系数不同才有视差。</p>
+    两层元素用不同系数：背景光斑位移大，卡片位移小并带 <code>rotateX / rotateY</code>，系数不同才有视差。
+    没有传感器的设备（如电脑）会自动切换为鼠标位置模拟，方便当面演示。</p>
 
     <h3>为什么一定要做降级</h3>
     <p>桌面浏览器、部分安卓机、以及未授权的 iOS 都收不到 <code>devicemotion</code>。
@@ -339,6 +340,32 @@ function slh_showFallback() {
   slh_fallback.classList.add('slh_show');
   slh_dishEl.textContent = '手动抽取';
   slh_noteEl.textContent = '当前设备不支持，请用手机打开';
+  slh_startMouseTilt();          // 没有传感器时改用鼠标位置驱动视差，电脑上也能看到效果
+}
+
+// ── 无传感器时的替代方案：鼠标 / 手指位置模拟倾斜 ──────
+var slh_mouseOn = false;
+function slh_startMouseTilt() {
+  if (slh_mouseOn) return;
+  slh_mouseOn = true;
+
+  slh_tiltTip.textContent = '未检测到传感器 · 已切换为鼠标模拟倾斜';
+  slh_tiltTip.classList.add('slh_show');
+
+  function apply(clientX, clientY) {
+    if (slh_gotData) return;     // 一旦有真实传感器数据，立刻让位
+    slh_tiltTarget.x = (clientX / window.innerWidth) * 2 - 1;
+    slh_tiltTarget.y = (clientY / window.innerHeight) * 2 - 1;
+  }
+
+  window.addEventListener('mousemove', function (e) {
+    apply(e.clientX, e.clientY);
+  }, { passive: true });
+
+  window.addEventListener('touchmove', function (e) {
+    if (!e.touches.length) return;
+    apply(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
 }
 function slh_startListen() {
   window.addEventListener('devicemotion', slh_onMotion, false);
