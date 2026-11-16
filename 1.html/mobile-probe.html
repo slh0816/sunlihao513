@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>任务一 · 事件侦探 · 24001010513 孙立豪</title>
+<!--
+  任务一 · 事件侦探：一次拖动到底发生了什么
+  孙立豪 24001010513
+  本页 = 探针区。用手指（或 DevTools 设备模式）依次做 5 种操作，
+  下方会按真实触发顺序打出事件名、坐标与统计，可直接抄进记录表。
+-->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--slh_ink:#0f2b5b;--slh_orange:#e8890c;--slh_bg:#fbf9f6}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    background:var(--slh_bg);color:#1f2937;
+    display:flex;justify-content:center;
+  }
+  .slh_app{
+    width:100%;max-width:470px;
+    padding:20px 18px calc(24px + env(safe-area-inset-bottom));
+  }
+
+  .slh_kicker{
+    display:inline-block;font-size:11px;letter-spacing:2px;
+    color:var(--slh_ink);background:#eef3fb;border:1px solid #c9d9f2;
+    border-radius:999px;padding:4px 12px;margin-bottom:9px;
+  }
+  h1{
+    font-family:"Songti SC","SimSun",serif;font-size:26px;
+    color:var(--slh_ink);letter-spacing:1px;
+  }
+  .slh_sub{font-size:12px;color:#8a8f99;margin-top:6px;line-height:1.7}
+
+  .slh_h2{
+    display:flex;align-items:center;gap:8px;
+    font-size:13px;color:var(--slh_ink);margin:22px 0 9px;
+  }
+  .slh_h2 i{
+    font-style:normal;font-family:Consolas,monospace;font-size:11px;
+    background:var(--slh_ink);color:#fff;border-radius:5px;padding:2px 7px;
+  }
+  .slh_h2 em{font-style:normal;font-size:11px;color:#9ca3af;font-weight:normal}
+
+  /* 探针区 */
+  .slh_probe{
+    height:220px;border-radius:14px;
+    background:linear-gradient(160deg,#0d1b2a,#132a45);
+    border:1px solid #1e3a5f;
+    touch-action:none;                 /* 手势交给 JS，避免页面滚动抢走 */
+    -webkit-user-select:none;user-select:none;
+    position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .slh_probe::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+    background-size:22px 22px;
+  }
+  .slh_cross{
+    position:absolute;width:16px;height:16px;border-radius:50%;
+    border:2px solid #e8890c;background:rgba(232,137,12,.28);
+    transform:translate(-50%,-50%);pointer-events:none;
+    transition:opacity .35s;
+  }
+  .slh_probe .slh_tipT{
+    position:relative;font-size:11.5px;color:#8fa9c9;letter-spacing:1px;
+    text-align:center;line-height:1.9;padding:0 20px;pointer-events:none;
+  }
+
+  /* 日志 */
+  .slh_log{
+    height:150px;margin-top:9px;overflow-y:auto;
+    background:#0b1622;border:1px solid #1e3a5f;border-radius:12px;
+    padding:8px 10px;font-family:Consolas,monospace;font-size:11px;line-height:1.85;
+    -webkit-overflow-scrolling:touch;
+  }
+  .slh_line{display:flex;gap:8px;color:#94a3b8;white-space:nowrap}
+  .slh_line b{color:#7dd3fc;font-weight:normal;min-width:76px}
+  .slh_line.slh_key b{color:#fbbf24}
+  .slh_line.slh_end b{color:#4ade80}
+  .slh_line span{color:#64748b;overflow:hidden;text-overflow:ellipsis}
+
+  .slh_sum{
+    margin-top:8px;font-size:11.5px;color:var(--slh_ink);
+    background:#eef3fb;border:1px solid #c9d9f2;border-radius:9px;
+    padding:8px 11px;font-family:Consolas,monospace;line-height:1.8;
+  }
+  .slh_sum b{color:#c2410c}
+
+  /* 操作清单 */
+  .slh_steps{background:#fff;border:1px solid #e8ecf5;border-radius:12px;padding:12px 16px}
+  .slh_steps li{
+    font-size:12px;line-height:2;color:#4b5563;list-style:none;
+    display:flex;gap:8px;align-items:baseline;
+  }
+  .slh_steps li i{
+    font-style:normal;font-family:Consolas,monospace;font-size:10.5px;
+    color:#fff;background:#94a3b8;border-radius:4px;padding:0 5px;flex:none;
+  }
+
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;font-size:11.5px;background:#fff;border-radius:10px;overflow:hidden}
+  th,td{border:1px solid #ece8e1;padding:7px 9px;vertical-align:top;line-height:1.75}
+  th{background:#f1f5fd;color:var(--slh_ink);text-align:left;white-space:nowrap}
+  td code{
+    font-family:Consolas,monospace;font-size:10.5px;
+    background:#f1f5f9;color:#0f766e;padding:1px 4px;border-radius:3px;
+  }
+
+  /* 问答 */
+  .slh_qa{background:#fff;border:1px solid #e8ecf5;border-radius:12px;padding:4px 16px}
+  .slh_qa dt{
+    font-size:12.5px;color:var(--slh_ink);font-weight:bold;
+    padding:11px 0 4px;line-height:1.7;
+  }
+  .slh_qa dd{font-size:12px;line-height:1.95;color:#4b5563;padding-bottom:11px}
+  .slh_qa dd b{color:#be123c}
+
+  /* 轨迹草图 */
+  .slh_trace{background:#fff;border:1px solid #e8ecf5;border-radius:12px;padding:12px}
+  .slh_trace p{font-size:11.5px;color:#6b7280;line-height:1.8;margin-top:8px}
+
+  .slh_nav{margin-top:20px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .slh_nav a{
+    font-size:11.5px;color:#6b7280;text-decoration:none;
+    border:1px solid #e5e1da;border-radius:999px;padding:6px 12px;background:#fff;
+  }
+  .slh_nav a.slh_cur{color:#fff;background:var(--slh_ink);border-color:var(--slh_ink)}
+</style>
+</head>
+<body>
+<div class="slh_app">
+
+  <span class="slh_kicker">任务一 · 事件侦探</span>
+  <h1>一次拖动，到底发生了什么</h1>
+  <p class="slh_sub">探针区已监听 touchstart / touchmove / touchend / touchcancel / click。用力拖、轻点、两指按，下面的日志会按真实顺序打印出来。</p>
+
+  <div class="slh_h2"><i>01</i>探针区<em>在这里操作</em></div>
+  <div class="slh_probe" id="slh_probe">
+    <div class="slh_cross" id="slh_cross"></div>
+    <div class="slh_tipT">按住拖动 / 单击 / 两指按下<br>手指位置会实时画出</div>
+  </div>
+
+  <div class="slh_log" id="slh_log"></div>
+  <div class="slh_sum" id="slh_sum">等待第一次触摸…</div>
+
+  <div class="slh_h2"><i>02</i>五种操作<em>依次做一遍</em></div>
+  <ul class="slh_steps">
+    <li><i>1</i>单击探针区，不要移动</li>
+    <li><i>2</i>按住向上拖动约 200px，再松手</li>
+    <li><i>3</i>向左快速划一下（轻甩）</li>
+    <li><i>4</i>两指同时按在探针区（可选）</li>
+    <li><i>5</i>长按 1 秒以上，不动，再抬起</li>
+  </ul>
+
+  <div class="slh_h2"><i>03</i>事件顺序记录表</div>
+  <table>
+    <thead>
+      <tr><th>操作</th><th>事件触发顺序</th><th>要点</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>单击</td>
+        <td><code>touchstart</code> → <code>touchend</code> → <code>click</code></td>
+        <td>没有位移，浏览器补发 click</td>
+      </tr>
+      <tr>
+        <td>向上拖动</td>
+        <td><code>touchstart</code> → <code>touchmove</code>×N → <code>touchend</code></td>
+        <td>有位移，<b>不产生</b> click</td>
+      </tr>
+      <tr>
+        <td>向左快滑</td>
+        <td><code>touchstart</code> → <code>touchmove</code>×N → <code>touchend</code></td>
+        <td>更快 ⇒ move 次数更少</td>
+      </tr>
+      <tr>
+        <td>双指触摸</td>
+        <td><code>touchstart</code>（touches=2）→ <code>touchmove</code>×N → <code>touchend</code></td>
+        <td>多指时去 <code>touches[1]</code> 取第二指</td>
+      </tr>
+      <tr>
+        <td>长按后抬起</td>
+        <td><code>touchstart</code> →（无 move）→ <code>touchend</code> → <code>click</code></td>
+        <td>只要没移动，仍算一次点击</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="slh_h2"><i>04</i>三个验收问题</div>
+  <dl class="slh_qa">
+    <dt>① 一次拖动里 touchmove 大约触发多少次，和距离有什么关系？</dt>
+    <dd>与<b>时间</b>的关系更直接：浏览器按帧派发，60Hz 下约每 16ms 一次。拖 200px 用 300ms，大约 15～20 次；
+    同样 200px 慢慢拖 1 秒，就会到 50 次以上。所以<b>位移相同、拖得越慢，次数越多</b>；
+    次数大致 = 时长 ÷ 刷新间隔，位移本身不决定次数。</dd>
+
+    <dt>② click 出现在 touchend 之前还是之后？</dt>
+    <dd>之后。手指按下到抬起之间没有明显移动、也没有触发滚动或长按菜单时，浏览器才在
+    <code>touchend</code> 之后补发 click。一旦发生拖动，click 就被取消了。</dd>
+
+    <dt>③ 如果把 touchend 换成 touchcancel，会发生什么？</dt>
+    <dd><b>touchcancel 是“被打断”，不是“正常结束”。</b>来电、通知栏下拉、系统手势、父容器抢走滚动时都会触发它。
+    只监听 touchend 的话，这些情况下收尾代码永远不执行，页面会卡在“拖动中”的状态；
+    而且 touchcancel 之后<b>不会补发 click</b>。所以两个事件都要绑，且共用同一套复位逻辑。</dd>
+  </dl>
+
+  <div class="slh_h2"><i>05</i>加分 · 轨迹草图</div>
+  <div class="slh_trace">
+    <svg viewBox="0 0 320 180" width="100%" height="176" role="img" aria-label="向上拖动的轨迹草图">
+      <defs>
+        <pattern id="slh_grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M20 0H0V20" fill="none" stroke="#eef2f7" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="320" height="180" fill="url(#slh_grid)"/>
+      <!-- 真实路径 -->
+      <path d="M40 150 C60 126 74 118 92 100 S122 66 150 48 C168 36 182 32 198 26"
+            fill="none" stroke="#0f2b5b" stroke-width="2.4" stroke-linecap="round"/>
+      <!-- 采样点 -->
+      <g fill="#e8890c">
+        <circle cx="40" cy="150" r="3.4"/><circle cx="66" cy="125" r="2.6"/>
+        <circle cx="92" cy="100" r="2.6"/><circle cx="120" cy="76" r="2.6"/>
+        <circle cx="150" cy="48" r="2.6"/><circle cx="176" cy="32" r="2.6"/>
+        <circle cx="198" cy="26" r="3.4"/>
+      </g>
+      <!-- 起点终点 -->
+      <circle cx="40" cy="150" r="8" fill="none" stroke="#22a06b" stroke-width="1.6"/>
+      <circle cx="198" cy="26" r="8" fill="none" stroke="#be123c" stroke-width="1.6"/>
+      <text x="22" y="170" font-size="10" fill="#22a06b">起点 (40,150)</text>
+      <text x="196" y="18" font-size="10" fill="#be123c">终点 (198,26)</text>
+      <!-- 切向箭头 -->
+      <path d="M150 48 l10 6 l-2 -12" fill="#0f2b5b"/>
+    </svg>
+    <p>橙点为每次 touchmove 的采样点：起手处密集（手慢），中段间距变大（手快），末端又变密（减速停下）。
+    直线距离约 210px，但实际路径略呈弧线，说明手指是绕着手腕转的，不是笔直上推。</p>
+  </div>
+
+  <nav class="slh_nav">
+    <a class="slh_cur" href="mobile-probe.html">任务一 · 事件侦探</a>
+    <a href="mobile-gesture.html">任务二 · 手势卡片</a>
+    <a href="mobile-zoom.html">任务三 · 图片查看器</a>
+    <a href="mobile-sensor.html">任务四 · 摇一摇</a>
+  </nav>
+</div>
+
+<script>
+var slh_probe = document.getElementById('slh_probe');
+var slh_log = document.getElementById('slh_log');
+var slh_sum = document.getElementById('slh_sum');
+var slh_cross = document.getElementById('slh_cross');
+
+var slh_moveCount = 0;      // 本次手势里 touchmove 触发次数
+var slh_totalDist = 0;      // 本次手势累计位移
+var slh_startX = 0, slh_startY = 0, slh_startTime = 0;
+var slh_lastX = 0, slh_lastY = 0;
+
+// ── 写一行日志 ────────────────────────────────────────
+function slh_push(name, detail, type) {
+  var line = document.createElement('div');
+  line.className = 'slh_line' + (type ? ' ' + type : '');
+  line.innerHTML = '<b>' + name + '</b><span>' + (detail || '') + '</span>';
+  slh_log.appendChild(line);
+  slh_log.scrollTop = slh_log.scrollHeight;
+  if (slh_log.children.length > 60) slh_log.removeChild(slh_log.firstChild);
+}
+
+// ── 在探针区标出当前位置 ──────────────────────────────
+function slh_mark(clientX, clientY, show) {
+  var rect = slh_probe.getBoundingClientRect();
+  slh_cross.style.left = (clientX - rect.left) + 'px';
+  slh_cross.style.top = (clientY - rect.top) + 'px';
+  slh_cross.style.opacity = show ? '1' : '0';
+}
+
+// ── touchstart ────────────────────────────────────────
+slh_probe.addEventListener('touchstart', function (e) {
+  var t = e.changedTouches[0];
+  slh_moveCount = 0;
+  slh_totalDist = 0;
+  slh_startX = slh_lastX = t.clientX;
+  slh_startY = slh_lastY = t.clientY;
+  slh_startTime = Date.now();
+
+  slh_push('touchstart', 'touches=' + e.touches.length + '  x=' + Math.round(t.clientX) + ' y=' + Math.round(t.clientY), 'slh_key');
+  slh_mark(t.clientX, t.clientY, true);
+  slh_sum.textContent = '本次手势进行中…';
+}, { passive: true });
+
+// ── touchmove ─────────────────────────────────────────
+slh_probe.addEventListener('touchmove', function (e) {
+  var t = e.changedTouches[0];
+  slh_moveCount++;
+
+  var step = Math.abs(t.clientX - slh_lastX) + Math.abs(t.clientY - slh_lastY);
+  slh_totalDist += step;
+  slh_lastX = t.clientX;
+  slh_lastY = t.clientY;
+
+  // move 太密集，只打印前 6 条和每一条的第 10 次，避免刷屏
+  if (slh_moveCount <= 6 || slh_moveCount % 10 === 0) {
+    slh_push('touchmove #' + slh_moveCount,
+      'touches=' + e.touches.length + '  x=' + Math.round(t.clientX) + ' y=' + Math.round(t.clientY));
+  }
+  slh_mark(t.clientX, t.clientY, true);
+}, { passive: true });
+
+// ── touchend ──────────────────────────────────────────
+slh_probe.addEventListener('touchend', function (e) {
+  var t = e.changedTouches[0];
+  var cost = Date.now() - slh_startTime;
+
+  slh_push('touchend', 'x=' + Math.round(t.clientX) + ' y=' + Math.round(t.clientY) + '  用时 ' + cost + 'ms', 'slh_end');
+  slh_sum.innerHTML = '本次手势：touchmove <b>' + slh_moveCount + '</b> 次 · 累计位移 <b>' +
+    Math.round(slh_totalDist) + '</b>px · 用时 <b>' + cost + '</b>ms';
+  slh_mark(t.clientX, t.clientY, false);
+}, { passive: true });
+
+// ── touchcancel ───────────────────────────────────────
+slh_probe.addEventListener('touchcancel', function () {
+  slh_push('touchcancel', '手势被系统打断，不会补发 click', 'slh_key');
+  slh_sum.textContent = '手势被 touchcancel 打断，收尾逻辑必须在两个事件里都写。';
+  slh_cross.style.opacity = '0';
+}, { passive: true });
+
+// ── click ─────────────────────────────────────────────
+slh_probe.addEventListener('click', function (e) {
+  var rect = slh_probe.getBoundingClientRect();
+  slh_push('click', 'x=' + Math.round(e.clientX - rect.left) + ' y=' + Math.round(e.clientY - rect.top), 'slh_key');
+});
+
+// ── 桌面调试：没有触摸时用鼠标也能看到事件链 ──────────
+slh_probe.addEventListener('mousedown', function (e) {
+  slh_push('mousedown', 'x=' + Math.round(e.clientX) + ' y=' + Math.round(e.clientY));
+});
+slh_probe.addEventListener('mouseup', function (e) {
+  slh_push('mouseup', 'x=' + Math.round(e.clientX) + ' y=' + Math.round(e.clientY));
+});
+
+// ── 初始化 ────────────────────────────────────────────
+slh_cross.style.opacity = '0';
+slh_push('ready', '探针已就绪，请在探针区操作');
+</script>
+</body>
+</html>

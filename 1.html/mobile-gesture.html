@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>任务二 · 手势卡片 · 24001010513 孙立豪</title>
+<!--
+  任务二 · 手势卡片：左右滑动切换内容
+  孙立豪 24001010513
+  实现要点：
+    1) touchstart / touchend 记录起点，changedTouches[0] 计算横向位移
+    2) 阈值 40px，横向位移大于纵向才判定为翻页
+    3) 容器 touch-action: pan-y，纵向仍可滚动页面
+    4) 切换淡出淡入 0.3s，切换后 300ms 冷却，快速连续滑动只翻一张
+-->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --slh_ink:#0f2b5b;
+    --slh_orange:#e8890c;
+    --slh_bg:#fbf9f6;
+  }
+  html,body{height:100%}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    background:var(--slh_bg);color:#1f2937;
+    display:flex;justify-content:center;
+  }
+
+  .slh_app{
+    width:100%;max-width:430px;height:100dvh;min-height:640px;
+    display:flex;flex-direction:column;
+    padding:22px 20px calc(16px + env(safe-area-inset-bottom));
+    background:var(--slh_bg);
+    overflow:hidden;
+  }
+
+  /* 顶部 */
+  .slh_head{flex:none;margin-bottom:14px}
+  .slh_kicker{
+    display:inline-block;font-size:11px;letter-spacing:2px;
+    color:var(--slh_ink);background:#eef3fb;border:1px solid #c9d9f2;
+    border-radius:999px;padding:4px 12px;margin-bottom:10px;
+  }
+  .slh_head h1{
+    font-family:"Songti SC","SimSun",serif;font-size:26px;
+    color:var(--slh_ink);letter-spacing:1px;
+  }
+  .slh_head p{font-size:12.5px;color:#8a8f99;margin-top:6px;line-height:1.7}
+
+  /* 卡片舞台 */
+  .slh_stage{
+    flex:1;position:relative;
+    display:flex;align-items:center;
+    touch-action:pan-y;              /* 横向手势自己处理，纵向交给页面滚动 */
+    -webkit-user-select:none;user-select:none;
+    overflow:hidden;
+  }
+
+  .slh_card{
+    position:relative;width:100%;height:100%;max-height:520px;
+    border-radius:24px;overflow:hidden;
+    box-shadow:0 18px 40px rgba(15,43,91,.18);
+    transition:transform .3s cubic-bezier(.22,.68,.32,1),opacity .3s ease;
+    will-change:transform,opacity;
+    display:flex;flex-direction:column;justify-content:flex-end;
+  }
+  .slh_bg{position:absolute;inset:0}
+  .slh_mark{
+    position:absolute;right:-10px;top:-56px;
+    font-family:"Songti SC","SimSun",serif;font-size:236px;line-height:1;
+    color:rgba(255,255,255,.11);pointer-events:none;user-select:none;
+  }
+  .slh_bg::after{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 78% 18%,rgba(255,255,255,.28),transparent 42%),
+      linear-gradient(transparent 42%,rgba(0,0,0,.42));
+  }
+  .slh_body{position:relative;padding:26px 24px 30px;color:#fff}
+  .slh_no{
+    font-family:Consolas,monospace;font-size:12px;letter-spacing:3px;
+    opacity:.8;margin-bottom:8px;display:block;
+  }
+  .slh_body h2{
+    font-family:"Songti SC","SimSun",serif;font-size:34px;
+    letter-spacing:2px;line-height:1.25;
+  }
+  .slh_tag{
+    display:inline-block;margin-top:10px;font-size:12px;
+    background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+    border-radius:999px;padding:3px 12px;
+  }
+  .slh_desc{font-size:13px;line-height:1.9;color:#f3f4f6;margin-top:12px}
+
+  /* 边界提示 */
+  .slh_tip{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.94);
+    background:rgba(15,43,91,.88);color:#fff;font-size:13px;
+    padding:10px 20px;border-radius:999px;white-space:nowrap;
+    opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .25s;
+    z-index:3;
+  }
+  .slh_tip.slh_show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+  /* 底部计数 */
+  .slh_foot{
+    flex:none;margin-top:18px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .slh_pos{font-size:14px;color:var(--slh_ink);font-weight:bold;letter-spacing:1px}
+  .slh_dots{display:flex;gap:7px}
+  .slh_dot{
+    width:7px;height:7px;border-radius:999px;background:#d6d3cd;
+    transition:all .25s;
+  }
+  .slh_dot.slh_on{width:20px;background:var(--slh_orange)}
+
+  .slh_nav{
+    flex:none;margin-top:14px;display:flex;gap:8px;justify-content:center;
+  }
+  .slh_nav a{
+    font-size:11.5px;color:#6b7280;text-decoration:none;
+    border:1px solid #e5e1da;border-radius:999px;padding:5px 12px;background:#fff;
+  }
+  .slh_nav a.slh_cur{color:#fff;background:var(--slh_ink);border-color:var(--slh_ink)}
+</style>
+</head>
+<body>
+<div class="slh_app">
+
+  <header class="slh_head">
+    <span class="slh_kicker">任务二 · 手势卡片</span>
+    <h1>中华美食卡片</h1>
+    <p>在卡片上左右拖动，切换上一道 / 下一道。纵向上划不会触发切换。</p>
+  </header>
+
+  <div class="slh_stage" id="slh_stage">
+    <article class="slh_card" id="slh_card">
+      <div class="slh_bg" id="slh_bg"></div>
+      <span class="slh_mark" id="slh_mark"></span>
+      <div class="slh_body">
+        <span class="slh_no" id="slh_no">01 / 04</span>
+        <h2 id="slh_name">宫保鸡丁</h2>
+        <span class="slh_tag" id="slh_tag">川菜 · 糊辣荔枝味</span>
+        <p class="slh_desc" id="slh_desc"></p>
+      </div>
+    </article>
+    <div class="slh_tip" id="slh_tip">已经是第一张</div>
+  </div>
+
+  <footer class="slh_foot">
+    <span class="slh_pos" id="slh_pos">第 1 / 4 张</span>
+    <div class="slh_dots" id="slh_dots"></div>
+  </footer>
+
+  <nav class="slh_nav">
+    <a href="mobile-probe.html">任务一</a>
+    <a class="slh_cur" href="mobile-gesture.html">任务二</a>
+    <a href="mobile-zoom.html">任务三</a>
+    <a href="mobile-sensor.html">任务四</a>
+  </nav>
+</div>
+
+<script>
+// ── 数据 ──────────────────────────────────────────────
+var slh_list = [
+  {
+    name: '宫保鸡丁', tag: '川菜 · 糊辣荔枝味',
+    bg: 'linear-gradient(150deg,#7f1d1d 0%,#b91c1c 46%,#ea580c 100%)',
+    desc: '鸡丁滑嫩、花生酥脆，干辣椒与花椒先炝锅，起锅前淋一勺糖醋汁，酸甜压住燥辣。'
+  },
+  {
+    name: '麻婆豆腐', tag: '川菜 · 麻 辣 烫 香',
+    bg: 'linear-gradient(150deg,#7c2d12 0%,#c2410c 48%,#dc2626 100%)',
+    desc: '嫩豆腐切块汆水定型，牛肉末炒酥，郫县豆瓣与豆豉炒出红油，分三次勾芡才挂得住。'
+  },
+  {
+    name: '东坡肉', tag: '浙菜 · 酥而不碎',
+    bg: 'linear-gradient(150deg,#3f1d0b 0%,#92400e 50%,#d97706 100%)',
+    desc: '五花肉切方块，黄酒代水慢煨三小时，皮朝下先炖后蒸，筷子一夹就断、入口不散。'
+  },
+  {
+    name: '西湖醋鱼', tag: '浙菜 · 酸甜带蟹味',
+    bg: 'linear-gradient(150deg,#0f3b2e 0%,#0f766e 50%,#22a06b 100%)',
+    desc: '草鱼饿养两天去土腥，沸水汆至断生，糖醋汁勾薄芡浇淋，讲究“不生不老、不油不腻”。'
+  }
+];
+
+// 卡片右上角的装饰大字
+var slh_marks = ['宫', '麻', '东', '西'];
+
+// ── 状态 ──────────────────────────────────────────────
+var slh_cur = 0;                 // 当前第几张
+var slh_locked = false;          // 切换冷却锁
+var slh_startX = 0, slh_startY = 0, slh_touching = false;
+var slh_THRESHOLD = 40;          // 横向位移阈值 40px
+var slh_COOLDOWN = 300;          // 冷却 300ms
+
+var slh_el = {
+  stage: document.getElementById('slh_stage'),
+  card: document.getElementById('slh_card'),
+  bg: document.getElementById('slh_bg'),
+  mark: document.getElementById('slh_mark'),
+  no: document.getElementById('slh_no'),
+  name: document.getElementById('slh_name'),
+  tag: document.getElementById('slh_tag'),
+  desc: document.getElementById('slh_desc'),
+  pos: document.getElementById('slh_pos'),
+  dots: document.getElementById('slh_dots'),
+  tip: document.getElementById('slh_tip')
+};
+
+// ── 渲染当前卡片 ──────────────────────────────────────
+function slh_paint() {
+  var item = slh_list[slh_cur];
+  slh_el.bg.style.background = item.bg;
+  slh_el.mark.textContent = slh_marks[slh_cur] || '';
+  slh_el.no.textContent = '0' + (slh_cur + 1) + ' / 0' + slh_list.length;
+  slh_el.name.textContent = item.name;
+  slh_el.tag.textContent = item.tag;
+  slh_el.desc.textContent = item.desc;
+  slh_el.pos.textContent = '第 ' + (slh_cur + 1) + ' / ' + slh_list.length + ' 张';
+
+  slh_el.dots.innerHTML = slh_list.map(function (_, i) {
+    return '<i class="slh_dot' + (i === slh_cur ? ' slh_on' : '') + '"></i>';
+  }).join('');
+}
+
+// ── 边界提示 ──────────────────────────────────────────
+var slh_tipTimer = null;
+function slh_showTip(text) {
+  slh_el.tip.textContent = text;
+  slh_el.tip.classList.add('slh_show');
+  clearTimeout(slh_tipTimer);
+  slh_tipTimer = setTimeout(function () {
+    slh_el.tip.classList.remove('slh_show');
+  }, 1400);
+}
+
+// ── 切换：dir = 1 下一张 / -1 上一张 ──────────────────
+function slh_go(dir) {
+  if (slh_locked) return;                       // 冷却期内直接丢弃，防连跳
+
+  var next = slh_cur + dir;
+  if (next < 0) { slh_locked = true; slh_showTip('已经是第一张'); setTimeout(function(){ slh_locked = false; }, slh_COOLDOWN); return; }
+  if (next > slh_list.length - 1) { slh_locked = true; slh_showTip('已经是最后一张'); setTimeout(function(){ slh_locked = false; }, slh_COOLDOWN); return; }
+
+  slh_locked = true;
+
+  // 1. 当前卡片滑出
+  slh_el.card.style.transition = 'transform .3s cubic-bezier(.22,.68,.32,1),opacity .3s ease';
+  slh_el.card.style.transform = dir > 0 ? 'translateX(-104%) rotate(-5deg)' : 'translateX(104%) rotate(5deg)';
+  slh_el.card.style.opacity = '0';
+
+  // 2. 动画结束时换内容，并从未进入的一侧滑入
+  setTimeout(function () {
+    slh_cur = next;
+    slh_paint();
+    slh_el.card.style.transition = 'none';
+    slh_el.card.style.transform = dir > 0 ? 'translateX(104%) rotate(5deg)' : 'translateX(-104%) rotate(-5deg)';
+    void slh_el.card.offsetWidth;               // 强制回流，让上面的位移立即生效
+    slh_el.card.style.transition = 'transform .3s cubic-bezier(.22,.68,.32,1),opacity .3s ease';
+    slh_el.card.style.transform = 'translateX(0) rotate(0)';
+    slh_el.card.style.opacity = '1';
+  }, 300);
+
+  // 3. 从切换开始计时，300ms 内不再响应，快速连滑只翻一张
+  setTimeout(function () { slh_locked = false; }, slh_COOLDOWN);
+}
+
+// ── 触摸：起点 ────────────────────────────────────────
+slh_el.stage.addEventListener('touchstart', function (e) {
+  if (e.touches.length > 1) return;            // 多指不参与翻页
+  slh_startX = e.changedTouches[0].clientX;
+  slh_startY = e.changedTouches[0].clientY;
+  slh_touching = true;
+}, { passive: true });
+
+// ── 触摸：终点，用 changedTouches[0] 算位移 ───────────
+slh_el.stage.addEventListener('touchend', function (e) {
+  if (!slh_touching) return;
+  slh_touching = false;
+
+  var dx = e.changedTouches[0].clientX - slh_startX;
+  var dy = e.changedTouches[0].clientY - slh_startY;
+
+  if (Math.abs(dx) < slh_THRESHOLD) return;           // 短距离误触不切换
+  if (Math.abs(dx) < Math.abs(dy)) return;           // 竖向滑动交给页面滚动
+
+  slh_go(dx < 0 ? 1 : -1);                            // 左滑看下一张，右滑看上一张
+}, { passive: true });
+
+// 系统打断手势时复位，避免卡在“拖动中”
+slh_el.stage.addEventListener('touchcancel', function () { slh_touching = false; }, { passive: true });
+
+// ── 桌面调试：鼠标拖拽走同一套逻辑（手机上不触发） ────
+slh_el.stage.addEventListener('mousedown', function (e) {
+  slh_startX = e.clientX; slh_startY = e.clientY; slh_touching = true;
+});
+window.addEventListener('mouseup', function (e) {
+  if (!slh_touching) return;
+  slh_touching = false;
+  var dx = e.clientX - slh_startX;
+  var dy = e.clientY - slh_startY;
+  if (Math.abs(dx) < slh_THRESHOLD || Math.abs(dx) < Math.abs(dy)) return;
+  slh_go(dx < 0 ? 1 : -1);
+});
+
+// ── 初始化 ────────────────────────────────────────────
+var slh_init = parseInt((location.search.match(/[?&]i=(\d+)/) || [])[1], 10);
+if (!isNaN(slh_init) && slh_init >= 0 && slh_init < slh_list.length) slh_cur = slh_init;
+slh_paint();
+</script>
+</body>
+</html>

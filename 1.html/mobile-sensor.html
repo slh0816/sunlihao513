@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>任务四 · 摇一摇抽菜谱 · 24001010513 孙立豪</title>
+<!--
+  任务四（方案 A）· 摇一摇抽今日菜谱
+  孙立豪 24001010513
+  实现要点：
+    1) 监听 devicemotion，取 accelerationIncludingGravity 合成三轴加速度
+    2) 合成值超过阈值 18 判定为摇动，触发后 1.5s 冷却，一次摇动只出一次结果
+    3) 随机抽一道菜，结果卡带弹入动画
+    4) 没有该事件 / 3.5s 内收不到数据 → 显示“当前设备不支持”并提供“点我抽一次”降级按钮
+    5) iOS 13+ 需要用户点击后申请权限，按钮入口一并处理
+-->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--slh_ink:#0f2b5b;--slh_orange:#e8890c;--slh_bg:#fbf9f6}
+  html,body{height:100%}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    background:var(--slh_bg);color:#1f2937;
+    display:flex;justify-content:center;
+  }
+  .slh_app{
+    width:100%;max-width:430px;height:100dvh;min-height:640px;
+    display:flex;flex-direction:column;
+    padding:20px 18px calc(14px + env(safe-area-inset-bottom));
+    overflow:hidden;
+  }
+
+  .slh_head{flex:none;margin-bottom:14px}
+  .slh_kicker{
+    display:inline-block;font-size:11px;letter-spacing:2px;
+    color:var(--slh_ink);background:#eef3fb;border:1px solid #c9d9f2;
+    border-radius:999px;padding:4px 12px;margin-bottom:9px;
+  }
+  .slh_head h1{
+    font-family:"Songti SC","SimSun",serif;font-size:24px;
+    color:var(--slh_ink);letter-spacing:1px;
+  }
+  .slh_head p{font-size:12px;color:#8a8f99;margin-top:5px;line-height:1.7}
+
+  /* 结果卡 */
+  .slh_stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
+  .slh_card{
+    width:100%;max-width:340px;border-radius:24px;
+    background:linear-gradient(150deg,#10254a 0%,#1d4ed8 62%,#2563eb 100%);
+    box-shadow:0 18px 40px rgba(15,43,91,.28);
+    padding:38px 24px 34px;text-align:center;color:#fff;
+    position:relative;overflow:hidden;
+  }
+  .slh_card::after{
+    content:"";position:absolute;width:220px;height:220px;border-radius:50%;
+    right:-90px;top:-90px;background:rgba(255,255,255,.12);
+  }
+  .slh_card .slh_shakeIcon{
+    font-size:30px;letter-spacing:6px;margin-bottom:10px;opacity:.85;
+  }
+  .slh_card .slh_label{
+    font-size:12px;letter-spacing:4px;color:#c7ddfb;margin-bottom:14px;
+  }
+  .slh_card .slh_dish{
+    font-family:"Songti SC","SimSun",serif;font-size:34px;
+    letter-spacing:3px;line-height:1.35;min-height:46px;
+  }
+  .slh_card .slh_note{
+    font-size:12px;color:#dbeafe;margin-top:12px;line-height:1.7;min-height:20px;
+  }
+  /* 弹入动画 */
+  .slh_pop{animation:slh_popIn .5s cubic-bezier(.2,.9,.3,1.3) both}
+  @keyframes slh_popIn{
+    0%{transform:scale(.62);opacity:0}
+    62%{transform:scale(1.05);opacity:1}
+    100%{transform:scale(1);opacity:1}
+  }
+
+  /* 加速度仪表 */
+  .slh_meter{
+    margin-top:16px;font-family:Consolas,monospace;font-size:12px;
+    color:#94a3b8;text-align:center;
+  }
+  .slh_meter b{color:var(--slh_ink);font-size:13px}
+  .slh_barMeter{
+    width:100%;height:5px;border-radius:999px;background:#e8e4dc;
+    margin-top:7px;overflow:hidden;
+  }
+  .slh_barFill{
+    height:100%;width:0;border-radius:999px;
+    background:linear-gradient(90deg,#22a06b,#e8890c,#dc2626);
+    transition:width .1s linear;
+  }
+
+  /* 降级块 */
+  .slh_fallback{
+    display:none;margin-top:16px;background:#fff1f2;border:1px solid #fecdd3;
+    border-radius:14px;padding:14px 16px;
+  }
+  .slh_fallback.slh_show{display:block}
+  .slh_fallback h3{font-size:13px;color:#be123c;margin-bottom:6px}
+  .slh_fallback p{font-size:11.5px;color:#9f1239;line-height:1.8}
+  .slh_fallback button{
+    width:100%;margin-top:10px;font-family:inherit;font-size:13.5px;cursor:pointer;
+    background:#be123c;color:#fff;border:none;border-radius:10px;padding:11px 0;
+  }
+
+  /* iOS 授权按钮 */
+  .slh_perm{
+    display:none;margin-top:16px;
+  }
+  .slh_perm.slh_show{display:block}
+  .slh_perm button{
+    width:100%;font-family:inherit;font-size:13.5px;cursor:pointer;
+    background:var(--slh_ink);color:#fff;border:none;border-radius:12px;padding:12px 0;
+  }
+  .slh_perm p{font-size:11px;color:#8a8f99;margin-top:7px;text-align:center;line-height:1.7}
+
+  /* 说明 */
+  .slh_why{
+    flex:none;margin-top:14px;background:#fff;border:1px solid #e8ecf5;
+    border-radius:12px;padding:12px 14px;
+  }
+  .slh_why h3{font-size:12px;color:var(--slh_ink);margin-bottom:5px}
+  .slh_why p{font-size:11.5px;line-height:1.85;color:#4b5563}
+  .slh_why code{
+    font-family:Consolas,monospace;font-size:11px;
+    background:#eef2ff;color:#1d4ed8;padding:1px 5px;border-radius:4px;
+  }
+
+  .slh_nav{flex:none;margin-top:12px;display:flex;gap:8px;justify-content:center}
+  .slh_nav a{
+    font-size:11.5px;color:#6b7280;text-decoration:none;
+    border:1px solid #e5e1da;border-radius:999px;padding:5px 11px;background:#fff;
+  }
+  .slh_nav a.slh_cur{color:#fff;background:var(--slh_ink);border-color:var(--slh_ink)}
+</style>
+</head>
+<body>
+<div class="slh_app">
+
+  <header class="slh_head">
+    <span class="slh_kicker">任务四 · 摇一摇</span>
+    <h1>摇一摇，抽今日菜谱</h1>
+    <p>拿起手机左右摇一下，松手就出结果。电脑上没有加速度计，会走降级按钮。</p>
+  </header>
+
+  <div class="slh_stage">
+    <div>
+      <div class="slh_card" id="slh_card">
+        <div class="slh_shakeIcon">〜 〜</div>
+        <div class="slh_label">SHAKE TO PICK</div>
+        <div class="slh_dish" id="slh_dish">摇一摇手机</div>
+        <div class="slh_note" id="slh_note">今日菜谱由加速度传感器决定</div>
+      </div>
+
+      <div class="slh_meter">
+        合成加速度 <b id="slh_value">0.0</b> m/s² · 阈值 18
+        <div class="slh_barMeter"><div class="slh_barFill" id="slh_bar"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- iOS 13+ 需要用户手势里申请权限 -->
+  <div class="slh_perm" id="slh_perm">
+    <button id="slh_permBtn">开启摇一摇</button>
+    <p>iOS 13 起，传感器权限必须由用户点击触发，无法自动申请。</p>
+  </div>
+
+  <!-- 降级方案 -->
+  <div class="slh_fallback" id="slh_fallback">
+    <h3>当前设备不支持</h3>
+    <p>没有检测到加速度传感器数据，请用手机打开。你也可以直接点下面的按钮抽一次。</p>
+    <button id="slh_pickBtn">点我抽一次</button>
+  </div>
+
+  <section class="slh_why">
+    <h3>为什么一定要做降级</h3>
+    <p>桌面浏览器、部分安卓机、以及未授权的 iOS 都收不到 <code>devicemotion</code>。
+    如果只写摇一摇，这些用户看到的就是一个永远不动的页面，还以为是自己摇得不对。
+    所以先检测能力，拿不到数据就换成手动按钮，功能照常可用。</p>
+  </section>
+
+  <nav class="slh_nav">
+    <a href="mobile-probe.html">任务一</a>
+    <a href="mobile-gesture.html">任务二</a>
+    <a href="mobile-zoom.html">任务三</a>
+    <a class="slh_cur" href="mobile-sensor.html">任务四</a>
+  </nav>
+</div>
+
+<script>
+// ── 菜谱池 ────────────────────────────────────────────
+var slh_dishes = [
+  { name: '宫保鸡丁', note: '川菜 · 糊辣荔枝味' },
+  { name: '番茄炒蛋', note: '家常 · 五分钟出锅' },
+  { name: '麻婆豆腐', note: '川菜 · 麻辣鲜烫' },
+  { name: '红烧肉', note: '本帮 · 浓油赤酱' },
+  { name: '酸菜鱼', note: '川菜 · 酸辣开胃' },
+  { name: '小炒黄牛肉', note: '湘菜 · 锅气十足' },
+  { name: '炸酱面', note: '京味 · 六必居黄酱' },
+  { name: '白菜猪肉饺', note: '北方面食 · 现包现煮' }
+];
+
+// ── 元素 ──────────────────────────────────────────────
+var slh_card = document.getElementById('slh_card');
+var slh_dishEl = document.getElementById('slh_dish');
+var slh_noteEl = document.getElementById('slh_note');
+var slh_valueEl = document.getElementById('slh_value');
+var slh_barEl = document.getElementById('slh_bar');
+var slh_fallback = document.getElementById('slh_fallback');
+var slh_perm = document.getElementById('slh_perm');
+
+// ── 配置与状态 ────────────────────────────────────────
+var slh_THRESHOLD = 18;      // 摇动阈值
+var slh_COOLDOWN = 1500;     // 冷却 1.5s
+var slh_cooling = false;     // 是否在冷却中
+var slh_gotData = false;     // 是否收到过传感器数据
+var slh_lastPick = -1;       // 避免连续抽到同一道
+
+// ── 抽一道菜并播放弹入动画 ────────────────────────────
+function slh_pick(source) {
+  if (slh_cooling) return;
+  slh_cooling = true;
+
+  var i = Math.floor(Math.random() * slh_dishes.length);
+  while (i === slh_lastPick && slh_dishes.length > 1) {
+    i = Math.floor(Math.random() * slh_dishes.length);
+  }
+  slh_lastPick = i;
+
+  var item = slh_dishes[i];
+  slh_dishEl.textContent = item.name;
+  slh_noteEl.textContent = item.note + ' · ' + source;
+
+  // 重新触发动画：先移除类，回流后再加回
+  slh_card.classList.remove('slh_pop');
+  void slh_card.offsetWidth;
+  slh_card.classList.add('slh_pop');
+
+  setTimeout(function () { slh_cooling = false; }, slh_COOLDOWN);
+}
+
+// ── 传感器回调 ────────────────────────────────────────
+function slh_onMotion(e) {
+  var a = e.accelerationIncludingGravity || e.acceleration;
+  if (!a || (a.x === null && a.y === null && a.z === null)) return;
+
+  slh_gotData = true;
+
+  var x = a.x || 0, y = a.y || 0, z = a.z || 0;
+  var g = Math.sqrt(x * x + y * y + z * z);   // 三轴合成加速度
+
+  slh_valueEl.textContent = g.toFixed(1);
+  slh_barEl.style.width = Math.min(100, (g / 30) * 100) + '%';
+
+  if (g > slh_THRESHOLD) {
+    slh_pick('摇一摇');
+  }
+}
+
+// ── 能力检测 ──────────────────────────────────────────
+function slh_showFallback() {
+  slh_fallback.classList.add('slh_show');
+  slh_dishEl.textContent = '手动抽取';
+  slh_noteEl.textContent = '当前设备不支持，请用手机打开';
+}
+function slh_startListen() {
+  window.addEventListener('devicemotion', slh_onMotion, false);
+
+  // 3.5 秒内没有任何数据，判定为不支持（桌面浏览器常走这里）
+  setTimeout(function () {
+    if (!slh_gotData) slh_showFallback();
+  }, 3500);
+}
+
+// iOS 13+ 才需要 requestPermission，安卓 / 桌面即使有该函数也不该弹授权
+var slh_isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+if (typeof DeviceMotionEvent === 'undefined') {
+  // 完全没有这个事件：直接降级
+  slh_showFallback();
+} else if (slh_isIOS && typeof DeviceMotionEvent.requestPermission === 'function') {
+  // iOS 13+：必须由用户点击申请
+  slh_perm.classList.add('slh_show');
+  document.getElementById('slh_permBtn').addEventListener('click', function () {
+    DeviceMotionEvent.requestPermission().then(function (state) {
+      slh_perm.classList.remove('slh_show');
+      if (state === 'granted') {
+        slh_startListen();
+      } else {
+        slh_showFallback();
+      }
+    }).catch(function () {
+      slh_showFallback();
+    });
+  });
+} else {
+  slh_startListen();
+}
+
+// ── 降级按钮 ──────────────────────────────────────────
+document.getElementById('slh_pickBtn').addEventListener('click', function () {
+  slh_pick('手动抽取');
+});
+</script>
+</body>
+</html>

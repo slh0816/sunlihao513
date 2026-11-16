@@ -14,3 +14,9 @@ desktop.ini
 
 # 日志
 *.log
+
+# 依赖与本地产物
+node_modules/
+.screenshots/
+.trae-html-share-packages/
+swiper/

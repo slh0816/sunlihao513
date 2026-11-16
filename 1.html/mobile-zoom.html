@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>任务三 · 图片查看器 · 24001010513 孙立豪</title>
+<!--
+  任务三 · 图片查看器：双指缩放 + 双击放大 + 拖动
+  孙立豪 24001010513
+  实现要点：
+    1) 容器 overflow:hidden + touch-action:none，手势完全由 JS 接管
+    2) 双指缩放 1x~4x，以两指中点为中心，用起手时的状态做基准，避免累积误差“跳图”
+    3) 单指在 scale>1 时拖动，边界做了限制，松手不会露出空白
+    4) 双击在 1x / 2x 之间切换，带 0.25s 过渡
+    5) 监听 resize，横竖屏切换后重新校正位移，不丢失缩放状态
+-->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--slh_ink:#0f2b5b;--slh_orange:#e8890c;--slh_bg:#fbf9f6}
+  html,body{height:100%}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    background:var(--slh_bg);color:#1f2937;
+    display:flex;justify-content:center;
+  }
+  .slh_app{
+    width:100%;max-width:430px;height:100dvh;min-height:640px;
+    display:flex;flex-direction:column;
+    padding:18px 18px calc(14px + env(safe-area-inset-bottom));
+  }
+
+  .slh_head{flex:none;margin-bottom:12px}
+  .slh_kicker{
+    display:inline-block;font-size:11px;letter-spacing:2px;
+    color:var(--slh_ink);background:#eef3fb;border:1px solid #c9d9f2;
+    border-radius:999px;padding:4px 12px;margin-bottom:9px;
+  }
+  .slh_head h1{
+    font-family:"Songti SC","SimSun",serif;font-size:24px;
+    color:var(--slh_ink);letter-spacing:1px;
+  }
+  .slh_head p{font-size:12px;color:#8a8f99;margin-top:5px;line-height:1.7}
+
+  /* 图片视口：overflow:hidden 保证放大后不会溢出到页面其他区域 */
+  .slh_viewport{
+    flex:1;position:relative;
+    border-radius:18px;overflow:hidden;
+    background:#0d1b2a;
+    box-shadow:0 14px 34px rgba(15,43,91,.22);
+    touch-action:none;                 /* 关键：手势全部自己算，浏览器不要接管 */
+    -webkit-user-select:none;user-select:none;
+    -webkit-touch-callout:none;
+  }
+  .slh_stage{
+    width:100%;height:100%;
+    transform-origin:center center;
+    will-change:transform;
+  }
+  .slh_stage img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    pointer-events:none;               /* 让 touch 事件落在容器上 */
+  }
+
+  /* 倍率指示 */
+  .slh_ratio{
+    position:absolute;right:10px;top:10px;z-index:2;
+    font-family:Consolas,monospace;font-size:12px;color:#fff;
+    background:rgba(13,27,42,.62);border:1px solid rgba(255,255,255,.22);
+    border-radius:999px;padding:4px 11px;backdrop-filter:blur(4px);
+  }
+  /* 居中提示 */
+  .slh_hint{
+    position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:2;
+    font-size:11.5px;color:#fff;background:rgba(13,27,42,.62);
+    border:1px solid rgba(255,255,255,.2);border-radius:999px;
+    padding:6px 14px;white-space:nowrap;
+  }
+
+  /* 操作条 */
+  .slh_bar{flex:none;display:flex;gap:8px;margin-top:14px}
+  .slh_bar button{
+    flex:1;font-family:inherit;font-size:13px;cursor:pointer;
+    border:1.5px solid #d8d4cc;background:#fff;color:var(--slh_ink);
+    border-radius:12px;padding:11px 0;transition:all .2s;
+  }
+  .slh_bar button:active{transform:scale(.97)}
+  .slh_bar button.slh_primary{
+    background:var(--slh_ink);border-color:var(--slh_ink);color:#fff;
+  }
+
+  /* 答辩说明 */
+  .slh_note{
+    flex:none;margin-top:14px;background:#fff;border:1px solid #e8ecf5;
+    border-radius:12px;padding:13px 15px;
+  }
+  .slh_note h3{
+    font-size:12px;color:var(--slh_ink);margin-bottom:6px;letter-spacing:.5px;
+  }
+  .slh_note p{font-size:11.5px;line-height:1.85;color:#4b5563}
+  .slh_note code{
+    font-family:Consolas,monospace;font-size:11px;
+    background:#eef2ff;color:#1d4ed8;padding:1px 5px;border-radius:4px;
+  }
+
+  .slh_nav{flex:none;margin-top:12px;display:flex;gap:8px;justify-content:center}
+  .slh_nav a{
+    font-size:11.5px;color:#6b7280;text-decoration:none;
+    border:1px solid #e5e1da;border-radius:999px;padding:5px 11px;background:#fff;
+  }
+  .slh_nav a.slh_cur{color:#fff;background:var(--slh_ink);border-color:var(--slh_ink)}
+</style>
+</head>
+<body>
+<div class="slh_app">
+
+  <header class="slh_head">
+    <span class="slh_kicker">任务三 · 图片查看器</span>
+    <h1>双指缩放 · 双击放大</h1>
+    <p>双指捏合放大到 4 倍，放大后单指拖动看细节，双击在 1x / 2x 之间切换。</p>
+  </header>
+
+  <div class="slh_viewport" id="slh_viewport">
+    <div class="slh_stage" id="slh_stage">
+      <img src="swiper-imgs/aida_1.jpg" alt="爱达·魔都号">
+    </div>
+    <span class="slh_ratio" id="slh_ratio">1.0x</span>
+    <span class="slh_hint" id="slh_hint">双指缩放请用手机打开 · 双击可放大</span>
+  </div>
+
+  <div class="slh_bar">
+    <button class="slh_primary" id="slh_btnToggle">双击放大 / 复位</button>
+    <button id="slh_btnReset">回到 1x</button>
+  </div>
+
+  <section class="slh_note">
+    <h3>为什么缩放不会“跳”</h3>
+    <p>每次双指手势都以 <code>touchstart</code> 时的距离、缩放值和两指中点作为基准换算，
+    不使用上一帧的结果累乘，所以手指停住时图片就停住，不会越捏越偏。平移量按
+    <code>t = (p - c) - ((p - c) - t0) × (s1 / s0)</code> 补偿，保证两指中点下的那个像素始终不动。</p>
+  </section>
+
+  <nav class="slh_nav">
+    <a href="mobile-probe.html">任务一</a>
+    <a href="mobile-gesture.html">任务二</a>
+    <a class="slh_cur" href="mobile-zoom.html">任务三</a>
+    <a href="mobile-sensor.html">任务四</a>
+  </nav>
+</div>
+
+<script>
+// ── 元素 ──────────────────────────────────────────────
+var slh_viewport = document.getElementById('slh_viewport');
+var slh_stage = document.getElementById('slh_stage');
+var slh_ratio = document.getElementById('slh_ratio');
+var slh_hint = document.getElementById('slh_hint');
+
+// ── 状态 ──────────────────────────────────────────────
+var slh_scale = 1;          // 当前缩放倍率
+var slh_tx = 0, slh_ty = 0;  // 当前平移（px，相对居中位置）
+var slh_MIN = 1, slh_MAX = 4; // 缩放范围 1x ~ 4x
+var slh_TRANS = 'transform .25s ease'; // 0.25s 过渡
+
+var slh_mode = 'none';      // none | pinch | drag
+var slh_pinch = { dist: 0, midX: 0, midY: 0, scale: 1, tx: 0, ty: 0 };
+var slh_drag = { x: 0, y: 0, tx: 0, ty: 0 };
+var slh_lastTap = { time: 0, x: 0, y: 0 };
+
+// ── 应用变换 ──────────────────────────────────────────
+function slh_apply(animate) {
+  slh_stage.style.transition = animate ? slh_TRANS : 'none';
+  slh_stage.style.transform =
+    'translate(' + slh_tx.toFixed(2) + 'px,' + slh_ty.toFixed(2) + 'px) scale(' + slh_scale.toFixed(4) + ')';
+  slh_ratio.textContent = slh_scale.toFixed(1) + 'x';
+}
+
+// ── 边界限制：1x 时不允许拖动，放大后最多拖到图片边缘 ──
+function slh_clamp() {
+  var W = slh_viewport.clientWidth;
+  var H = slh_viewport.clientHeight;
+  var maxX = Math.max(0, (W * slh_scale - W) / 2);
+  var maxY = Math.max(0, (H * slh_scale - H) / 2);
+  slh_tx = Math.min(maxX, Math.max(-maxX, slh_tx));
+  slh_ty = Math.min(maxY, Math.max(-maxY, slh_ty));
+}
+
+// ── 以容器内某一点为中心缩放到 s1 ─────────────────────
+// 基准取起手状态（scale0 / tx0 / ty0），单次手势内不累乘，保证“不跳”
+function slh_zoomAt(px, py, s1, scale0, tx0, ty0, animate) {
+  var W = slh_viewport.clientWidth;
+  var H = slh_viewport.clientHeight;
+  var cx = W / 2, cy = H / 2;
+  var k = s1 / scale0;
+
+  slh_scale = s1;
+  slh_tx = (px - cx) - ((px - cx) - tx0) * k;
+  slh_ty = (py - cy) - ((py - cy) - ty0) * k;
+
+  slh_clamp();
+  slh_apply(animate);
+}
+
+// ── 手指中点 ──────────────────────────────────────────
+function slh_mid(touches) {
+  var rect = slh_viewport.getBoundingClientRect();
+  return {
+    x: (touches[0].clientX + touches[1].clientX) / 2 - rect.left,
+    y: (touches[0].clientY + touches[1].clientY) / 2 - rect.top
+  };
+}
+function slh_distance(touches) {
+  var dx = touches[0].clientX - touches[1].clientX;
+  var dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy) || 1;
+}
+
+// ── touchstart：记录起手状态 ──────────────────────────
+slh_viewport.addEventListener('touchstart', function (e) {
+  if (e.touches.length === 2) {
+    var mid = slh_mid(e.touches);
+    slh_mode = 'pinch';
+    slh_pinch = {
+      dist: slh_distance(e.touches),
+      midX: mid.x, midY: mid.y,
+      scale: slh_scale, tx: slh_tx, ty: slh_ty
+    };
+    slh_stage.style.transition = 'none';
+  } else if (e.touches.length === 1) {
+    slh_mode = 'drag';
+    slh_drag = {
+      x: e.touches[0].clientX, y: e.touches[0].clientY,
+      tx: slh_tx, ty: slh_ty
+    };
+    slh_stage.style.transition = 'none';
+  }
+}, { passive: true });
+
+// ── touchmove ─────────────────────────────────────────
+slh_viewport.addEventListener('touchmove', function (e) {
+  if (slh_mode === 'pinch' && e.touches.length === 2) {
+    e.preventDefault();                       // 阻止浏览器再执行一次原生缩放
+
+    var s1 = slh_pinch.scale * (slh_distance(e.touches) / slh_pinch.dist);
+    s1 = Math.min(slh_MAX, Math.max(slh_MIN, s1));
+
+    var mid = slh_mid(e.touches);
+    slh_zoomAt(slh_pinch.midX, slh_pinch.midY, s1, slh_pinch.scale, slh_pinch.tx, slh_pinch.ty, false);
+
+    // 两指整体平移时图片跟着走
+    slh_tx += mid.x - slh_pinch.midX;
+    slh_ty += mid.y - slh_pinch.midY;
+    slh_clamp();
+    slh_apply(false);
+
+  } else if (slh_mode === 'drag' && e.touches.length === 1 && slh_scale > 1) {
+    e.preventDefault();
+    slh_tx = slh_drag.tx + (e.touches[0].clientX - slh_drag.x);
+    slh_ty = slh_drag.ty + (e.touches[0].clientY - slh_drag.y);
+    slh_clamp();
+    slh_apply(false);
+  }
+}, { passive: false });
+
+// ── touchend：松手校正 + 双击检测 ─────────────────────
+slh_viewport.addEventListener('touchend', function (e) {
+  if (slh_mode === 'pinch') {
+    slh_clamp();
+    slh_apply(true);
+    // 双指松开剩一指时，重新建立拖动基准，避免图片瞬移
+    if (e.touches.length === 1) {
+      slh_mode = 'drag';
+      slh_drag = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: slh_tx, ty: slh_ty };
+    } else {
+      slh_mode = 'none';
+    }
+    return;
+  }
+
+  slh_clamp();
+  slh_apply(true);
+
+  // 双击判定：两次抬起间隔 < 300ms 且位置几乎没动
+  if (e.changedTouches.length === 1) {
+    var now = Date.now();
+    var t = e.changedTouches[0];
+    var gap = now - slh_lastTap.time;
+    var moved = Math.abs(t.clientX - slh_lastTap.x) + Math.abs(t.clientY - slh_lastTap.y);
+
+    if (gap > 0 && gap < 300 && moved < 30) {
+      slh_lastTap.time = 0;
+      slh_doubleTap(t.clientX, t.clientY);
+    } else {
+      slh_lastTap = { time: now, x: t.clientX, y: t.clientY };
+    }
+  }
+  slh_mode = 'none';
+}, { passive: true });
+
+slh_viewport.addEventListener('touchcancel', function () {
+  slh_mode = 'none';
+  slh_clamp();
+  slh_apply(true);
+}, { passive: true });
+
+// ── 双击：1x ⇄ 2x，以点击位置为中心 ───────────────────
+function slh_doubleTap(clientX, clientY) {
+  var rect = slh_viewport.getBoundingClientRect();
+  var px = clientX - rect.left;
+  var py = clientY - rect.top;
+
+  if (slh_scale > 1.05) {
+    slh_scale = 1; slh_tx = 0; slh_ty = 0;
+    slh_apply(true);
+  } else {
+    slh_zoomAt(px, py, 2, slh_scale, slh_tx, slh_ty, true);
+  }
+}
+
+// ── 按钮：桌面/无障碍入口 ─────────────────────────────
+document.getElementById('slh_btnToggle').addEventListener('click', function () {
+  var rect = slh_viewport.getBoundingClientRect();
+  slh_doubleTap(rect.left + rect.width / 2, rect.top + rect.height / 2);
+});
+document.getElementById('slh_btnReset').addEventListener('click', function () {
+  slh_scale = 1; slh_tx = 0; slh_ty = 0;
+  slh_apply(true);
+});
+
+// ── 旋转屏幕 / 改变窗口：保持倍率，只重新校正边界 ─────
+window.addEventListener('resize', function () {
+  slh_clamp();
+  slh_apply(false);
+});
+window.addEventListener('orientationchange', function () {
+  setTimeout(function () { slh_clamp(); slh_apply(false); }, 260);
+});
+
+// ── 初始化 ────────────────────────────────────────────
+slh_apply(false);
+setTimeout(function () { slh_hint.style.opacity = '0'; }, 3200);
+slh_hint.style.transition = 'opacity .6s';
+</script>
+</body>
+</html>
