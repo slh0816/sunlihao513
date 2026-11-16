@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="从本地数据服务器读取诗词，图片在上、文字在下">
+<title>诗词图文 · 上图下文</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    background:#fbf9f6;color:#1f2937;
+    padding:56px 24px 72px;
+  }
+  .pg-head{max-width:1080px;margin:0 auto 40px}
+  .pg-tag{
+    display:inline-block;font-size:12px;letter-spacing:2px;
+    color:#10254a;background:#eef3fb;border:1px solid #c9d9f2;
+    border-radius:999px;padding:5px 14px;margin-bottom:16px;
+  }
+  .pg-head h1{
+    font-family:"Songti SC","SimSun",serif;font-size:34px;
+    line-height:1.4;color:#10254a;letter-spacing:1px;
+  }
+  .pg-head p{font-size:14px;color:#6b7280;line-height:1.9;margin-top:10px;max-width:620px}
+  .pg-head code{
+    font-family:Consolas,monospace;font-size:12.5px;
+    background:#eef2ff;color:#1d4ed8;padding:1px 6px;border-radius:4px;
+  }
+
+  .cards{
+    max-width:1080px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:26px;
+  }
+
+  .card{
+    background:#fff;border:1px solid #e8ecf5;border-radius:14px;
+    overflow:hidden;box-shadow:0 4px 16px rgba(15,43,91,.06);
+    display:flex;flex-direction:column;
+    transition:transform .22s,box-shadow .22s;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,43,91,.13)}
+
+  /* 上图 */
+  .card .pic{
+    position:relative;width:100%;aspect-ratio:16/10;
+    background:#eef3fb;overflow:hidden;
+  }
+  .card .pic img{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+
+  /* 下文 */
+  .card .text{padding:18px 20px 22px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .card .text h2{
+    font-family:"Songti SC","SimSun",serif;font-size:20px;
+    color:#10254a;letter-spacing:.5px;
+  }
+  .card .text p{
+    font-size:13.5px;line-height:1.95;color:#4b5563;
+  }
+  .card .text .line{
+    margin-top:auto;padding-top:12px;border-top:1px dashed #e8ecf5;
+    font-size:11.5px;color:#9ca3af;letter-spacing:1px;
+  }
+
+  /* 状态提示 */
+  .state{
+    max-width:1080px;margin:0 auto;padding:26px 30px;
+    border-radius:14px;font-size:13.5px;line-height:2;
+  }
+  .state.loading{background:#eef6ff;border:1px solid #c9d9f2;color:#1d4ed8}
+  .state.err{background:#fff1f2;border:1px solid #fecdd3;color:#be123c}
+  .state.err b{display:block;margin-bottom:6px;font-size:14px}
+  .state.err code{
+    font-family:Consolas,monospace;background:#ffe4e6;color:#9f1239;
+    padding:2px 8px;border-radius:4px;display:inline-block;margin-top:4px;
+  }
+</style>
+</head>
+<body>
+
+  <header class="pg-head">
+    <span class="pg-tag">LOCAL API · 上图下文</span>
+    <h1>诗词图文</h1>
+    <p>数据来自本地数据服务器 <code>http://localhost:3005/api/poems</code>，读取 <code>db/db.json</code> 里的 poems 数组，逐条渲染为「图片在上、文字在下」的卡片。</p>
+  </header>
+
+  <div id="state" class="state loading">正在从本地服务器读取数据…</div>
+  <main id="cards" class="cards"></main>
+
+<script>
+var API = 'http://localhost:3005/api/poems';
+var stateBox = document.getElementById('state');
+var cardBox = document.getElementById('cards');
+
+fetch(API)
+  .then(function (res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  })
+  .then(function (list) {
+    if (!Array.isArray(list) || list.length === 0) {
+      throw new Error('服务器返回的 poems 是空的');
+    }
+    stateBox.style.display = 'none';
+    render(list);
+  })
+  .catch(function (err) {
+    stateBox.className = 'state err';
+    stateBox.innerHTML =
+      '<b>读取失败：' + err.message + '</b>' +
+      '请先在 db 目录下启动数据服务器，再刷新本页：' +
+      '<br><code>cd db && node server.js</code>' +
+      '<br>启动后接口地址为 http://localhost:3005/api/poems';
+  });
+
+function render(list) {
+  var html = list.map(function (item) {
+    return '' +
+      '<article class="card">' +
+        '<div class="pic">' +
+          '<img src="' + escapeAttr(imgSrc(item.pic)) + '" alt="' + escapeAttr(item.title) + '" loading="lazy">' +
+        '</div>' +
+        '<div class="text">' +
+          '<h2>' + escapeHtml(item.title) + '</h2>' +
+          '<p>' + escapeHtml(item.content) + '</p>' +
+          '<div class="line">POEM · ' + escapeHtml(item.title) + '</div>' +
+        '</div>' +
+      '</article>';
+  }).join('');
+  cardBox.innerHTML = html;
+}
+
+// gitee 外链有防盗链，改走本地 /img 代理取图
+function imgSrc(pic) {
+  var m = String(pic || '').match(/\/([^\/]+\.(?:jpg|jpeg|png|gif|webp))$/i);
+  return m ? 'http://localhost:3005/img/' + m[1] : pic;
+}
+
+function escapeHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+function escapeAttr(str) {
+  return String(str == null ? '' : str).replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>
