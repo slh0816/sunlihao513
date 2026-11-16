@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>任务四 · 摇一摇抽菜谱 · 24001010513 孙立豪</title>
 <!--
-  任务四（方案 A）· 摇一摇抽今日菜谱
+  任务四（方案 A + B）· 摇一摇抽今日菜谱 + 倾斜视差
   孙立豪 24001010513
   实现要点：
     1) 监听 devicemotion，取 accelerationIncludingGravity 合成三轴加速度
@@ -13,6 +13,7 @@
     3) 随机抽一道菜，结果卡带弹入动画
     4) 没有该事件 / 3.5s 内收不到数据 → 显示“当前设备不支持”并提供“点我抽一次”降级按钮
     5) iOS 13+ 需要用户点击后申请权限，按钮入口一并处理
+    6) 倾斜视差：x / y 分量归一化到 -1~1，rAF 插值后用不同系数驱动卡片与背景光斑
 -->
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
@@ -24,10 +25,10 @@
     display:flex;justify-content:center;
   }
   .slh_app{
-    width:100%;max-width:430px;height:100dvh;min-height:640px;
+    width:100%;max-width:430px;min-height:100dvh;
     display:flex;flex-direction:column;
     padding:20px 18px calc(14px + env(safe-area-inset-bottom));
-    overflow:hidden;
+    overflow-x:hidden;
   }
 
   .slh_head{flex:none;margin-bottom:14px}
@@ -43,7 +44,31 @@
   .slh_head p{font-size:12px;color:#8a8f99;margin-top:5px;line-height:1.7}
 
   /* 结果卡 */
-  .slh_stage{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
+  .slh_stage{
+    flex:1;display:flex;align-items:center;justify-content:center;
+    position:relative;perspective:900px;overflow:hidden;
+    min-height:420px;padding:14px 0;
+  }
+  /* 视差层：外层光斑位移大，卡片位移小 */
+  .slh_orb{
+    position:absolute;border-radius:50%;pointer-events:none;
+    filter:blur(34px);will-change:transform;
+  }
+  .slh_orb_a{
+    width:150px;height:150px;left:-58px;top:46px;opacity:.26;
+    background:radial-gradient(circle,#60a5fa,#3b82f6 70%,transparent);
+  }
+  .slh_orb_b{
+    width:170px;height:170px;right:-74px;bottom:46px;opacity:.18;
+    background:radial-gradient(circle,#fcd34d,#f59e0b 70%,transparent);
+  }
+  .slh_tilt{will-change:transform;transform-style:preserve-3d}
+  .slh_tiltTip{
+    position:absolute;left:50%;bottom:2px;transform:translateX(-50%);
+    font-size:11px;color:#9ca3af;letter-spacing:1px;white-space:nowrap;
+    opacity:0;transition:opacity .6s;
+  }
+  .slh_tiltTip.slh_show{opacity:1}
   .slh_card{
     width:100%;max-width:340px;border-radius:24px;
     background:linear-gradient(150deg,#10254a 0%,#1d4ed8 62%,#2563eb 100%);
@@ -140,25 +165,32 @@
 <div class="slh_app">
 
   <header class="slh_head">
-    <span class="slh_kicker">任务四 · 摇一摇</span>
+    <span class="slh_kicker">任务四 · 摇一摇 + 倾斜视差</span>
     <h1>摇一摇，抽今日菜谱</h1>
-    <p>拿起手机左右摇一下，松手就出结果。电脑上没有加速度计，会走降级按钮。</p>
+    <p>左右倾斜手机，背景光斑与卡片会分层移动；摇一下，换一道菜。电脑没有加速度计，画面保持静止并走降级按钮。</p>
   </header>
 
   <div class="slh_stage">
-    <div>
-      <div class="slh_card" id="slh_card">
-        <div class="slh_shakeIcon">〜 〜</div>
-        <div class="slh_label">SHAKE TO PICK</div>
-        <div class="slh_dish" id="slh_dish">摇一摇手机</div>
-        <div class="slh_note" id="slh_note">今日菜谱由加速度传感器决定</div>
-      </div>
+    <span class="slh_orb slh_orb_a" id="slh_orbA"></span>
+    <span class="slh_orb slh_orb_b" id="slh_orbB"></span>
 
-      <div class="slh_meter">
-        合成加速度 <b id="slh_value">0.0</b> m/s² · 阈值 18
-        <div class="slh_barMeter"><div class="slh_barFill" id="slh_bar"></div></div>
+    <div class="slh_tilt" id="slh_tilt">
+      <div>
+        <div class="slh_card" id="slh_card">
+          <div class="slh_shakeIcon">〜 〜</div>
+          <div class="slh_label">SHAKE TO PICK</div>
+          <div class="slh_dish" id="slh_dish">摇一摇手机</div>
+          <div class="slh_note" id="slh_note">今日菜谱由加速度传感器决定</div>
+        </div>
+
+        <div class="slh_meter">
+          合成加速度 <b id="slh_value">0.0</b> m/s² · 阈值 18
+          <div class="slh_barMeter"><div class="slh_barFill" id="slh_bar"></div></div>
+        </div>
       </div>
     </div>
+
+    <span class="slh_tiltTip" id="slh_tiltTip">左右倾斜手机 · 画面会跟着动</span>
   </div>
 
   <!-- iOS 13+ 需要用户手势里申请权限 -->
@@ -175,6 +207,11 @@
   </div>
 
   <section class="slh_why">
+    <h3>倾斜视差怎么算</h3>
+    <p>取 <code>accelerationIncludingGravity</code> 的 x、y 分量，各除以 9.8，得到 −1～1 的倾斜比例；
+    再用 <code>requestAnimationFrame</code> 每帧向目标值插值（系数 0.1），避免读数抖动直接传到画面上。
+    两层元素用不同系数：背景光斑位移大，卡片位移小并带 <code>rotateX / rotateY</code>，系数不同才有视差。</p>
+
     <h3>为什么一定要做降级</h3>
     <p>桌面浏览器、部分安卓机、以及未授权的 iOS 都收不到 <code>devicemotion</code>。
     如果只写摇一摇，这些用户看到的就是一个永远不动的页面，还以为是自己摇得不对。
@@ -210,6 +247,10 @@ var slh_valueEl = document.getElementById('slh_value');
 var slh_barEl = document.getElementById('slh_bar');
 var slh_fallback = document.getElementById('slh_fallback');
 var slh_perm = document.getElementById('slh_perm');
+var slh_tiltEl = document.getElementById('slh_tilt');
+var slh_orbA = document.getElementById('slh_orbA');
+var slh_orbB = document.getElementById('slh_orbB');
+var slh_tiltTip = document.getElementById('slh_tiltTip');
 
 // ── 配置与状态 ────────────────────────────────────────
 var slh_THRESHOLD = 18;      // 摇动阈值
@@ -217,6 +258,11 @@ var slh_COOLDOWN = 1500;     // 冷却 1.5s
 var slh_cooling = false;     // 是否在冷却中
 var slh_gotData = false;     // 是否收到过传感器数据
 var slh_lastPick = -1;       // 避免连续抽到同一道
+
+// 倾斜视差：target 是传感器给的目标值，now 是插值后的实际值
+var slh_tiltTarget = { x: 0, y: 0 };
+var slh_tiltNow = { x: 0, y: 0 };
+var slh_tiltOn = false;
 
 // ── 抽一道菜并播放弹入动画 ────────────────────────────
 function slh_pick(source) {
@@ -254,10 +300,39 @@ function slh_onMotion(e) {
   slh_valueEl.textContent = g.toFixed(1);
   slh_barEl.style.width = Math.min(100, (g / 30) * 100) + '%';
 
+  // 倾斜视差：重力分量除以 9.8 得到 -1 ~ 1 的倾斜比例
+  slh_tiltTarget.x = Math.max(-1, Math.min(1, x / 9.8));
+  slh_tiltTarget.y = Math.max(-1, Math.min(1, y / 9.8));
+  if (!slh_tiltOn) {
+    slh_tiltOn = true;
+    slh_tiltTip.classList.add('slh_show');
+  }
+
   if (g > slh_THRESHOLD) {
     slh_pick('摇一摇');
   }
 }
+
+// ── 每帧插值并写变换，系数不同形成视差 ────────────────
+function slh_parallax() {
+  slh_tiltNow.x += (slh_tiltTarget.x - slh_tiltNow.x) * 0.1;
+  slh_tiltNow.y += (slh_tiltTarget.y - slh_tiltNow.y) * 0.1;
+
+  var x = slh_tiltNow.x;
+  var y = slh_tiltNow.y;
+
+  // 卡片：小幅位移 + 3D 倾斜
+  slh_tiltEl.style.transform =
+    'translate3d(' + (-x * 16).toFixed(2) + 'px,' + (y * 9).toFixed(2) + 'px,0)' +
+    ' rotateY(' + (x * 10).toFixed(2) + 'deg) rotateX(' + (-y * 6).toFixed(2) + 'deg)';
+
+  // 背景光斑：位移更大，方向相反
+  slh_orbA.style.transform = 'translate3d(' + (x * 38).toFixed(1) + 'px,' + (-y * 24).toFixed(1) + 'px,0)';
+  slh_orbB.style.transform = 'translate3d(' + (-x * 30).toFixed(1) + 'px,' + (y * 18).toFixed(1) + 'px,0)';
+
+  requestAnimationFrame(slh_parallax);
+}
+requestAnimationFrame(slh_parallax);
 
 // ── 能力检测 ──────────────────────────────────────────
 function slh_showFallback() {
