@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <!--
+    姓名：孙立豪 | 学号：24001010513 | 时间：2026-11-23 | 大模型：DeepSeek-V4.1-Flash
+    页面：第 20 项 · LLM 实践操作演示（四个 AI 能力模块截图展示）
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="课程实验中的四个 AI 能力模块：AI 智聊、知识库问答、图像识别、语音识别，按模块展示操作截图与功能说明。" />
+  <title>LLM 实践操作演示 · 孙立豪前端作品集</title>
+  <style>
+    :root {
+      --slh_ink: #1b1c1f;
+      --slh_gray: #6a6d73;
+      --slh_light: #9a9da3;
+      --slh_line: #e8e6e3;
+      --slh_bg: #f5f5f6;
+      --slh_shots: #fdf4f2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--slh_ink);
+      background: var(--slh_bg);
+      font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+      line-height: 1.7;
+    }
+
+    a { color: inherit; }
+
+    .slh_page {
+      width: min(900px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 34px 0 72px;
+    }
+
+    .slh_topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--slh_light);
+    }
+
+    .slh_back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .slh_back:hover { color: var(--slh_ink); }
+
+    .slh_toptag { letter-spacing: 0.12em; }
+
+    .slh_hero {
+      padding: 34px 0 30px;
+      text-align: center;
+    }
+
+    .slh_hero h1 {
+      margin: 0 0 12px;
+      font-size: clamp(22px, 3.4vw, 30px);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .slh_hero h1 span {
+      font-size: 0.72em;
+      vertical-align: middle;
+    }
+
+    .slh_hero p {
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--slh_gray);
+    }
+
+    .slh_module {
+      margin-bottom: 22px;
+      padding: 22px 24px 18px;
+      background: #fff;
+      border: 1px solid var(--slh_line);
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(30, 30, 40, 0.04);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .slh_module:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px rgba(30, 30, 40, 0.08);
+    }
+
+    .slh_module_head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .slh_module_index {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--slh_light);
+    }
+
+    .slh_module_title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .slh_module_icon {
+      display: inline-grid;
+      width: 26px;
+      height: 26px;
+      place-items: center;
+      font-size: 14px;
+      background: #f2f2f4;
+      border-radius: 7px;
+    }
+
+    .slh_module_tools {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .slh_module_link {
+      font-size: 12px;
+      color: var(--slh_light);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .slh_module_link:hover { color: #2b6fd8; }
+
+    .slh_tag {
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      border-radius: 999px;
+    }
+
+    .slh_tag_api { color: #d8751a; background: #fff2e4; }
+    .slh_tag_rag { color: #2b6fd8; background: #eaf2ff; }
+    .slh_tag_vision { color: #2f9552; background: #e8f7ee; }
+    .slh_tag_asr { color: #7a4bd0; background: #f2ecff; }
+
+    .slh_module_desc {
+      margin: 0 0 14px;
+      font-size: 12.5px;
+      color: var(--slh_gray);
+    }
+
+    .slh_shots {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 12px;
+      background: var(--slh_shots);
+      border-radius: 10px;
+    }
+
+    .slh_shot {
+      margin: 0;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #f0e7e3;
+      border-radius: 8px;
+    }
+
+    .slh_shot a {
+      display: block;
+      line-height: 0;
+    }
+
+    .slh_shot img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.35s ease;
+    }
+
+    .slh_shot a:hover img { transform: scale(1.015); }
+
+    .slh_shot figcaption {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: var(--slh_light);
+      line-height: 1.5;
+    }
+
+    .slh_dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f0a08a;
+    }
+
+    .slh_footer {
+      padding-top: 18px;
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--slh_light);
+    }
+
+    @media (max-width: 720px) {
+      .slh_page { width: calc(100% - 24px); padding-top: 22px; }
+      .slh_module { padding: 18px 16px 14px; }
+      .slh_module_tools { margin-left: 0; }
+      .slh_shots { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="slh_page">
+    <div class="slh_topbar">
+      <a class="slh_back" href="./index.html">← 返回首页</a>
+      <span class="slh_toptag">SLH · LLM · DEMO</span>
+    </div>
+
+    <header class="slh_hero">
+      <h1><span>⭐</span> LLM 实践操作演示 <span>⭐</span></h1>
+      <p>课程实验中的四个 AI 能力模块，按模块展示操作截图与功能说明</p>
+    </header>
+
+    <main>
+      <section class="slh_module">
+        <div class="slh_module_head">
+          <span class="slh_module_index">MODULE · 01</span>
+          <h2 class="slh_module_title"><span class="slh_module_icon">🤖</span>AI 智聊 · 硅基流动 / 七牛切换</h2>
+          <span class="slh_module_tools">
+            <a class="slh_module_link" href="../workwork/frontend/chat.html">打开页面 ↗</a>
+            <span class="slh_tag slh_tag_api">API · 流式</span>
+          </span>
+        </div>
+        <p class="slh_module_desc">
+          前端把对话发给本地后端，由后端携带密钥转发到硅基流动或七牛云；支持多轮上下文与逐字流式输出，
+          七牛免费模型被限流时自动降级到硅基流动，并在页面上给出提示。
+        </p>
+        <div class="slh_shots">
+          <figure class="slh_shot">
+            <a href="../workwork/frontend/chat.html"><img src="./ai-shots/chat-siliconflow.png" alt="AI 聊天助手使用硅基流动模型的多轮对话界面" /></a>
+            <figcaption><span class="slh_dot"></span>硅基流动 · 流式对话</figcaption>
+          </figure>
+          <figure class="slh_shot">
+            <a href="../workwork/frontend/chat.html"><img src="./ai-shots/chat-qiniu-fallback.png" alt="切换到七牛云模型并显示限流自动降级提示" /></a>
+            <figcaption><span class="slh_dot"></span>七牛模型 · 限流自动降级</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="slh_module">
+        <div class="slh_module_head">
+          <span class="slh_module_index">MODULE · 02</span>
+          <h2 class="slh_module_title"><span class="slh_module_icon">📚</span>知识库 · 上传文件 + 功能验证</h2>
+          <span class="slh_module_tools">
+            <a class="slh_module_link" href="../workwork/frontend/kb.html">打开页面 ↗</a>
+            <span class="slh_tag slh_tag_rag">RAG</span>
+          </span>
+        </div>
+        <p class="slh_module_desc">
+          上传 TXT / PDF / DOCX / PPTX 文档，后端完成解析、切块与索引；提问时先检索最相关的知识片段，
+          再连同问题一起发送给大模型，回答中标注引用的资料来源。
+        </p>
+        <div class="slh_shots">
+          <figure class="slh_shot">
+            <a href="../workwork/frontend/kb.html"><img src="./ai-shots/kb-upload.png" alt="知识库管理界面，展示已上传的文档与解析状态" /></a>
+            <figcaption><span class="slh_dot"></span>上传文档 · 知识库管理</figcaption>
+          </figure>
+          <figure class="slh_shot">
+            <a href="../workwork/frontend/kb.html"><img src="./ai-shots/kb-citation.png" alt="知识库问答回答中标注引用的资料编号" /></a>
+            <figcaption><span class="slh_dot"></span>引用资料 · 回答标注</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="slh_module">
+        <div class="slh_module_head">
+          <span class="slh_module_index">MODULE · 03</span>
+          <h2 class="slh_module_title"><span class="slh_module_icon">🖼</span>图像识别 · 上传图片 + 测试</h2>
+          <span class="slh_module_tools">
+            <a class="slh_module_link" href="../workwork/frontend/vision.html">打开页面 ↗</a>
+            <span class="slh_tag slh_tag_vision">Vision</span>
+          </span>
+        </div>
+        <p class="slh_module_desc">
+          上传本地图片，调用 Qwen3-VL 多模态大模型识别画面内容，可自定义提问（例如「这张图里有几个人」），
+          返回画面主体、场景与文字信息。
+        </p>
+        <div class="slh_shots">
+          <figure class="slh_shot">
+            <a href="../workwork/frontend/vision.html"><img src="./ai-shots/vision.png" alt="图像识别页面上传图片并返回人物数量与画面描述" /></a>
+            <figcaption><span class="slh_dot"></span>图像识别 · 上传一张测试图</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="slh_module">
+        <div class="slh_module_head">
+          <span class="slh_module_index">MODULE · 04</span>
+          <h2 class="slh_module_title"><span class="slh_module_icon">🎤</span>语音识别 · 录音测试</h2>
+          <span class="slh_module_tools">
+            <a class="slh_module_link" href="../workwork/frontend/asr.html">打开页面 ↗</a>
+            <span class="slh_tag slh_tag_asr">ASR</span>
+          </span>
+        </div>
+        <p class="slh_module_desc">
+          选择音频文件或直接用浏览器录音（自动编码为 WAV 并做音量归一化），调用七牛云 ASR 转写中文语音，
+          免费模型限流时自动降级到硅基流动。
+        </p>
+        <div class="slh_shots">
+          <figure class="slh_shot">
+            <a href="../workwork/frontend/asr.html"><img src="./ai-shots/asr.png" alt="语音识别页面上传录音并转写为中文文字的界面" /></a>
+            <figcaption><span class="slh_dot"></span>语音识别 · 录音一段测试</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+
+    <footer class="slh_footer">© 2026 孙立豪 · 24001010513 · LLM 实践操作演示</footer>
+  </div>
+</body>
+</html>
